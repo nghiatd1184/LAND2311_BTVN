@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#202024"
+    android:orientation="vertical"
+    android:weightSum="10"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvTextLine1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#A2A2B0"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvTextLine2"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSymbolEqual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="="
+            android:visibility="invisible"
+            android:textColor="@color/white"
+            android:textSize="52sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTextLine2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="52sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/controlBoard"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:background="@drawable/shape_control"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/btnAC"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:gravity="center"
+                android:text="AC"
+                app:layout_constraintDimensionRatio="2:0.85"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.47" />
+
+            <TextView
+                android:id="@+id/btnPercent"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="%"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@+id/btnDivide"
+                app:layout_constraintStart_toEndOf="@+id/btnAC"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btnDivide"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:backgroundTint="#007CFF"
+                android:text="/"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="20dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/btn7"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="7"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btn8"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="8"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/btn9"
+                app:layout_constraintStart_toEndOf="@id/btn7"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btn9"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="9"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/btnMulti"
+                app:layout_constraintStart_toEndOf="@id/btn8"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btnMulti"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="X"
+                android:backgroundTint="#007CFF"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/btn4"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btn5"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="5"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/btn6"
+                app:layout_constraintStart_toEndOf="@id/btn4"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btn6"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/btnMinus"
+                app:layout_constraintStart_toEndOf="@id/btn5"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btnMinus"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="-"
+                android:backgroundTint="#007CFF"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/btn1"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btn2"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/btn3"
+                app:layout_constraintStart_toEndOf="@id/btn1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btn3"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/btnPlus"
+                app:layout_constraintStart_toEndOf="@id/btn2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btnPlus"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="+"
+                android:backgroundTint="#007CFF"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/btnPoint"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="."
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+            <TextView
+                android:id="@+id/btn0"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:text="0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@id/btnCalculate"
+                app:layout_constraintStart_toEndOf="@id/btnPoint"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.2" />
+
+
+            <TextView
+                android:id="@+id/btnCalculate"
+                style="@style/controllerBtn"
+                android:background="@drawable/shape_double_btn"
+                android:gravity="center"
+                android:text="="
+                app:layout_constraintDimensionRatio="2:0.85"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintWidth_percent="0.47" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
