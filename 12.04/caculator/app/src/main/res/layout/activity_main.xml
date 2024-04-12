@@ -6,56 +6,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#202024"
+    android:gravity="bottom"
     android:orientation="vertical"
-    android:weightSum="10"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_height="wrap_content"
         android:padding="20dp">
 
         <TextView
             android:id="@+id/tvTextLine1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
             android:text=""
+            android:gravity="center"
+            android:textAlignment="textEnd"
+            android:maxLines="1"
+            android:autoSizeMaxTextSize="24sp"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeStepGranularity="1sp"
+            android:autoSizeTextType="uniform"
             android:textColor="#A2A2B0"
-            android:textSize="24sp"
             app:layout_constraintBottom_toTopOf="@+id/tvTextLine2"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/tvSymbolEqual"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
             android:text="="
-            android:visibility="invisible"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="52sp"
             android:textStyle="bold"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.09" />
 
         <TextView
             android:id="@+id/tvTextLine2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:autoSizeMaxTextSize="52sp"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeStepGranularity="1sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:maxLines="1"
             android:text=""
+            android:maxLength="40"
+            android:textAlignment="textEnd"
             android:textColor="@color/white"
-            android:textSize="52sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.91" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/controlBoard"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
+        android:layout_height="wrap_content"
         android:background="@drawable/shape_control"
         android:orientation="vertical"
         android:padding="20dp">
@@ -103,7 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="20dp" />
+                app:layout_constraintGuide_begin="-239dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -150,8 +164,8 @@
                 android:id="@+id/btnMulti"
                 style="@style/controllerBtn"
                 android:background="@drawable/shape_double_btn"
-                android:text="X"
                 android:backgroundTint="#007CFF"
+                android:text="X"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -203,8 +217,8 @@
                 android:id="@+id/btnMinus"
                 style="@style/controllerBtn"
                 android:background="@drawable/shape_double_btn"
-                android:text="-"
                 android:backgroundTint="#007CFF"
+                android:text="-"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -256,8 +270,8 @@
                 android:id="@+id/btnPlus"
                 style="@style/controllerBtn"
                 android:background="@drawable/shape_double_btn"
-                android:text="+"
                 android:backgroundTint="#007CFF"
+                android:text="+"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -299,10 +313,10 @@
                 android:background="@drawable/shape_double_btn"
                 android:gravity="center"
                 android:text="="
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="2:0.85"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintWidth_percent="0.47" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
