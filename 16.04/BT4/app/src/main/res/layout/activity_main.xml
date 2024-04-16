@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="20dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvMain"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="120sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvBlack"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="BLACK"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMain"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/tvRed"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:background="#BC0000"
+        android:gravity="center"
+        android:text="RED"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintStart_toEndOf="@id/tvBlack"
+        app:layout_constraintTop_toBottomOf="@+id/tvMain"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/tvBlue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:background="#0D76C6"
+        android:gravity="center"
+        android:text="BLUE"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintStart_toEndOf="@id/tvRed"
+        app:layout_constraintTop_toBottomOf="@+id/tvMain"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <TextView
+        android:id="@+id/tvGreen"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:background="#10810C"
+        android:gravity="center"
+        android:text="GREEN"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintStart_toEndOf="@id/tvBlue"
+        app:layout_constraintTop_toBottomOf="@+id/tvMain"
+        app:layout_constraintWidth_percent="0.25" />
+
+    <Button
+        android:id="@+id/btnCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="5dp"
+        android:text="Count"
+        app:layout_constraintEnd_toEndOf="@+id/tvRed"
+        app:layout_constraintTop_toBottomOf="@+id/tvRed" />
+
+    <Button
+        android:id="@+id/btnReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:text="Reset"
+        app:layout_constraintStart_toStartOf="@id/tvBlue"
+        app:layout_constraintTop_toBottomOf="@+id/tvBlue" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
