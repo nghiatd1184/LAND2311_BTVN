@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
+        android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold" />
     <View
@@ -23,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Body"
+        android:textColor="@color/black"
         android:maxLines="2"
         android:ellipsize="end"
         android:textSize="14sp"/>

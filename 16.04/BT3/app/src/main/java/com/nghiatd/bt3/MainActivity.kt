@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), OnFileItemClickListener {
         setContentView(binding.root)
         files = arrayListOf()
         this.fileList().forEach {
-            if (it == "profileInstalled"){
+            if (it == "profileInstalled" || it.isEmpty()){
 
             } else {
                 files.add(readFiles(it))
