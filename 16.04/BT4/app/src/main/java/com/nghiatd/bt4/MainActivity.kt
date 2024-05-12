@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.nghiatd.bt4.controller.Manager
 import com.nghiatd.bt4.databinding.ActivityMainBinding
 
 
@@ -11,6 +12,7 @@ class MainActivity : AppCompatActivity() {
 
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding by lazy { requireNotNull(_binding) }
+    private val manager : Manager by lazy { Manager.getIns() }
     private var number: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
