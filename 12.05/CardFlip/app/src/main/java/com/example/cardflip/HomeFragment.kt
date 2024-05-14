@@ -25,18 +25,22 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sharedPref = activity?.getSharedPreferences("appData", Context.MODE_PRIVATE)
         binding.apply {
             viewPager2.apply {
                 adapter = HomeVpAdapter()
             }
             tvLvEasy.setOnClickListener {
-                replaceFragment(EasyFragment())
+                sharedPref?.edit()?.putInt("mode", 6)?.apply()
+                replaceFragment(PlayFragment())
             }
             tvLvNormal.setOnClickListener {
-                replaceFragment(NormalFragment())
+                sharedPref?.edit()?.putInt("mode", 16)?.apply()
+                replaceFragment(PlayFragment())
             }
             tvLvHard.setOnClickListener {
-                replaceFragment(HardFragment())
+                sharedPref?.edit()?.putInt("mode", 36)?.apply()
+                replaceFragment(PlayFragment())
             }
         }
         autoScroll()
