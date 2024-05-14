@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_2">
+
+    <LinearLayout
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_1"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@color/main" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_2"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:background="#66000000"
+            android:textColor="@color/main"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="3dp"/>
+    </LinearLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewPager2"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/tvTitle3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/level_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/main" />
+        <TextView
+            android:id="@+id/tvLvEasy"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/level_easy"
+            android:paddingVertical="3dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="#66000000"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/main"/>
+        <TextView
+            android:id="@+id/tvLvNormal"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/level_normal"
+            android:paddingVertical="3dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:background="#66000000"
+            android:textColor="@color/main" />
+        <TextView
+            android:id="@+id/tvLvHard"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/level_hard"
+            android:paddingVertical="3dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:background="#66000000"
+            android:textColor="@color/main"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
