@@ -1,5 +1,6 @@
 package com.nghiatd.networking.model
 
+import android.graphics.Bitmap
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -7,7 +8,8 @@ data class User(
     var login : String = "",
     var id : Int = 0,
     var nodeId : String = "",
-    var avatarUrl : String = ""
+    var avatarUrl : String = "",
+    var bitmap : Bitmap? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),

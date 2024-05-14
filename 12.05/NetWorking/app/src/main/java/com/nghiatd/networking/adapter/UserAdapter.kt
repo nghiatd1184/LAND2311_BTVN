@@ -32,27 +32,33 @@ class UserAdapter(private val list: List<User>) :
         fun bind(user: User) {
             binding.id.text = user.id.toString()
             binding.login.text = user.login
-            binding.nodeID.text = user.nodeId
-            val handler = Handler(Looper.getMainLooper()) {
-                val byteArray = it.data.getByteArray("bitmap")
-                byteArray?.let {
-                    val bitmap = BitmapFactory.decodeByteArray(it,0,it.size)
-                    binding.avatar.setImageBitmap(bitmap)
+            binding.nodeId.text = user.nodeId
+            if (user.bitmap == null) {
+                val handler = Handler(Looper.getMainLooper()) {
+                    val byteArray = it.data.getByteArray("bitmap")
+                    byteArray?.let {
+                        val bitmap = BitmapFactory.decodeByteArray(it,0,it.size)
+                        binding.avatar.setImageBitmap(bitmap)
+                        user.bitmap = bitmap
+                    }
+                    return@Handler true
                 }
-                return@Handler true
+
+                thread(start = true) {
+                    val client = OkHttpClient.Builder().build()
+                    val builder = Request.Builder()
+                    builder.url(user.avatarUrl)
+                    val byteArray = client.newCall(builder.build()).execute().body?.bytes()
+                    val msg = handler.obtainMessage()
+                    msg.data = Bundle().apply {
+                        putByteArray("bitmap",byteArray)
+                    }
+                    handler.sendMessage(msg)
+                }
+            } else {
+                binding.avatar.setImageBitmap(user.bitmap)
             }
 
-            thread {
-                val client = OkHttpClient.Builder().build()
-                val builder = Request.Builder()
-                builder.url(user.avatarUrl)
-                val byteArray = client.newCall(builder.build()).execute().body?.bytes()
-                val msg = handler.obtainMessage()
-                msg.data = Bundle().apply {
-                    putByteArray("bitmap",byteArray)
-                }
-                handler.sendMessage(msg)
-            }
         }
     }
 }

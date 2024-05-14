@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding : ActivityMainBinding by lazy { requireNotNull(_binding) }
-    private val listUser = arrayListOf<User>()
+    private var listUser = arrayListOf<User>()
     private val adapter:UserAdapter by lazy {
         UserAdapter(listUser)
     }
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             } catch (ex:Exception) {
-                Log.d("DMM", " Ex is call : $ex")
+                Log.d("hehe", " Ex is call : $ex")
             }
 
 //            val modelString = sBuilder.toString().substring(2,sBuilder.length-2)
