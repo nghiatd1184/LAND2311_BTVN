@@ -49,6 +49,10 @@ class PlayFragment : Fragment(), OnCardClickListener {
             btnBack.setOnClickListener {
                 controller.clearControllerData()
                 parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        androidx.appcompat.R.anim.abc_tooltip_enter,
+                        androidx.appcompat.R.anim.abc_tooltip_exit,
+                    )
                     .replace(R.id.container, HomeFragment())
                     .commitNow()
             }

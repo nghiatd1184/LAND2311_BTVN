@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CardFlip</string>
+    <string name="app_name">WW:TEM</string>
     <string name="title_1">Wuthering Wave</string>
     <string name="title_2">THE ECHO MEMORY</string>
     <string name="level_easy">Easy</string>
@@ -10,4 +10,5 @@
     <string name="level_title">» Choose Your Level «</string>
     <string name="dialog_title">Thông Báo</string>
     <string name="dialog_btn_text">OK</string>
+    <string name="back">Back</string>
 </resources>

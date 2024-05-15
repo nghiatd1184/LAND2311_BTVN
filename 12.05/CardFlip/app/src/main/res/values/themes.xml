@@ -3,7 +3,9 @@
     <style name="Base.Theme.CardFlip" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:fontFamily">@font/main_font</item>
     </style>
 
     <style name="Theme.CardFlip" parent="Base.Theme.CardFlip" />
+    
 </resources>
