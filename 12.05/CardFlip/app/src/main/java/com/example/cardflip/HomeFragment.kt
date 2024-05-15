@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.cardflip.adapter.HomeVpAdapter
 import com.example.cardflip.databinding.FragmentHomeBinding
+import kotlin.system.exitProcess
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -29,6 +30,21 @@ class HomeFragment : Fragment() {
         binding.apply {
             viewPager2.apply {
                 adapter = HomeVpAdapter()
+            }
+            play.setOnClickListener {
+                binding.apply {
+                    menu.visibility = View.GONE
+                    levelMenu.visibility = View.VISIBLE
+                }
+            }
+            quit.setOnClickListener {
+                exitProcess(0)
+            }
+            tvLvBack.setOnClickListener {
+                binding.apply {
+                    menu.visibility = View.VISIBLE
+                    levelMenu.visibility = View.GONE
+                }
             }
             tvLvEasy.setOnClickListener {
                 sharedPref?.edit()?.putInt("mode", 6)?.apply()

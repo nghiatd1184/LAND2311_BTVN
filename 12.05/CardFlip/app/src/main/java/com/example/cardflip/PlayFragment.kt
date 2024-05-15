@@ -26,7 +26,7 @@ class PlayFragment : Fragment(), OnCardClickListener {
     private val controller = Controller.getInstance()
     private val cards: ArrayList<Int> by lazy { controller.getCards() }
     private val cardAdapter: CardAdapter by lazy {
-        CardAdapter(cards, this)
+        CardAdapter(cards, this, requireContext())
     }
 
     override fun onCreateView(
@@ -40,7 +40,7 @@ class PlayFragment : Fragment(), OnCardClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        controller.clearControllerData()
         val sharedPref = activity?.getSharedPreferences("appData", Context.MODE_PRIVATE)
         controller.setGameMote(sharedPref!!.getInt("mode", 0))
         controller.prepareData()
