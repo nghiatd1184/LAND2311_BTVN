@@ -55,8 +55,12 @@ class HomeFragment : Fragment() {
         }, 4000L)
     }
 
-    fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                androidx.appcompat.R.anim.abc_tooltip_enter,
+                androidx.appcompat.R.anim.abc_tooltip_exit,
+            )
             .replace(R.id.container, fragment)
             .commit()
     }

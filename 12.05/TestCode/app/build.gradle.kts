@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.cardflip"
+    namespace = "com.example.testcode"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.cardflip"
+        applicationId = "com.example.testcode"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
@@ -33,8 +33,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    buildFeatures { viewBinding = true }
 }
 
 dependencies {
@@ -47,5 +45,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 }

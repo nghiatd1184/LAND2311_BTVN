@@ -1,16 +1,11 @@
 package com.example.cardflip.controller
 
-import android.graphics.BitmapFactory
-import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.example.cardflip.R
 import com.example.cardflip.adapter.CardAdapter
-import com.example.cardflip.databinding.FragmentPlayBinding
 import kotlin.concurrent.thread
 
 
@@ -24,30 +19,6 @@ class Controller private constructor() {
             return instance!!
         }
     }
-
-    fun prepareData() {
-        for (i in 1..gameMode) {
-            cards.add(R.drawable.backside)
-        }
-        when (gameMode) {
-            6 -> {
-                cardData = list6
-                column = 3
-            }
-
-            16 -> {
-                cardData = list16
-                column = 4
-            }
-
-            36 -> {
-                cardData = list36
-                column = 6
-            }
-        }
-        cardData.shuffle()
-    }
-
 
     private var count = 0
     private var cards = arrayListOf<Int>()
@@ -139,8 +110,11 @@ class Controller private constructor() {
         return cards
     }
 
-    fun cardClick(position: Int): Int {
+    fun isCompare(): Boolean {
+        return isCompare
+    }
 
+    fun cardClick(adapter: CardAdapter,position: Int): Int {
         when (count) {
             0 -> {
                 if (firstPosition == null) {
@@ -157,53 +131,96 @@ class Controller private constructor() {
             }
         }
         cards.removeAt(position)
-        cards.add(position,cardData[position])
+        cards.add(position, cardData[position])
+        adapter.notifyDataSetChanged()
         return count
     }
 
-    fun isCompare(): Boolean {
-        return isCompare
-    }
+    fun prepareData() {
+        when (gameMode) {
+            6 -> {
+                cardData.addAll(list6)
+                column = 3
+            }
 
-    fun compareCard(adapter: CardAdapter, img : ImageView) {
-        isCompare = true
-        val isDifferent = true
-        val handler = Handler(Looper.getMainLooper()) {
-            val isDelete = it.data.getBoolean("is_dDifferent")
-            img.isVisible = isDelete
-            adapter.notifyDataSetChanged()
-            return@Handler true
-        }
-        thread(start = true) {
-            var isDifferent = true
-            if (firstPosition != null && secondPosition != null) {
-                if (cardData[firstPosition!!] != cardData[secondPosition!!]) {
-                    try {
-                        Thread.sleep(2500L)
-                    } catch (ex: Exception) {
-                        ex.printStackTrace()
-                    }
-                    isDifferent = false
-                    lifeCount--
-                    cards.removeAt(firstPosition!!)
-                    cards.add(firstPosition!!,R.drawable.backside)
-                    cards.removeAt(secondPosition!!)
-                    cards.add(secondPosition!!,R.drawable.backside)
-                }
-                isCompare = false
-                clear()
-                val msg = handler.obtainMessage()
-                msg.data = Bundle().apply {
-                    putBoolean("is_dDifferent",isDifferent)
-                }
-                handler.sendMessage(msg)
+            16 -> {
+                cardData.addAll(list16)
+                column = 4
+            }
+
+            36 -> {
+                cardData.addAll(list36)
+                column = 6
             }
         }
+        cardData.shuffle()
+        cards.addAll(cardData)
     }
 
-    fun clear() {
-        count = 0
+    fun flipBackSide() {
+        cards.clear()
+        for (i in 1..gameMode) {
+            cards.add(R.drawable.backside)
+        }
+    }
+
+    fun compareCard(adapter: CardAdapter, img: View) : String {
+        isCompare = true
+        if (firstPosition != null && secondPosition != null) {
+            if (cardData[firstPosition!!] != cardData[secondPosition!!]) {
+                lifeCount--
+                img.isVisible = false
+                if (lifeCount > 0) {
+                    @Suppress("DEPRECATION")
+                    Handler().postDelayed({
+                        cards.removeAt(firstPosition!!)
+                        cards.add(firstPosition!!, R.drawable.backside)
+                        cards.removeAt(secondPosition!!)
+                        cards.add(secondPosition!!, R.drawable.backside)
+                        isCompare = false
+                        count = 0
+                        firstPosition = null
+                        secondPosition = null
+                        adapter.notifyDataSetChanged()
+                    }, 1000L)
+                }
+            } else {
+                isCompare = false
+                count = 0
+                firstPosition = null
+                secondPosition = null
+            }
+        }
+        if (!cards.contains(R.drawable.backside)) {
+            return "You Win!"
+        } else if (lifeCount == 0) {
+            cards.clear()
+            cards.addAll(cardData)
+            adapter.notifyDataSetChanged()
+            return "Game Over!"
+        }
+        return ""
+    }
+
+    fun clearControllerData() {
+        cards.clear()
+        cardData.clear()
         firstPosition = null
         secondPosition = null
+        count = 0
+        column = 0
+        gameMode = 0
+        lifeCount = 3
+        isCompare = false
+    }
+    fun restart() {
+        firstPosition = null
+        secondPosition = null
+        count = 0
+        isCompare = false
+        lifeCount = 3
+        cardData.shuffle()
+        cards.clear()
+        cards.addAll(cardData)
     }
 }

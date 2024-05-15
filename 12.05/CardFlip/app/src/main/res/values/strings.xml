@@ -8,4 +8,6 @@
     <string name="life">Life Coin:</string>
     <string name="restart">Restart</string>
     <string name="level_title">» Choose Your Level «</string>
+    <string name="dialog_title">Thông Báo</string>
+    <string name="dialog_btn_text">OK</string>
 </resources>
