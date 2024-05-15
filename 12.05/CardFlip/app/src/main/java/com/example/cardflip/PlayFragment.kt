@@ -16,15 +16,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.cardflip.adapter.CardAdapter
-import com.example.cardflip.controller.Controller
+import com.example.cardflip.controller.MainController
 import com.example.cardflip.databinding.FragmentPlayBinding
 import com.example.cardflip.listener.OnCardClickListener
 
 class PlayFragment : Fragment(), OnCardClickListener {
     private var _binding: FragmentPlayBinding? = null
     private val binding: FragmentPlayBinding by lazy { requireNotNull(_binding) }
-    private val controller = Controller.getInstance()
-    private val cards: ArrayList<Int> by lazy { controller.getCards() }
+    private val mainController = MainController.getInstance()
+    private val cards: ArrayList<Int> by lazy { mainController.getCards() }
     private val cardAdapter: CardAdapter by lazy {
         CardAdapter(cards, this, requireContext())
     }
@@ -40,14 +40,14 @@ class PlayFragment : Fragment(), OnCardClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        controller.clearControllerData()
+        mainController.clearControllerData()
         val sharedPref = activity?.getSharedPreferences("appData", Context.MODE_PRIVATE)
-        controller.setGameMote(sharedPref!!.getInt("mode", 0))
-        controller.prepareData()
+        mainController.setGameMote(sharedPref!!.getInt("mode", 0))
+        mainController.prepareData()
 
         binding.apply {
             btnBack.setOnClickListener {
-                controller.clearControllerData()
+                mainController.clearControllerData()
                 parentFragmentManager.beginTransaction()
                     .setCustomAnimations(
                         androidx.appcompat.R.anim.abc_tooltip_enter,
@@ -57,24 +57,25 @@ class PlayFragment : Fragment(), OnCardClickListener {
                     .commitNow()
             }
             btnRestart.setOnClickListener {
+                binding.playTime.text = "0"
                 binding.btnRestart.isClickable = false
                 binding.apply {
                     lifeCoin1.isVisible = true
                     lifeCoin2.isVisible = true
                     lifeCoin3.isVisible = true
                 }
-                controller.restart()
+                mainController.restart()
                 cardAdapter.notifyDataSetChanged()
                 @Suppress("DEPRECATION")
                 Handler().postDelayed({
-                    controller.flipBackSide()
+                    mainController.flipBackSide(binding.playTime)
                     cardAdapter.notifyDataSetChanged()
                     binding.btnRestart.isClickable = true
                 }, 6000L)
             }
             rvCards.apply {
                 layoutManager =
-                    object : GridLayoutManager(requireContext(), controller.getLayoutColumn()) {
+                    object : GridLayoutManager(requireContext(), mainController.getLayoutColumn()) {
                         override fun canScrollVertically(): Boolean {
                             return false
                         }
@@ -85,7 +86,7 @@ class PlayFragment : Fragment(), OnCardClickListener {
         binding.btnRestart.isClickable = false
         @Suppress("DEPRECATION")
         Handler().postDelayed({
-            controller.flipBackSide()
+            mainController.flipBackSide(binding.playTime)
             cardAdapter.notifyDataSetChanged()
             binding.btnRestart.isClickable = true
         }, 6000L)
@@ -99,18 +100,19 @@ class PlayFragment : Fragment(), OnCardClickListener {
 
     override fun onCardClick(resId: Int, position: Int) {
         Log.d("DMM","$resId + $position")
-        if (!controller.isCompare()) {
+        if (!mainController.isCompare()) {
             if (resId == R.drawable.backside) {
-                val count = controller.cardClick(cardAdapter, position)
+                val count = mainController.cardClick(cardAdapter, position)
                 Log.d("DMM","$count")
                 if (count >= 2) {
                     var msg: String = ""
-                    when (controller.getLifeCount()) {
-                        1 -> msg = controller.compareCard(cardAdapter, binding.lifeCoin1)
-                        2 -> msg = controller.compareCard(cardAdapter, binding.lifeCoin2)
-                        3 -> msg = controller.compareCard(cardAdapter, binding.lifeCoin3)
+                    when (mainController.getLifeCount()) {
+                        1 -> msg = mainController.compareCard(cardAdapter, binding.lifeCoin1)
+                        2 -> msg = mainController.compareCard(cardAdapter, binding.lifeCoin2)
+                        3 -> msg = mainController.compareCard(cardAdapter, binding.lifeCoin3)
                     }
                     if (msg.isNotEmpty()) {
+                        mainController.stopTimer()
                         showCustomDialog(msg)
                     }
                 }

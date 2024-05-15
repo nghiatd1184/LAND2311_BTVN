@@ -7,9 +7,9 @@
 
     <LinearLayout
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,12 +25,13 @@
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_tv_bg"
-            android:paddingHorizontal="50dp"
+            android:gravity="center"
             android:paddingVertical="3dp"
             android:text="@string/title_2"
+            android:maxLines="1"
             android:textColor="@color/main"
             android:textSize="25sp"
             android:textStyle="bold" />
@@ -64,6 +65,19 @@
             android:gravity="center"
             android:paddingVertical="3dp"
             android:text="@string/play"
+            android:textColor="@color/main"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/music"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/shape_tv_bg"
+            android:gravity="center"
+            android:paddingVertical="3dp"
+            android:text="@string/music_on"
             android:textColor="@color/main"
             android:textSize="18sp"
             android:textStyle="bold" />

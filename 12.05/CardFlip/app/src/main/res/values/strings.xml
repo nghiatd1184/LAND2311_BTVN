@@ -13,4 +13,7 @@
     <string name="back">Back</string>
     <string name="play">Play</string>
     <string name="quit">Quit</string>
+    <string name="music_on">Music: On</string>
+    <string name="music_off">Music: Off</string>
+    <string name="play_time">Play Time: </string>
 </resources>

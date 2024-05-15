@@ -1,20 +1,19 @@
 package com.example.cardflip.controller
 
 import android.os.Handler
-import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.cardflip.R
 import com.example.cardflip.adapter.CardAdapter
-import kotlin.concurrent.thread
 
 
-class Controller private constructor() {
+class MainController private constructor() {
     companion object {
-        private var instance: Controller? = null
-        fun getInstance(): Controller {
+        private var instance: MainController? = null
+        fun getInstance(): MainController {
             if (instance == null) {
-                instance = Controller()
+                instance = MainController()
             }
             return instance!!
         }
@@ -93,6 +92,9 @@ class Controller private constructor() {
     private var lifeCount = 3
     private var gameMode = 0
     private var column = 0
+    private val handler = Handler()
+    private var playTime = 0
+    private var timerStop = true
 
     fun getLifeCount(): Int {
         return lifeCount
@@ -114,7 +116,7 @@ class Controller private constructor() {
         return isCompare
     }
 
-    fun cardClick(adapter: CardAdapter,position: Int): Int {
+    fun cardClick(adapter: CardAdapter, position: Int): Int {
         when (count) {
             0 -> {
                 if (firstPosition == null) {
@@ -157,14 +159,30 @@ class Controller private constructor() {
         cards.addAll(cardData)
     }
 
-    fun flipBackSide() {
+    fun flipBackSide(view: TextView) {
         cards.clear()
         for (i in 1..gameMode) {
             cards.add(R.drawable.backside)
         }
+        timerStop = false
+        timeCount(view)
     }
 
-    fun compareCard(adapter: CardAdapter, img: View) : String {
+    fun stopTimer() {
+        timerStop = true
+    }
+
+    private fun timeCount(view: TextView) {
+        handler.postDelayed({
+            if (!timerStop) {
+                playTime++
+                view.text = playTime.toString()
+                timeCount(view)
+            }
+        }, 1000L)
+    }
+
+    fun compareCard(adapter: CardAdapter, img: View): String {
         isCompare = true
         if (firstPosition != null && secondPosition != null) {
             if (cardData[firstPosition!!] != cardData[secondPosition!!]) {
@@ -203,24 +221,29 @@ class Controller private constructor() {
     }
 
     fun clearControllerData() {
-        cards.clear()
-        cardData.clear()
-        firstPosition = null
-        secondPosition = null
-        count = 0
         column = 0
+        cardData.clear()
         gameMode = 0
-        lifeCount = 3
-        isCompare = false
-    }
-    fun restart() {
+        cards.clear()
         firstPosition = null
         secondPosition = null
         count = 0
-        isCompare = false
         lifeCount = 3
-        cardData.shuffle()
+        isCompare = false
+        playTime = 0
+        timerStop = true
+    }
+
+    fun restart() {
         cards.clear()
+        firstPosition = null
+        secondPosition = null
+        count = 0
+        lifeCount = 3
+        isCompare = false
+        cardData.shuffle()
         cards.addAll(cardData)
+        playTime = 0
+        timerStop = true
     }
 }

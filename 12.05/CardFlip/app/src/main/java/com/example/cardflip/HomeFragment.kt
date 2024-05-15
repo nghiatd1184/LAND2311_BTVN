@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.cardflip.adapter.HomeVpAdapter
+import com.example.cardflip.controller.MusicController
 import com.example.cardflip.databinding.FragmentHomeBinding
 import kotlin.system.exitProcess
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding by lazy { requireNotNull(_binding) }
+    private val musicController = MusicController.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,9 +29,19 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sharedPref = activity?.getSharedPreferences("appData", Context.MODE_PRIVATE)
+        musicController.play(requireContext())
         binding.apply {
             viewPager2.apply {
                 adapter = HomeVpAdapter()
+            }
+            music.setOnClickListener {
+                if (music.text == getString(R.string.music_on)) {
+                    musicController.pause()
+                    music.text = getString(R.string.music_off)
+                } else {
+                    musicController.resume()
+                    music.text = getString(R.string.music_on)
+                }
             }
             play.setOnClickListener {
                 binding.apply {
