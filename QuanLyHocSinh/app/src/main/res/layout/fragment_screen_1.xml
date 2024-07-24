@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <EditText
+        android:id="@+id/edtID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Mã SV"
+        android:inputType="number"
+        android:maxLength="6"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Tên SV"
+        android:inputType="text"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtID" />
+
+    <EditText
+        android:id="@+id/edtBirthYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Năm Sinh"
+        android:inputType="number"
+        android:maxLength="4"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtName" />
+
+    <EditText
+        android:id="@+id/edtMathPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Điểm Toán"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtBirthYear" />
+
+    <EditText
+        android:id="@+id/edtPhysicsPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Điểm Lý"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtMathPoint" />
+
+    <EditText
+        android:id="@+id/edtChemistryPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Điểm Hóa"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtPhysicsPoint" />
+
+    <EditText
+        android:id="@+id/edtBiologyPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Điểm Sinh"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtChemistryPoint" />
+
+    <EditText
+        android:id="@+id/edtHistoryPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Điểm Sử"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtBiologyPoint" />
+
+    <EditText
+        android:id="@+id/edtGeographyPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Điểm Địa"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtHistoryPoint" />
+
+    <EditText
+        android:id="@+id/edtLiteraturePoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Điểm Văn"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtGeographyPoint" />
+
+    <EditText
+        android:id="@+id/edtEnglishPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#34000000"
+        android:hint="Điểm Anh"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtLiteraturePoint" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Lưu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtEnglishPoint" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardflip.PlayFragment
@@ -47,7 +48,15 @@ class CardAdapter(
     private fun setAnimation(viewToAnimate: View, position: Int) {
         // If the bound view wasn't previously displayed on screen, it's animated
         if (position > lastPosition) {
-            val animation = AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_slide_in_top)
+            val animation : Animation
+            if (position < cards.size.toDouble()/2) {
+                animation = AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_slide_in_top)
+            } else {
+                animation = AnimationUtils.loadAnimation(
+                    context,
+                    androidx.appcompat.R.anim.abc_slide_in_bottom
+                )
+            }
             viewToAnimate.startAnimation(animation)
             lastPosition = position
         }
