@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigationBook"
+        android:icon="@drawable/baseline_menu_book_24"
+        android:title="@string/title_book" />
+
+    <item
+        android:id="@+id/navigationPublisher"
+        android:icon="@drawable/baseline_publish_24"
+        android:title="Nhà phát hành" />
+
+    <item
+        android:id="@+id/navigationStore"
+        android:icon="@drawable/baseline_store_24"
+        android:title="Cửa hàng" />
+
+    <item
+        android:id="@+id/navigationAuthor"
+        android:icon="@drawable/baseline_person_pin_24"
+        android:title="Tác giả" />
+</menu>
