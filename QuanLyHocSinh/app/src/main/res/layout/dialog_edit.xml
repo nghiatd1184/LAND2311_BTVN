@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFBB33"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="2">
+        <EditText
+            android:id="@+id/edtMathPoint"
+            style="@style/CustomEditTextDialog"
+            android:hint="Điểm Toán"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/edtPhysicsPoint"
+            style="@style/CustomEditTextDialog"
+            android:hint="Điểm Lý"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="2">
+        <EditText
+            android:id="@+id/edtChemistryPoint"
+            style="@style/CustomEditTextDialog"
+            android:hint="Điểm Hóa"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/edtBiologyPoint"
+            style="@style/CustomEditTextDialog"
+            android:hint="Điểm Sinh"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="2">
+
+        <EditText
+            android:id="@+id/edtHistoryPoint"
+            style="@style/CustomEditTextDialog"
+            android:hint="Điểm Sử"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/edtGeographyPoint"
+            style="@style/CustomEditTextDialog"
+            android:hint="Điểm Địa"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="2">
+
+        <EditText
+            android:id="@+id/edtLiteraturePoint"
+            style="@style/CustomEditTextDialog"
+            android:hint="Điểm Văn"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/edtEnglishPoint"
+            style="@style/CustomEditTextDialog"
+            android:hint="Điểm Anh"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnEdit"
+            style="@style/CustomButton"
+            android:layout_marginEnd="5dp"
+            android:text="Sửa" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            style="@style/CustomButton"
+            android:layout_marginStart="5dp"
+            android:text="Hủy" />
+    </LinearLayout>
+
+</LinearLayout>

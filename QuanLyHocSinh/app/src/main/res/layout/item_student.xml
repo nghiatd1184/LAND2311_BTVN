@@ -36,7 +36,7 @@
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/tvName"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.175" />
+        app:layout_constraintWidth_percent="0.15" />
 
     <TextView
         android:id="@+id/tvAveragePoint"
@@ -47,13 +47,13 @@
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/tvBirthYear"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.125" />
+        app:layout_constraintWidth_percent="0.15" />
 
     <TextView
         android:id="@+id/btnShow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#33000000"
+        android:background="#FFFFBB33"
         android:gravity="center"
         android:text="Hiện"
         android:textColor="@color/black"
