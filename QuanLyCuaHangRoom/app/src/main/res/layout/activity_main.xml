@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvProductId"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:text="ID: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:text="Name: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvProductId" />
+
+    <TextView
+        android:id="@+id/tvProductInventoryQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:text="Inventory Quantity: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvProductName" />
+
+    <TextView
+        android:id="@+id/tvProductPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:text="Price: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvProductInventoryQuantity" />
+
+    <EditText
+        android:id="@+id/etProductId"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:hint="Product ID"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/tvProductId"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etProductName"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:hint="Product Name"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/tvProductName"
+        app:layout_constraintTop_toBottomOf="@+id/etProductId" />
+
+    <EditText
+        android:id="@+id/etProductInventoryQuantity"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:hint="Inventory Quantity"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/tvProductInventoryQuantity"
+        app:layout_constraintTop_toBottomOf="@+id/etProductName" />
+
+    <EditText
+        android:id="@+id/etProductPrice"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:hint="Product Price"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/tvProductPrice"
+        app:layout_constraintTop_toBottomOf="@+id/etProductInventoryQuantity" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProduct"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.75"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etProductPrice"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
