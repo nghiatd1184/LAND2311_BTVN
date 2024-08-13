@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nghiatd.quanlyhocsinh.adapter.StudentAdapter
 import com.nghiatd.quanlyhocsinh.controller.Controller
 import com.nghiatd.quanlyhocsinh.databinding.FragmentScreen2Binding
-import com.nghiatd.quanlyhocsinh.model.Student
+import com.nghiatd.quanlyhocsinh.listener.OnStudentClickListener
 
-class Screen2Fragment : Fragment() {
+class Screen2Fragment : Fragment(), OnStudentClickListener {
     private var _binding : FragmentScreen2Binding? = null
     private val binding : FragmentScreen2Binding by lazy { requireNotNull(_binding) }
     private val controller = Controller.getInstance()
-    private val adapter : StudentAdapter by lazy { StudentAdapter(controller.getStudentList(), requireContext()) }
+    private val adapter : StudentAdapter by lazy { StudentAdapter(controller.getStudentList(), requireContext(), this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,33 +34,11 @@ class Screen2Fragment : Fragment() {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = this@Screen2Fragment.adapter
             }
-            btnAll.setOnClickListener {
-                controller.allStudentFilter()
-                adapter.notifyDataSetChanged()
+            btnSort.setOnClickListener {
+                controller.showSortDialog(requireContext(),adapter)
             }
-            btnExcellent.setOnClickListener {
-                controller.exStudentFilter()
-                adapter.notifyDataSetChanged()
-            }
-            btnGood.setOnClickListener {
-                controller.goodStudentFilter()
-                adapter.notifyDataSetChanged()
-            }
-            btnA.setOnClickListener {
-                controller.aStudentFilter()
-                adapter.notifyDataSetChanged()
-            }
-            btnB.setOnClickListener {
-                controller.bStudentFilter()
-                adapter.notifyDataSetChanged()
-            }
-            btnC.setOnClickListener {
-                controller.cStudentFilter()
-                adapter.notifyDataSetChanged()
-            }
-            btnD.setOnClickListener {
-                controller.dStudentFilter()
-                adapter.notifyDataSetChanged()
+            btnFilter.setOnClickListener {
+                controller.showFilterDialog(requireContext(),adapter)
             }
         }
     }
@@ -68,5 +46,9 @@ class Screen2Fragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onLongClick(position: Int) {
+        controller.showOnLongClickDialog(requireContext(),position,adapter)
     }
 }

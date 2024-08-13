@@ -10,76 +10,22 @@
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="end"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/btnAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tất cả" />
+        <TextView
+            android:id="@+id/btnFilter"
+            style="@style/CustomButton"
+            android:text="Lọc"
+            android:layout_marginEnd="20dp"/>
 
-        <Button
-            android:id="@+id/btnExcellent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="HS Giỏi" />
-
-        <Button
-            android:id="@+id/btnGood"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="HS Khá" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll1">
-
-        <Button
-            android:id="@+id/btnA"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:text="Khối A" />
-
-        <Button
-            android:id="@+id/btnB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:text="Khối B" />
-
-        <Button
-            android:id="@+id/btnC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:text="Khối C" />
-
-        <Button
-            android:id="@+id/btnD"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:text="Khối D" />
+        <TextView
+            android:id="@+id/btnSort"
+            style="@style/CustomButton"
+            android:text="Sắp Xếp" />
 
     </LinearLayout>
 
@@ -88,11 +34,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="#FFFFBB33"
         android:gravity="center_vertical"
         android:weightSum="10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll2">
+        app:layout_constraintTop_toBottomOf="@+id/ll1"
+        android:paddingVertical="5dp">
 
         <TextView
             android:layout_width="0dp"
@@ -115,16 +63,16 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.75"
+            android:layout_weight="1.5"
             android:gravity="center"
-            android:text="Năm Sinh"
+            android:text="N.Sinh"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.25"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:text="Điểm TB"
             android:textColor="@color/black"
@@ -148,7 +96,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.75"
+        app:layout_constraintHeight_percent="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll3" />
 
