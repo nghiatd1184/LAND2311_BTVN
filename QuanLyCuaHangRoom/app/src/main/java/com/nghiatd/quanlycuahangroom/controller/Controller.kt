@@ -2,6 +2,7 @@ package com.nghiatd.quanlycuahangroom.controller
 
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -24,11 +25,13 @@ class Controller private constructor(context: Context) {
 
     private val databaseHandler: DatabaseHandler by lazy { DatabaseHandler.getInstance(context) }
 
+
+
     fun getAllProducts(): List<Product> {
         val products = arrayListOf<Product>()
         thread(start = true) {
             products.addAll(databaseHandler.ProductDao().getAll())
-        }
+        }.join()
         return products
     }
 
@@ -83,10 +86,6 @@ class Controller private constructor(context: Context) {
                 }
             }
         }
-        idEdt.setText("")
-        nameEdt.setText("")
-        stockEdt.setText("")
-        priceEdt.setText("")
         return Product(id, name, stock, price)
     }
 
@@ -100,7 +99,10 @@ class Controller private constructor(context: Context) {
     ) {
         val product: Product? = getInfo(context, idEdt, nameEdt, stockEdt, priceEdt)
         if (product != null) {
-            val isExist = getAllProducts().find { it.id == product.id }
+            var isExist : Product? = null
+            thread {
+                isExist = databaseHandler.ProductDao().getProductById(product.id)
+            }.join()
             if (isExist != null) {
                 Toast.makeText(context, "ID already exists!", Toast.LENGTH_SHORT).show()
                 return
@@ -110,6 +112,10 @@ class Controller private constructor(context: Context) {
                 }
                 adapter.notifyDataSetChanged()
                 Toast.makeText(context, "Add successfully!", Toast.LENGTH_SHORT).show()
+                idEdt.setText("")
+                nameEdt.setText("")
+                stockEdt.setText("")
+                priceEdt.setText("")
             }
         }
     }
@@ -147,6 +153,10 @@ class Controller private constructor(context: Context) {
                 }
                 adapter.notifyDataSetChanged()
                 Toast.makeText(context, "Update successfully!", Toast.LENGTH_SHORT).show()
+                idEdt.setText("")
+                nameEdt.setText("")
+                stockEdt.setText("")
+                priceEdt.setText("")
                 btnAdd.visibility = View.VISIBLE
                 btnUpdate.visibility = View.GONE
             }

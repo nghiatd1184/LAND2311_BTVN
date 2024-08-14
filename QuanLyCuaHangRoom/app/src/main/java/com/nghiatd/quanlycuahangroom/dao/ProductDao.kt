@@ -28,11 +28,4 @@ interface ProductDao {
 
     @Query("SELECT * FROM ${Const.TBProduct.TABLE_NAME} WHERE ${Const.TBProduct.COL_ID} = :id")
     fun getProductById(id: String): Product
-
-    @Query("SELECT * FROM ${Const.TBProduct.TABLE_NAME} ORDER BY ${Const.TBProduct.COL_PRICE} ASC")
-    fun getProductsByPriceAsc(): List<Product>
-
-    @Query("SELECT * FROM ${Const.TBProduct.TABLE_NAME} ORDER BY ${Const.TBProduct.COL_PRICE} DESC")
-    fun getProductsByPriceDesc(): List<Product>
-
 }
