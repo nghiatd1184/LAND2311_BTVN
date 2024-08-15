@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Quan Ly Cua Hang Room</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_update">Update Product</string>
+    <string name="btn_add">Add Product</string>
+    <string name="edt_stock_hint">Quantity in stock</string>
+    <string name="edt_price_hint">Product Price</string>
+    <string name="edt_name_hint">Product Name</string>
+    <string name="edt_id_hint">Product ID</string>
+    <string name="tv_price">Price:</string>
+    <string name="tv_stock">Stock:</string>
+    <string name="tv_name">Name:</string>
+    <string name="tv_id">ID:</string>
+    <string name="blank" />
 </resources>

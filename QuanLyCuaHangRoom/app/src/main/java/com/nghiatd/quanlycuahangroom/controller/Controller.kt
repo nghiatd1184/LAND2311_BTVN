@@ -2,11 +2,11 @@ package com.nghiatd.quanlycuahangroom.controller
 
 import android.app.AlertDialog
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.nghiatd.quanlycuahangroom.R
 import com.nghiatd.quanlycuahangroom.adapter.ProductAdapter
 import com.nghiatd.quanlycuahangroom.entity.Product
 import com.nghiatd.quanlycuahangroom.handler.DatabaseHandler
@@ -24,11 +24,10 @@ class Controller private constructor(context: Context) {
     }
 
     private val databaseHandler: DatabaseHandler by lazy { DatabaseHandler.getInstance(context) }
-
+    private val products: ArrayList<Product> = arrayListOf()
 
 
     fun getAllProducts(): List<Product> {
-        val products = arrayListOf<Product>()
         thread(start = true) {
             products.addAll(databaseHandler.ProductDao().getAll())
         }.join()
@@ -65,7 +64,7 @@ class Controller private constructor(context: Context) {
                     return null
                 } else if (stockEdt.text.toString().toInt() < 0) {
                     Toast.makeText(context, "Please enter valid stock", Toast.LENGTH_SHORT).show()
-                    stockEdt.setText("")
+                    stockEdt.setText(R.string.blank)
                     stockEdt.requestFocus()
                     return null
                 } else {
@@ -77,7 +76,7 @@ class Controller private constructor(context: Context) {
                     } else if (priceEdt.text.toString().toDouble() < 0) {
                         Toast.makeText(context, "Please enter valid price", Toast.LENGTH_SHORT)
                             .show()
-                        priceEdt.setText("")
+                        priceEdt.setText(R.string.blank)
                         priceEdt.requestFocus()
                         return null
                     } else {
@@ -99,7 +98,7 @@ class Controller private constructor(context: Context) {
     ) {
         val product: Product? = getInfo(context, idEdt, nameEdt, stockEdt, priceEdt)
         if (product != null) {
-            var isExist : Product? = null
+            var isExist: Product? = null
             thread {
                 isExist = databaseHandler.ProductDao().getProductById(product.id)
             }.join()
@@ -110,12 +109,13 @@ class Controller private constructor(context: Context) {
                 thread(start = true) {
                     databaseHandler.ProductDao().insert(product)
                 }
-                adapter.notifyDataSetChanged()
+                products.add(product)
+                adapter.notifyItemInserted(adapter.itemCount)
                 Toast.makeText(context, "Add successfully!", Toast.LENGTH_SHORT).show()
-                idEdt.setText("")
-                nameEdt.setText("")
-                stockEdt.setText("")
-                priceEdt.setText("")
+                idEdt.setText(R.string.blank)
+                nameEdt.setText(R.string.blank)
+                stockEdt.setText(R.string.blank)
+                priceEdt.setText(R.string.blank)
             }
         }
     }
@@ -123,42 +123,53 @@ class Controller private constructor(context: Context) {
     private fun editProduct(
         context: Context,
         product: Product,
+        position: Int,
         adapter: ProductAdapter,
         idEdt: EditText,
         nameEdt: EditText,
         stockEdt: EditText,
         priceEdt: EditText,
         btnAdd: Button,
-        btnUpdate: Button
+        btnUpdate: Button,
+        btnCancel: Button
     ) {
         idEdt.setText(product.id)
+        idEdt.isEnabled = false
+        idEdt.keyListener = null
         nameEdt.setText(product.name)
         stockEdt.setText(product.inventoryQuantity.toString())
         priceEdt.setText(product.price.toString())
         btnAdd.visibility = View.GONE
         btnUpdate.visibility = View.VISIBLE
+        btnCancel.visibility = View.VISIBLE
+        btnCancel.setOnClickListener {
+            idEdt.setText(R.string.blank)
+            nameEdt.setText(R.string.blank)
+            stockEdt.setText(R.string.blank)
+            priceEdt.setText(R.string.blank)
+            btnAdd.visibility = View.VISIBLE
+            btnUpdate.visibility = View.GONE
+            btnCancel.visibility = View.GONE
+        }
         btnUpdate.setOnClickListener {
             val newProduct: Product? = getInfo(context, idEdt, nameEdt, stockEdt, priceEdt)
             if (newProduct != null) {
-                if (newProduct.id == product.id) {
-                    thread(start = true) {
-                        databaseHandler.ProductDao().update(newProduct)
-                    }
-                } else {
-                    thread(start = true) {
-                        databaseHandler.ProductDao().delete(product)
-                        databaseHandler.ProductDao().insert(newProduct)
-                    }
-
-                }
-                adapter.notifyDataSetChanged()
+                thread(start = true) {
+                    databaseHandler.ProductDao().update(newProduct)
+                }.join()
+                products.removeAt(position)
+                products.add(position, newProduct)
+                idEdt.isEnabled = true
+                idEdt.keyListener = idEdt.keyListener
+                adapter.notifyItemChanged(position)
                 Toast.makeText(context, "Update successfully!", Toast.LENGTH_SHORT).show()
-                idEdt.setText("")
-                nameEdt.setText("")
-                stockEdt.setText("")
-                priceEdt.setText("")
+                idEdt.setText(R.string.blank)
+                nameEdt.setText(R.string.blank)
+                stockEdt.setText(R.string.blank)
+                priceEdt.setText(R.string.blank)
                 btnAdd.visibility = View.VISIBLE
                 btnUpdate.visibility = View.GONE
+                btnCancel.visibility = View.GONE
             }
         }
     }
@@ -166,13 +177,15 @@ class Controller private constructor(context: Context) {
     fun showOnLongClickDialog(
         context: Context,
         product: Product,
+        position: Int,
         adapter: ProductAdapter,
         idEdt: EditText,
         nameEdt: EditText,
         stockEdt: EditText,
         priceEdt: EditText,
         btnAdd: Button,
-        btnUpdate: Button
+        btnUpdate: Button,
+        btnCancel: Button
     ) {
         var selectedItem = 0
         val items = arrayOf("Edit Product Info", "Delete Product")
@@ -187,16 +200,18 @@ class Controller private constructor(context: Context) {
                     0 -> editProduct(
                         context,
                         product,
+                        position,
                         adapter,
                         idEdt,
                         nameEdt,
                         stockEdt,
                         priceEdt,
                         btnAdd,
-                        btnUpdate
+                        btnUpdate,
+                        btnCancel
                     )
 
-                    1 -> showDeleteDialog(context, product, adapter)
+                    1 -> showDeleteDialog(context, product, position, adapter)
                 }
             }
             setNegativeButton("Cancel") { _, _ -> }
@@ -207,23 +222,23 @@ class Controller private constructor(context: Context) {
     private fun showDeleteDialog(
         context: Context,
         product: Product,
+        position: Int,
         adapter: ProductAdapter
     ) {
         AlertDialog.Builder(context).apply {
             setTitle("Alert!")
             setCancelable(false)
-            setMessage("Do you want to delete this product?")
+            setMessage("Are you sure to delete this product?")
             setPositiveButton("Delete") { _, _ ->
                 thread(start = true) {
                     databaseHandler.ProductDao().delete(product)
-                }
-                adapter.notifyDataSetChanged()
+                }.join()
+                products.removeAt(position)
+                adapter.notifyItemRemoved(position)
                 Toast.makeText(context, "Delete successfully!", Toast.LENGTH_SHORT).show()
             }
             setNegativeButton("Cancel") { _, _ -> }
             show()
         }
     }
-
-
 }

@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nghiatd.quanlycuahangroom.databinding.ItemProductBinding
 import com.nghiatd.quanlycuahangroom.entity.Product
-import com.nghiatd.quanlycuahangroom.listener.OnProductClickListner
+import com.nghiatd.quanlycuahangroom.listener.OnProductClickListener
 
 class ProductAdapter(
     private val products: List<Product>,
-    private val onProductClickListner: OnProductClickListner
+    private val onProductClickListener: OnProductClickListener
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(private val binding: ItemProductBinding) :
@@ -22,7 +22,7 @@ class ProductAdapter(
                 tvPrice.text = product.price.toString()
                 ivProduct.setImageResource(product.resID)
                 root.setOnLongClickListener {
-                    onProductClickListner.onProductLongClick(product, position)
+                    onProductClickListener.onProductLongClick(product, position)
                     true
                 }
             }

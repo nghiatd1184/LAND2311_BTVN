@@ -2,6 +2,6 @@ package com.nghiatd.quanlycuahangroom.listener
 
 import com.nghiatd.quanlycuahangroom.entity.Product
 
-interface OnProductClickListner {
+interface OnProductClickListener {
     fun onProductLongClick(product: Product, position: Int)
 }

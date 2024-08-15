@@ -7,9 +7,9 @@ import com.nghiatd.quanlycuahangroom.adapter.ProductAdapter
 import com.nghiatd.quanlycuahangroom.controller.Controller
 import com.nghiatd.quanlycuahangroom.databinding.ActivityMainBinding
 import com.nghiatd.quanlycuahangroom.entity.Product
-import com.nghiatd.quanlycuahangroom.listener.OnProductClickListner
+import com.nghiatd.quanlycuahangroom.listener.OnProductClickListener
 
-class MainActivity : AppCompatActivity(), OnProductClickListner {
+class MainActivity : AppCompatActivity(), OnProductClickListener {
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding by lazy { requireNotNull(_binding) }
     private val controller by lazy { Controller.getInstance(this) }
@@ -48,17 +48,19 @@ class MainActivity : AppCompatActivity(), OnProductClickListner {
         _binding = null
     }
 
-    override fun onProductLongClick(product: Product, position : Int) {
+    override fun onProductLongClick(product: Product, position: Int) {
         controller.showOnLongClickDialog(
             this,
             product,
+            position,
             adapter,
             binding.etProductId,
             binding.etProductName,
             binding.etProductInventoryQuantity,
             binding.etProductPrice,
             binding.btnAdd,
-            binding.btnUpdate
+            binding.btnUpdate,
+            binding.btnCancel
         )
     }
 }

@@ -11,45 +11,53 @@
     <TextView
         android:id="@+id/tvProductId"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:gravity="center_vertical"
-        android:text="ID: "
+        android:text="@string/tv_id"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvProductName"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:gravity="center_vertical"
-        android:text="Name: "
+        android:text="@string/tv_name"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvProductId" />
 
     <TextView
         android:id="@+id/tvProductStock"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:gravity="center_vertical"
-        android:text="Stock: "
+        android:text="@string/tv_stock"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvProductName" />
 
     <TextView
         android:id="@+id/tvProductPrice"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:gravity="center_vertical"
-        android:text="Price: "
+        android:text="@string/tv_price"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvProductStock" />
 
     <EditText
         android:id="@+id/etProductId"
         android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:hint="Product ID"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:autofillHints="none"
+        android:hint="@string/edt_id_hint"
+        android:inputType="text"
         android:maxLines="1"
+        android:textColorHint="#80000000"
         android:textSize="15sp"
         app:layout_constraintStart_toEndOf="@+id/tvProductStock"
         app:layout_constraintTop_toTopOf="parent" />
@@ -57,31 +65,38 @@
     <EditText
         android:id="@+id/etProductName"
         android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:hint="Product Name"
-        android:textSize="15sp"
+        android:layout_height="48dp"
+        android:autofillHints="none"
+        android:hint="@string/edt_name_hint"
+        android:inputType="text"
         android:maxLines="1"
+        android:textColorHint="#80000000"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@+id/etProductId"
         app:layout_constraintTop_toBottomOf="@+id/etProductId" />
 
     <EditText
         android:id="@+id/etProductInventoryQuantity"
         android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:hint="Inventory Quantity"
-        android:textSize="15sp"
-        android:maxLines="1"
+        android:layout_height="48dp"
+        android:autofillHints="none"
+        android:hint="@string/edt_stock_hint"
         android:inputType="number"
+        android:maxLines="1"
+        android:textColorHint="#80000000"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@+id/etProductId"
         app:layout_constraintTop_toBottomOf="@+id/etProductName" />
 
     <EditText
         android:id="@+id/etProductPrice"
         android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:hint="Product Price"
-        android:textSize="15sp"
+        android:layout_height="48dp"
+        android:autofillHints="none"
+        android:hint="@string/edt_price_hint"
         android:inputType="numberDecimal"
+        android:textColorHint="#80000000"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@+id/etProductId"
         app:layout_constraintTop_toBottomOf="@+id/etProductInventoryQuantity" />
 
@@ -91,27 +106,39 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etProductPrice">
+
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/btnAdd"
-            android:text="Add Product" />
-        <Button
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/btn_add" />
+
+        <Button
             android:id="@+id/btnUpdate"
-            android:text="Update Product"
-            android:visibility="gone"/>
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_update"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_cancel"
+            android:visibility="gone" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvProduct"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.65"
         android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.65"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutBtn"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
