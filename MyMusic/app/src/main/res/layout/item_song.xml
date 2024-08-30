@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/z5771340025413_1df77a9d97414e5cf57b98d89fc93474" />
+            android:src="@drawable/img_demo" />
     </androidx.cardview.widget.CardView>
 
     <TextView

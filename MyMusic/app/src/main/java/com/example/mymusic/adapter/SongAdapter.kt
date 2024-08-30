@@ -42,7 +42,7 @@ class SongAdapter(
                     img.setImageURI(song.albumUri)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    img.setImageResource(R.drawable.z5771340025413_1df77a9d97414e5cf57b98d89fc93474)
+                    img.setImageResource(R.drawable.img_demo)
                 }
 
                 if (song.isPlaying) {
