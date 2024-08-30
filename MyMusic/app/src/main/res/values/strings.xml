@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Music</string>
+    <string name="no_title">--</string>
+    <string name="now_playing">Now Playing</string>
+</resources>
