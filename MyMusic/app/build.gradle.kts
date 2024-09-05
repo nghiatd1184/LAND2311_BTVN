@@ -50,4 +50,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation("com.airbnb.android:lottie:6.5.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }

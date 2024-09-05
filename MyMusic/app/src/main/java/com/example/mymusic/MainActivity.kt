@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity(), OnSongClickListener {
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding by lazy { requireNotNull(_binding) }
     private val controller by lazy { Controller.getInstance() }
-    private val adapter: SongAdapter by lazy { SongAdapter(controller.getSongs(), this) }
+    private val adapter: SongAdapter by lazy { SongAdapter(controller.getSongs(), this, this) }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
