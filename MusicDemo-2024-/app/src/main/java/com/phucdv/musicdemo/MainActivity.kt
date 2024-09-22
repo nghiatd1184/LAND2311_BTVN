@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), OnSongClickListener {
     private fun listenViewModel() {
         lifecycleScope.launch {
             viewModel.allSongs.collectLatest { allSongs ->
+                Log.d("NGHIA", "listenViewModel: $allSongs")
                 songs.clear()
                 songs.addAll(allSongs)
                 songAdapter.notifyItemRangeInserted(0, allSongs.size)

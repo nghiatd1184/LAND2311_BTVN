@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "49116108258",
+    "project_id": "chat-application-demo-firebase",
+    "storage_bucket": "chat-application-demo-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49116108258:android:5016d2121c86aed42ed5bb",
+        "android_client_info": {
+          "package_name": "com.nghiatd.demofirebaseflow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC024OKjvhUaRzMhuW-5s6rtOJa2DXSrBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

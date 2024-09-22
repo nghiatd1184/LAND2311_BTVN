@@ -27,6 +27,8 @@ class SongAdapter(
             val song = songs[position]
             binding.apply {
                 tvTitle.text = song.title
+                tvTitle.requestFocus()
+                tvTitle.isSelected = true
                 tvArtist.text = song.artist
                 try {
                     img.setImageURI(song.albumUri)
