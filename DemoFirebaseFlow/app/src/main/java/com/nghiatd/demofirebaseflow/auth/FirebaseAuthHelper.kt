@@ -10,61 +10,61 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
-fun registerUserByEmail(email: String, password: String) = callbackFlow<AuthResult> {
-    var listener : ((Task<AuthResult>) -> Unit)? = { task ->
-        trySend(task.result)
+fun registerUserByEmail(email: String, password: String) = callbackFlow<Task<AuthResult>> {
+    var listener: ((Task<AuthResult>) -> Unit)? = { task ->
+        trySend(task)
     }
     val firebaseAuth = FirebaseAuth.getInstance()
     firebaseAuth.createUserWithEmailAndPassword(email, password)
         .addOnCompleteListener { task -> listener?.let { it(task) } }
-    awaitClose{
+    awaitClose {
         listener = null
     }
 }
 
-fun login(email: String, password: String) = callbackFlow<AuthResult> {
-    var listener : ((Task<AuthResult>) -> Unit)? = { task ->
-        trySend(task.result)
+fun login(email: String, password: String) = callbackFlow<Task<AuthResult>> {
+    var listener: ((Task<AuthResult>) -> Unit)? = { task ->
+        trySend(task)
     }
     val firebaseAuth = FirebaseAuth.getInstance()
     firebaseAuth.signInWithEmailAndPassword(email, password)
         .addOnCompleteListener { task -> listener?.let { it(task) } }
-    awaitClose{
+    awaitClose {
         listener = null
     }
 }
 
 fun changePassword(oldPassword: String, newPassword: String) = callbackFlow<Task<Void>> {
-    var listener : ((Task<Void>) -> Unit)? = { task ->
+    var listener: ((Task<Void>) -> Unit)? = { task ->
         trySend(task)
     }
     val firebaseAuth = FirebaseAuth.getInstance()
     val user = firebaseAuth.currentUser ?: return@callbackFlow
     val email = user.email ?: return@callbackFlow
-    val credential = EmailAuthProvider.getCredential(email,oldPassword)
-    user.reauthenticate(credential).addOnCompleteListener{ task ->
-        if(task.isSuccessful){
+    val credential = EmailAuthProvider.getCredential(email, oldPassword)
+    user.reauthenticate(credential).addOnCompleteListener { task ->
+        if (task.isSuccessful) {
             user.updatePassword(newPassword)
                 .addOnCompleteListener { updateTask -> listener?.let { it(updateTask) } }
         } else {
             listener?.let { it(task) }
         }
     }
-    awaitClose{
+    awaitClose {
         listener = null
     }
 }
 
-fun forgotPassword(email: String) = callbackFlow<Void> {
-    var listener : ((Task<Void>) -> Unit)? = {
-        trySend(it.result)
+fun forgotPassword(email: String) = callbackFlow<Task<Void>> {
+    var listener: ((Task<Void>) -> Unit)? = {
+        trySend(it)
     }
     val firebaseAuth = FirebaseAuth.getInstance()
     firebaseAuth.sendPasswordResetEmail(email)
         .addOnCompleteListener { task ->
             listener?.let { it(task) }
         }
-    awaitClose{
+    awaitClose {
         listener = null
     }
 }

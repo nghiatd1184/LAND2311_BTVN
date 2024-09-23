@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogInFragment">
+    tools:context=".ui.login.LogInFragment">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -18,31 +18,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/edtEmail"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailLayout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/edt_background"
-        android:hint="@string/email"
-        android:padding="5dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:paddingVertical="8dp"
+            android:background="@color/edt_background"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/edtPassword"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/edt_background"
-        android:hint="@string/password"
-        android:padding="5dp"
+        android:id="@+id/edtPasswordLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/emailLayout" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:autofillHints=""
+            android:paddingVertical="8dp"
+            android:background="@color/edt_background"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:padding="5dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <TextView
         android:id="@+id/tvForgotPassword"
@@ -50,8 +69,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/forgot_password"
-        app:layout_constraintEnd_toEndOf="@+id/edtPassword"
-        app:layout_constraintTop_toBottomOf="@+id/edtPassword" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/edtPasswordLayout"
+        app:layout_constraintTop_toBottomOf="@+id/edtPasswordLayout" />
 
     <TextView
         android:id="@+id/tvSignUp"
@@ -59,8 +79,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/sign_up"
-        app:layout_constraintStart_toStartOf="@+id/edtPassword"
-        app:layout_constraintTop_toBottomOf="@+id/edtPassword" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/edtPasswordLayout"
+        app:layout_constraintTop_toBottomOf="@+id/edtPasswordLayout" />
 
     <Button
         android:id="@+id/btnSignIn"

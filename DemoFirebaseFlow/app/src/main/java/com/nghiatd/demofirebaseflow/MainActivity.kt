@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.nghiatd.demofirebaseflow.ui.splash.SplashFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, LogInFragment())
+            .replace(R.id.container, SplashFragment())
             .commit()
     }
 }
