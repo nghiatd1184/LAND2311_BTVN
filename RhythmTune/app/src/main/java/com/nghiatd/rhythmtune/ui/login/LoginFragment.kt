@@ -63,7 +63,7 @@ class LogInFragment : Fragment() {
             tvForgotPassword.setOnClickListener {
 //                replaceFragment(ForgotPasswordFragment())
             }
-            btnSignIn.setOnClickListener {
+            btnLogIn.setOnClickListener {
                 val email = edtEmail.text.toString()
                 val password = edtPassword.text.toString()
                 if (email.isEmpty() || password.isEmpty()) {
