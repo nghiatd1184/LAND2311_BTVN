@@ -1,4 +1,4 @@
-package com.nghiatd.demofirebaseflow.auth
+package com.nghiatd.rhythmtune.auth
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult

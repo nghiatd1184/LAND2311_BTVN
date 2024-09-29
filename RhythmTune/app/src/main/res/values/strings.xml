@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Rhythm Tune</string>
+    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="email">Email</string>
+    <string name="find_password">Find Password</string>
+    <string name="password">Password</string>
+    <string name="password_confirm">Password</string>
+    <string name="log_in">Login</string>
+    <string name="register">Register</string>
+    <string name="sign_up"><u>Sign Up</u></string>
+    <string name="back">Back</string>
+    <string name="already_account"><u>Already have an account? Login</u></string>
+    <string name="back_to_login"><u>Back to Login</u></string>
+    <string name="change_password">Change Password</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="wrong_confirm_password">Confirm password is not correct!</string>
+    <string name="register_success">Regis new user success with email: </string>
+    <string name="reset_password_success">Reset password success! Please check your email!</string>
+    <string name="log_out">Log Out</string>"
+    <string name="change_password_success">Change password success!</string>
+    <string name="please_fill_all_fields">Please fill all field!</string>
+    <string name="please_fill_email">Please fill email!</string>
+    <string name="email_or_password_empty">Email or password is empty!</string>
+    <string name="anonymous">Anonymous</string>
+</resources>

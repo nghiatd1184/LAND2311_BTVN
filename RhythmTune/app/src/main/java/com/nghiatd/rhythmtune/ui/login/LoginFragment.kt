@@ -1,9 +1,8 @@
-package com.nghiatd.demofirebaseflow.ui.login
+package com.nghiatd.rhythmtune.ui.login
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,21 +10,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.nghiatd.demofirebaseflow.R
-import com.nghiatd.demofirebaseflow.auth.login
-import com.nghiatd.demofirebaseflow.data.model.User
-import com.nghiatd.demofirebaseflow.data.viewmodel.SharedViewModel
-import com.nghiatd.demofirebaseflow.ui.register.RegisterFragment
-import com.nghiatd.demofirebaseflow.databinding.FragmentLogInBinding
-import com.nghiatd.demofirebaseflow.ui.forgotpassword.ForgotPasswordFragment
-import com.nghiatd.demofirebaseflow.ui.home.HomeFragment
+import com.nghiatd.rhythmtune.R
+import com.nghiatd.rhythmtune.auth.login
+import com.nghiatd.rhythmtune.data.model.User
+import com.nghiatd.rhythmtune.data.viewmodel.SharedViewModel
+import com.nghiatd.rhythmtune.databinding.FragmentLoginBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
 class LogInFragment : Fragment() {
 
-    private lateinit var binding: FragmentLogInBinding
+    private lateinit var binding: FragmentLoginBinding
     private lateinit var viewModel: SharedViewModel
     private lateinit var sharedPref: SharedPreferences
 
@@ -41,7 +37,7 @@ class LogInFragment : Fragment() {
             viewModel.setUser(User(latestEmail.toString(), ""))
         }
 
-        binding = FragmentLogInBinding.inflate(inflater, container, false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -52,47 +48,36 @@ class LogInFragment : Fragment() {
 
     private fun initViews() {
         binding.apply {
-            lifecycleScope.launch {
+            lifecycleScope.launch{
                 viewModel.selectedUser.collectLatest { user ->
                     if (user != null) {
                         edtEmail.setText(user.email)
                         edtPassword.setText(user.password)
-                        if (user.password.isEmpty()) {
-                            edtPassword.requestFocus()
-                        }
                         viewModel.setUser(null)
                     }
                 }
             }
             tvSignUp.setOnClickListener {
-                replaceFragment(RegisterFragment())
+//                replaceFragment(RegisterFragment())
             }
             tvForgotPassword.setOnClickListener {
-                replaceFragment(ForgotPasswordFragment())
+//                replaceFragment(ForgotPasswordFragment())
             }
             btnSignIn.setOnClickListener {
                 val email = edtEmail.text.toString()
                 val password = edtPassword.text.toString()
                 if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(
-                        requireContext(),
-                        R.string.email_or_password_empty,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), R.string.email_or_password_empty, Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {
                         login(email, password).collectLatest { task ->
                             if (task.isSuccessful) {
-                                parentFragmentManager.beginTransaction()
-                                    .replace(R.id.container, HomeFragment())
-                                    .commit()
+//                                parentFragmentManager.beginTransaction()
+//                                    .replace(R.id.container, HomeFragment())
+//                                    .commit()
                             } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    task.exception?.message.toString(),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
                             }
                         }
 

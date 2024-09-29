@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "789015075718",
+    "project_id": "rhythm-tune-c7da2",
+    "storage_bucket": "rhythm-tune-c7da2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789015075718:android:7131d0a88d6f9d30c22a07",
+        "android_client_info": {
+          "package_name": "com.nghiatd.rhythmtune"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7I7oEDLydGpZfDY1uML_1JaMddwZlZ-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

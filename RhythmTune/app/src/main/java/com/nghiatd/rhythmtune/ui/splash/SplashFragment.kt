@@ -1,16 +1,15 @@
-package com.nghiatd.demofirebaseflow.ui.splash
+package com.nghiatd.rhythmtune.ui.splash
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import com.nghiatd.demofirebaseflow.R
-import com.nghiatd.demofirebaseflow.databinding.FragmentSplashBinding
-import com.nghiatd.demofirebaseflow.ui.home.HomeFragment
-import com.nghiatd.demofirebaseflow.ui.login.LogInFragment
+import com.nghiatd.rhythmtune.R
+import com.nghiatd.rhythmtune.databinding.FragmentSplashBinding
+import com.nghiatd.rhythmtune.ui.login.LogInFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -32,7 +31,7 @@ class SplashFragment : Fragment() {
             delay(2000)
             val user = FirebaseAuth.getInstance().currentUser
             user?.let {
-                replaceFragment(HomeFragment())
+//                replaceFragment(HomeFragment())
             } ?: run {
                 replaceFragment(LogInFragment())
             }

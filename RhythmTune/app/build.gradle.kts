@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    namespace = "com.nghiatd.demofirebaseflow"
+    namespace = "com.nghiatd.rhythmtune"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.nghiatd.demofirebaseflow"
-        minSdk = 24
+        applicationId = "com.nghiatd.rhythmtune"
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -51,12 +51,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
-
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-analytics")
-
     implementation("com.google.firebase:firebase-auth")
-
-    implementation("com.google.firebase:firebase-firestore")
-
+    implementation("androidx.palette:palette:1.0.0")
+    implementation("com.github.bumptech.glide:glide:4.13.2")
+    implementation("jp.wasabeef:glide-transformations:4.3.0")
 }
