@@ -8,10 +8,13 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:name="com.nghiatd.mixic.ui.home.HomeFragment" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/main_component_reverse"
         app:menu="@menu/navigation"
         app:itemIconTint="@drawable/nav_item_color_state"
@@ -19,7 +22,6 @@
         app:itemTextAppearanceActiveBoldEnabled="true"
         app:labelVisibilityMode="labeled"
         app:itemActiveIndicatorStyle="@style/ShapeAppearance.Material3.Corner.None"
-        app:layout_constraintHeight_percent="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
