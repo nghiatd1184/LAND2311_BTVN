@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="main_red">#FF2E00</color>
-    <color name="main_yellow">#E69A15</color>
-    <color name="main_dark">#131313</color>
-    <color name="main_light">#0AFFFFFF</color>
-    <color name="main_text_color">#131313</color>
+    <color name="background_color">#F5F5F5</color>
+    <color name="main_component_color">#3F3F3F</color>
 
 </resources>

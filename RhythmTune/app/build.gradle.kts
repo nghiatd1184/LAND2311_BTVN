@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.nghiatd.rhythmtune"
-        minSdk = 29
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -57,4 +57,5 @@ dependencies {
     implementation("androidx.palette:palette:1.0.0")
     implementation("com.github.bumptech.glide:glide:4.13.2")
     implementation("jp.wasabeef:glide-transformations:4.3.0")
+    implementation("com.airbnb.android:lottie:6.5.0")
 }

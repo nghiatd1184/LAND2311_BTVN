@@ -26,4 +26,6 @@
     <string name="please_fill_email">Please fill email!</string>
     <string name="email_or_password_empty">Email or password is empty!</string>
     <string name="anonymous">Anonymous</string>
+    <string name="youtube_music">Youtube Music</string>
+    <string name="device_music">Device\'s Music</string>
 </resources>

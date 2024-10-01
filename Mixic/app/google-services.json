@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1062703866641",
+    "project_id": "mixic-2eeb1",
+    "storage_bucket": "mixic-2eeb1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062703866641:android:b96aad3c2c1fbc46f522b0",
+        "android_client_info": {
+          "package_name": "com.nghiatd.mixic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUdKGmESqSXkJj4wVT2n986-JAFHAZVs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

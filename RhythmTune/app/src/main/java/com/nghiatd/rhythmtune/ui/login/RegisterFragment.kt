@@ -34,7 +34,7 @@ class RegisterFragment : Fragment() {
 
     private fun initView() {
         binding.apply {
-            tvLogin.setOnClickListener {
+            tvBack.setOnClickListener {
                 lifecycleScope.launch {
                     viewModel.setUser(null)
                 }

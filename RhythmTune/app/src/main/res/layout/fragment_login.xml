@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tvTitle"
         android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@mipmap/ic_logo_foreground" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="@string/log_in"
-        android:textColor="@color/main_text_color"
+        android:fontFamily="@font/main_font_italic"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:textColor="@color/main_text_color"
         android:textColorHint="@color/main_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +55,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:textColor="@color/main_text_color"
         android:textColorHint="@color/main_text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,8 +72,7 @@
             android:hint="@string/password"
             android:inputType="textPassword"
             android:maxLines="1"
-            android:paddingVertical="8dp"
-            android:textColor="@color/main_text_color" />
+            android:paddingVertical="8dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,7 +83,6 @@
         android:layout_height="wrap_content"
         android:paddingVertical="8dp"
         android:text="@string/forgot_password"
-        android:textColor="@color/main_text_color"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btnLogIn"
         app:layout_constraintEnd_toEndOf="@+id/passwordLayout" />
@@ -97,7 +93,6 @@
         android:layout_height="wrap_content"
         android:paddingVertical="8dp"
         android:text="@string/sign_up"
-        android:textColor="@color/main_text_color"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btnLogIn"
         app:layout_constraintStart_toStartOf="@+id/passwordLayout" />
@@ -111,7 +106,6 @@
         android:background="@drawable/shape_red_solid"
         android:gravity="center"
         android:text="@string/log_in"
-        android:textColor="@color/main_text_color"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btnAnonymous"

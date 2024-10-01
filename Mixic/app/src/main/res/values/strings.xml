@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Mixic</string>
+    <string name="home">Home</string>
+    <string name="device">Device</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="slogan">Play Your Own Way</string>
+</resources>
