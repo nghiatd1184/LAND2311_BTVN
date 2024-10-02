@@ -45,14 +45,7 @@ class SplashFragment : Fragment() {
     }
 
     private fun initView() {
-        Glide.with(this)
-            .load(R.drawable.logo)
-            .apply(RequestOptions().override(200, 200))
-            .into(binding.imgLogo)
 
-        Glide.with(this)
-            .load(R.drawable.splash_img)
-            .into(binding.imgSplash)
     }
 
     private fun replaceFragment(fragment: Fragment) {

@@ -10,16 +10,17 @@
     <ImageView
         android:id="@+id/img_splash"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:src="@drawable/img_splash_2"
+        android:layout_height="0dp"
+        android:src="@drawable/img_splash_2"
         android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="13:9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:background="@drawable/shape_gradient"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +31,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:importantForAccessibility="no"
-        tools:src="@drawable/logo"
+        android:src="@drawable/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_splash"/>

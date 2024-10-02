@@ -5,4 +5,10 @@
     <string name="search">Search</string>
     <string name="profile">Profile</string>
     <string name="slogan">Play Your Own Way</string>
+    <string name="featured">Featured</string>
+    <string name="category">Category</string>
+    <string name="new_songs">New Songs</string>
+    <string name="view_all">View All</string>
+    <string name="recent_played">Recent Played</string>
+    <string name="songs_you_ve_played_recently">Songs you\'ve played recently</string>
 </resources>
