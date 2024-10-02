@@ -11,4 +11,6 @@
     <string name="view_all">View All</string>
     <string name="recent_played">Recent Played</string>
     <string name="songs_you_ve_played_recently">Songs you\'ve played recently</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="device_s_songs">Device\'s Songs</string>
 </resources>

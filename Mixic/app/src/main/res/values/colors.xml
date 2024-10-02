@@ -3,5 +3,6 @@
     <color name="background_color">#F5F5F5</color>
     <color name="main_component_color">#3F3F3F</color>
     <color name="main_component_reverse">#FFFFFF</color>
+    <color name="main_component_reverse_50opacity">#B3FFFFFF</color>
     <color name="grey_color">#A7A7A7</color>
 </resources>
