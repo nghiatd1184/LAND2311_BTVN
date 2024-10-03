@@ -13,4 +13,8 @@
     <string name="songs_you_ve_played_recently">Songs you\'ve played recently</string>
     <string name="lyrics">Lyrics</string>
     <string name="device_s_songs">Device\'s Songs</string>
+    <string name="setting">Setting</string>
+    <string name="change_password">Change Password</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

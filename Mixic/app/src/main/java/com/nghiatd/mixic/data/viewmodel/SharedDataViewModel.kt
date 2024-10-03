@@ -5,7 +5,7 @@ import com.nghiatd.mixic.data.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class UserViewModel : ViewModel() {
+class SharedDataViewModel : ViewModel() {
     private val _selectedUser = MutableStateFlow<User?>(null)
     val selectedUser = _selectedUser.asStateFlow()
 
