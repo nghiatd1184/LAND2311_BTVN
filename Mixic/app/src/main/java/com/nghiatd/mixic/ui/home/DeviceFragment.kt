@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.nghiatd.mixic.adapter.DeviceSongAdapter
 import com.nghiatd.mixic.data.viewmodel.SongViewModel
 import com.nghiatd.mixic.databinding.FragmentDeviceBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -17,7 +18,7 @@ class DeviceFragment : Fragment() {
     private lateinit var binding: FragmentDeviceBinding
     private lateinit var viewModel: SongViewModel
 
-    private val adapter =  {
+    private val adapter = DeviceSongAdapter { song ->
 
     }
 
@@ -38,14 +39,14 @@ class DeviceFragment : Fragment() {
 
     private fun initView() {
         binding.apply {
-
+            recyclerViewDeviceSong.adapter = adapter
         }
     }
 
     private fun listenViewModel() {
         lifecycleScope.launch {
             viewModel.allSongs.collectLatest { allSongs ->
-
+                adapter.submitList(allSongs)
             }
         }
     }

@@ -14,7 +14,7 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.databinding.ItemSongListBinding
 
-class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapter.SongViewHolder>(object :
+class DeviceSongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, DeviceSongAdapter.DeviceSongViewHolder>(object :
     DiffUtil.ItemCallback<Song>() {
     override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
         return oldItem.name == newItem.name
@@ -36,17 +36,17 @@ class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapt
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        return SongViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceSongViewHolder {
+        return DeviceSongViewHolder(
             ItemSongListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DeviceSongViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class SongViewHolder(val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class DeviceSongViewHolder(val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
             binding.tvName.text = song.name
             binding.tvArtist.text = song.artist
