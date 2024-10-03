@@ -7,7 +7,7 @@
     android:background="@drawable/shape_minimized_background">
 
     <ImageView
-        android:id="@+id/imgThumb"
+        android:id="@+id/img_thumb"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="5dp"
@@ -21,19 +21,19 @@
         android:layout_marginHorizontal="5dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnPrevious"
-        app:layout_constraintStart_toEndOf="@+id/imgThumb"
+        app:layout_constraintEnd_toStartOf="@+id/btn_previous"
+        app:layout_constraintStart_toEndOf="@+id/img_thumb"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvSongName"
+            android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             tools:text="A song of love" />
 
         <TextView
-            android:id="@+id/tvArtistName"
+            android:id="@+id/tv_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/main_font"
@@ -44,27 +44,27 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/btnPrevious"
+        android:id="@+id/btn_previous"
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/icon_previous"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnPlayPause"
+        app:layout_constraintEnd_toStartOf="@id/btn_play_pause"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/btnPlayPause"
+        android:id="@+id/btn_play_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:src="@drawable/icon_play"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnNext"
+        app:layout_constraintEnd_toStartOf="@+id/btn_next"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/btnNext"
+        android:id="@+id/btn_next"
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:layout_marginEnd="10dp"

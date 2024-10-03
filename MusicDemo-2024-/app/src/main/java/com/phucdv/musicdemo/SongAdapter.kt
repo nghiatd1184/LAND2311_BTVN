@@ -1,5 +1,6 @@
 package com.phucdv.musicdemo
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ class SongAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
             val song = songs[position]
+            Log.d("NGHIA", "bind: $song")
             binding.apply {
                 tvTitle.text = song.title
                 tvTitle.requestFocus()

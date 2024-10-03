@@ -1,12 +1,10 @@
-package com.nghiatd.mixic
+package com.nghiatd.mixic.service
 
 import android.app.Service
-import android.content.ContentUris
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
-import android.provider.MediaStore
 import android.util.Log
 import com.nghiatd.mixic.data.model.Song
 import kotlinx.coroutines.CoroutineScope
@@ -14,10 +12,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class MusicService(private val songList: List<Song>) : Service() {
+class MusicService : Service() {
     companion object {
         const val ACTION_PLAY_PAUSE = "ACTION_PLAY_PAUSE"
         const val EXTRA_SONG_ID = "extra_song_id" // Long
@@ -65,9 +64,15 @@ class MusicService(private val songList: List<Song>) : Service() {
         when (intent?.action) {
             ACTION_PLAY_PAUSE -> {
                 val songId = intent.getLongExtra(EXTRA_SONG_ID, -1L)
-                val song = allSongs.value.find { it.id == songId }
-                if (song != null) {
-                    playPause(song)
+                var song:Song? = null
+                scope.launch {
+                    allSongs.collectLatest { allSongs ->
+                        song = allSongs.find { it.id == songId }
+                        Log.d("NGHIA", "onStartCommand: $song")
+                        if (song != null) {
+                            playPause(song!!)
+                        }
+                    }
                 }
             }
 
@@ -179,6 +184,7 @@ class MusicService(private val songList: List<Song>) : Service() {
     }
 
     private fun playPause(song: Song) {
+        Log.d("NGHIA", "playPause: $song")
         if (currentPlaying.value?.second == song) {
             if (mediaPlayer.isPlaying) {
                 mediaPlayer.pause()

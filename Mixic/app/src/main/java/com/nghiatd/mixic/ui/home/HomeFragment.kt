@@ -76,22 +76,29 @@ class HomeFragment : Fragment() {
                         replaceFragment(HomeFirebaseFragment())
                         true
                     }
-
                     R.id.device -> {
                         replaceFragment(DeviceFragment())
                         true
                     }
-
                     R.id.search -> {
                         replaceFragment(SearchFragment())
                         true
                     }
-
                     else -> {
                         replaceFragment(ProfileFragment())
                         true
                     }
                 }
+            }
+//            minimizedLayout.root.setOnClickListener {
+//                minimizedLayout.root.visibility = View.GONE
+//                fragmentPlayingSong.root.visibility = View.VISIBLE
+//                bottomNav.visibility = View.GONE
+//            }
+            fragmentPlayingSong.imgDownCollapse.setOnClickListener {
+                minimizedLayout.root.visibility = View.VISIBLE
+                fragmentPlayingSong.root.visibility = View.GONE
+                bottomNav.visibility = View.VISIBLE
             }
         }
 
@@ -145,7 +152,7 @@ class HomeFragment : Fragment() {
 
     private fun replaceFragment(fragment: Fragment) {
         childFragmentManager.beginTransaction()
-            .replace(binding.containerHome.id, fragment)
+            .replace(binding.container.id, fragment)
             .addToBackStack(null)
             .commit()
     }

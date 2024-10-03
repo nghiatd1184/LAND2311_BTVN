@@ -20,11 +20,12 @@ class SongViewModel(private val repository: SongRepository) : ViewModel() {
         }
     }
 
-    class Factory(private val context: Context) : ViewModelProvider.Factory {
+    class SongViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SongViewModel(
-                SongRepository(context.applicationContext)
-            ) as T
+            if (modelClass.isAssignableFrom(SongViewModel::class.java)) {
+                return SongViewModel(SongRepository(context)) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }
