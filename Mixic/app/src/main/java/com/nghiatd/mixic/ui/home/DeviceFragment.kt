@@ -1,6 +1,7 @@
 package com.nghiatd.mixic.ui.home
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
 import android.content.ServiceConnection
@@ -22,6 +23,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.adapter.DeviceSongAdapter
+import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.viewmodel.SongViewModel
 import com.nghiatd.mixic.databinding.FragmentDeviceBinding
 import com.nghiatd.mixic.service.MusicService
@@ -33,42 +35,13 @@ class DeviceFragment : Fragment() {
     private lateinit var binding: FragmentDeviceBinding
     private lateinit var viewModel: SongViewModel
 
-    private val minimizedLayout = parentFragment?.view?.findViewById<View>(R.id.minimized_layout)
-    private val btnPlayPause = minimizedLayout?.findViewById<ImageView>(R.id.btn_play_pause)
-    private val btnNext = minimizedLayout?.findViewById<View>(R.id.btn_next)
-    private val btnPrev = minimizedLayout?.findViewById<View>(R.id.btn_previous)
-
     private var service: MusicService? = null
-    private var isBound = false
-    private val serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as MusicService.MusicBinder
-            this@DeviceFragment.service = binder.getMusicService()
-            isBound = true
-            listenViewModel()
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            service = null
-            isBound = false
-        }
-    }
 
     private val deviceSongAdapter = DeviceSongAdapter { song ->
-        requireActivity().startService(Intent(requireContext(), MusicService::class.java).apply {
-            action = MusicService.ACTION_PLAY_PAUSE
-            putExtra(MusicService.EXTRA_SONG_ID, song.id)
-        })
-        val imgArtUri = Uri.parse(song.image)
-        val imgThumb = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)?.findViewById<ImageView>(R.id.img_thumb)
-        val tvSongName = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)?.findViewById<TextView>(R.id.tv_name)
-        val tvArtist = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)?.findViewById<TextView>(R.id.tv_artist)
-        Glide.with(imgThumb!!)
-            .load(imgArtUri)
-            .apply(RequestOptions().transform(RoundedCorners(15)))
-            .into(imgThumb)
-        tvSongName!!.text = song.name
-        tvArtist!!.text = song.artist
+        service?.playPause(song)
+        val minimizedLayout = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
+        if (View.GONE == minimizedLayout?.visibility) minimizedLayout.visibility = View.VISIBLE
+        minimizedInitView(song)
     }
 
     override fun onCreateView(
@@ -78,8 +51,9 @@ class DeviceFragment : Fragment() {
     ): View {
         val viewModeFactory = SongViewModel.SongViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, viewModeFactory)[SongViewModel::class.java]
+        service = (parentFragment as HomeFragment).getMusicService()
+        listenViewModel()
         binding = FragmentDeviceBinding.inflate(inflater, container, false)
-        requireActivity().bindService(Intent(requireActivity(), MusicService::class.java), serviceConnection, BIND_AUTO_CREATE)
         return binding.root
     }
 
@@ -93,40 +67,22 @@ class DeviceFragment : Fragment() {
             adapter = deviceSongAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+    }
 
-        btnPlayPause?.setOnClickListener {
-            requireContext().startService(
-                Intent(
-                    requireContext(),
-                    MusicService::class.java
-                ).apply {
-                    action = MusicService.ACTION_PLAY_PAUSE
-                    putExtra(
-                        MusicService.EXTRA_SONG_ID,
-                        service?.currentPlaying?.value?.second?.id
-                    )
-                })
-        }
+    private fun minimizedInitView(song: Song) {
+        val minimizedLayout =
+            (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
+        val tvName = minimizedLayout?.findViewById<TextView>(R.id.tv_name)
+        val tvArtist = minimizedLayout?.findViewById<TextView>(R.id.tv_artist)
+        val imgThumb = minimizedLayout?.findViewById<ImageView>(R.id.img_thumb)
+        val artUri = Uri.parse(song.image)
 
-        btnNext?.setOnClickListener {
-            requireContext().startService(
-                Intent(
-                    requireContext(),
-                    MusicService::class.java
-                ).apply {
-                    action = MusicService.ACTION_NEXT
-                })
-        }
-
-        btnPrev?.setOnClickListener {
-            requireContext().startService(
-                Intent(
-                    requireContext(),
-                    MusicService::class.java
-                ).apply {
-                    action = MusicService.ACTION_PREV
-                })
-        }
+        tvName?.text = song.name
+        tvArtist?.text = song.artist
+        Glide.with(imgThumb!!)
+            .load(artUri)
+            .apply(RequestOptions().transform(RoundedCorners(15)))
+            .into(imgThumb)
     }
 
     private fun listenViewModel() {
@@ -141,10 +97,12 @@ class DeviceFragment : Fragment() {
             service?.isPlayingFlow?.collectLatest { isPlaying ->
                 deviceSongAdapter.isPlaying = isPlaying
                 val imgPlayPause = if (isPlaying) R.drawable.icon_pause else R.drawable.icon_play
-                val btn = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)?.findViewById<ImageView>(R.id.btn_play_pause)
-                Glide.with(btn!!)
+                val minimizedPlayPauseBtn =
+                    (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
+                        ?.findViewById<ImageView>(R.id.btn_play_pause)
+                Glide.with(minimizedPlayPauseBtn!!)
                     .load(imgPlayPause)
-                    .into(btn)
+                    .into(minimizedPlayPauseBtn)
             }
         }
 
@@ -152,14 +110,6 @@ class DeviceFragment : Fragment() {
             service?.currentPlaying?.collectLatest { currentPlaying ->
                 deviceSongAdapter.playingSong = currentPlaying?.second
             }
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (isBound) {
-            requireContext().unbindService(serviceConnection)
-            isBound = false
         }
     }
 

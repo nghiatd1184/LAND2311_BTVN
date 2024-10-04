@@ -44,6 +44,7 @@ class MusicService : Service() {
 
     val repeatMode = MutableStateFlow<Int>(REPEAT_MODE_OFF)
     val isShuffle = MutableStateFlow<Boolean>(false)
+    val isMute = MutableStateFlow<Boolean>(false)
 
     private val mediaPlayer = MediaPlayer().apply {
         setOnPreparedListener {
@@ -54,72 +55,77 @@ class MusicService : Service() {
         }
     }
 
-    fun setPlayList(list: List<Song>) {
-        scope.launch {
-            _allSongs.value = list
-        }
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_PLAY_PAUSE -> {
-                val songId = intent.getLongExtra(EXTRA_SONG_ID, -1L)
-                var song:Song? = null
-                scope.launch {
-                    allSongs.collectLatest { allSongs ->
-                        song = allSongs.find { it.id == songId }
-                        Log.d("NGHIA", "onStartCommand: $song")
-                        if (song != null) {
-                            playPause(song!!)
-                        }
-                    }
-                }
-            }
-
-            ACTION_NEXT -> {
-                playNext()
-            }
-
-            ACTION_PREV -> {
-                playPrev()
-            }
-
-            ACTION_SEEK -> {
-                val seekValue = intent.getLongExtra(EXTRA_SEEK_VALUE, -1L)
-                if (seekValue != -1L) {
-                    seekTo(seekValue)
-                }
-            }
-
-            ACTION_REPEAT -> {
-                val repeatMode = intent.getIntExtra(EXTRA_REPEAT_MODE, -1)
-                if (repeatMode != -1) {
-                    setRepeatMode(repeatMode)
-                }
-            }
-
-            ACTION_SHUFFLE -> {
-                val shuffleMode = intent.getBooleanExtra(EXTRA_SHUFFLE_MODE, false)
-                setShuffleMode(shuffleMode)
-            }
-
-            else -> {
-                throw IllegalArgumentException("Unsupported action ${intent?.action}")
-            }
-        }
+//        when (intent?.action) {
+//            ACTION_PLAY_PAUSE -> {
+//                val songId = intent.getLongExtra(EXTRA_SONG_ID, -1L)
+//                var song:Song?
+//                val listSong = allSongs.value
+//                scope.launch {
+//                    allSongs.collectLatest { allSongs ->
+//                        song = allSongs.find { it.id == songId }
+//                        if (song != null) {
+//                            playPause(song!!)
+//                        } else {
+//                            playPause(listSong[0])
+//                        }
+//                    }
+//                }
+//            }
+//
+//            ACTION_NEXT -> {
+//                playNext()
+//            }
+//
+//            ACTION_PREV -> {
+//                playPrev()
+//            }
+//
+//            ACTION_SEEK -> {
+//                val seekValue = intent.getLongExtra(EXTRA_SEEK_VALUE, -1L)
+//                if (seekValue != -1L) {
+//                    seekTo(seekValue)
+//                }
+//            }
+//
+//            ACTION_REPEAT -> {
+//                val repeatMode = intent.getIntExtra(EXTRA_REPEAT_MODE, -1)
+//                if (repeatMode != -1) {
+//                    setRepeatMode(repeatMode)
+//                }
+//            }
+//
+//            ACTION_SHUFFLE -> {
+//                val shuffleMode = intent.getBooleanExtra(EXTRA_SHUFFLE_MODE, false)
+//                setShuffleMode(shuffleMode)
+//            }
+//
+//            else -> {
+//                throw IllegalArgumentException("Unsupported action ${intent?.action}")
+//            }
+//        }
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun setShuffleMode(shuffleMode: Boolean) {
+    fun setShuffleMode(shuffleMode: Boolean) {
         this.isShuffle.value = shuffleMode
     }
 
-    private fun setRepeatMode(repeatMode: Int) {
+    fun setRepeatMode(repeatMode: Int) {
         this.repeatMode.value = repeatMode
     }
 
-    private fun seekTo(seekValue: Long) {
+    fun seekTo(seekValue: Long) {
         mediaPlayer.seekTo(seekValue.toInt())
+    }
+
+    fun toggleMute() {
+        isMute.value = !isMute.value
+        if (isMute.value) {
+            mediaPlayer.setVolume(0f, 0f)
+        } else {
+            mediaPlayer.setVolume(1f, 1f)
+        }
     }
 
     private fun playOnEnd() {
@@ -145,7 +151,7 @@ class MusicService : Service() {
         }
     }
 
-    private fun playPrev() {
+    fun playPrev() {
         val listSong = allSongs.value
         if (listSong.isEmpty()) return
 
@@ -161,7 +167,7 @@ class MusicService : Service() {
         playSong(song)
     }
 
-    private fun playNext() {
+    fun playNext() {
         val listSong = allSongs.value
         if (listSong.isEmpty()) return
 
@@ -183,8 +189,11 @@ class MusicService : Service() {
         playSong(song)
     }
 
-    private fun playPause(song: Song) {
-        Log.d("NGHIA", "playPause: $song")
+    fun playPause(song: Song?) {
+        if (song == null) {
+            playSong(allSongs.value[0])
+            return
+        }
         if (currentPlaying.value?.second == song) {
             if (mediaPlayer.isPlaying) {
                 mediaPlayer.pause()
@@ -210,6 +219,12 @@ class MusicService : Service() {
             Log.e("MUSIC SERVICE", "Error starting data source", e)
         }
         mediaPlayer.prepareAsync()
+    }
+
+    fun setPlayList(list: List<Song>) {
+        scope.launch {
+            _allSongs.value = list
+        }
     }
 
     override fun onDestroy() {
