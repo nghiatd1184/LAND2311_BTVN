@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/main_font"
-            android:text="Expand"
+            android:text="@string/expand"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -68,6 +68,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:focusable="true"
+                android:freezesText="true"
+                android:focusableInTouchMode="true"
+                android:scrollHorizontally="true"
                 tools:text="A song of love" />
 
             <TextView
@@ -77,6 +84,8 @@
                 android:fontFamily="@font/main_font"
                 android:textColor="@color/grey_color"
                 android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 tools:text="A song of love" />
 
         </LinearLayout>

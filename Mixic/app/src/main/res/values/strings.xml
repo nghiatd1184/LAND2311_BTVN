@@ -17,4 +17,5 @@
     <string name="change_password">Change Password</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="sign_out">Sign Out</string>
+    <string name="expand">Expand</string>
 </resources>

@@ -47,8 +47,9 @@ class DeviceSongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, Dev
         holder.bind(getItem(position))
     }
 
-    inner class DeviceSongViewHolder(val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class DeviceSongViewHolder(private val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
+            binding.tvName.isSelected = true
             binding.tvName.text = song.name
             binding.tvArtist.text = song.artist
             val uri = Uri.parse(song.image)

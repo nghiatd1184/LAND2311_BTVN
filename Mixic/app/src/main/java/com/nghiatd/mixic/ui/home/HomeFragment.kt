@@ -145,6 +145,7 @@ class HomeFragment : Fragment() {
             }
 
             minimizedLayout.apply {
+                tvName.isSelected = true
                 btnExpand.setOnClickListener {
                     minimizedLayout.root.visibility = View.GONE
                     bottomNav.visibility = View.GONE

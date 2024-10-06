@@ -12,43 +12,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class MusicService : Service() {
     companion object {
-        const val ACTION_PLAY_PAUSE = "ACTION_PLAY_PAUSE"
-        const val EXTRA_SONG_ID = "extra_song_id" // Long
-
-        const val ACTION_NEXT = "ACTION_NEXT"
-        const val ACTION_PREV = "ACTION_PREV"
-        const val ACTION_SEEK = "ACTION_SEEK"
-        const val EXTRA_SEEK_VALUE = "extra_seek_value" // Long
-
-        const val ACTION_REPEAT = "ACTION_REPEAT"
-        const val EXTRA_REPEAT_MODE = "extra_repeat_mode" // Int (0, 1, 2)
         const val REPEAT_MODE_OFF = 0
         const val REPEAT_MODE_ONE = 1
         const val REPEAT_MODE_ALL = 2
-
-        const val ACTION_SHUFFLE = "ACTION_SHUFFLE"
-        const val EXTRA_SHUFFLE_MODE = "extra_shuffle_mode" // Boolean
     }
 
     private val scope = CoroutineScope(Dispatchers.Main)
     private val _allSongs = MutableStateFlow<List<Song>>(emptyList())
-    val allSongs = _allSongs.asStateFlow()
+    private val allSongs = _allSongs.asStateFlow()
     val currentPlaying = MutableStateFlow<Pair<Int, Song>?>(null)
     val isPlayingFlow = MutableStateFlow(false)
 
-    val repeatMode = MutableStateFlow<Int>(REPEAT_MODE_OFF)
-    val isShuffle = MutableStateFlow<Boolean>(false)
-    val isMute = MutableStateFlow<Boolean>(false)
+    val repeatMode = MutableStateFlow(REPEAT_MODE_OFF)
+    val isShuffle = MutableStateFlow(false)
+    val isMute = MutableStateFlow(false)
 
     private val mediaPlayer = MediaPlayer().apply {
         setOnPreparedListener {
             start()
+            onSongCompletedBroadcast()
         }
         setOnCompletionListener {
             playOnEnd()
@@ -56,54 +43,6 @@ class MusicService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-//        when (intent?.action) {
-//            ACTION_PLAY_PAUSE -> {
-//                val songId = intent.getLongExtra(EXTRA_SONG_ID, -1L)
-//                var song:Song?
-//                val listSong = allSongs.value
-//                scope.launch {
-//                    allSongs.collectLatest { allSongs ->
-//                        song = allSongs.find { it.id == songId }
-//                        if (song != null) {
-//                            playPause(song!!)
-//                        } else {
-//                            playPause(listSong[0])
-//                        }
-//                    }
-//                }
-//            }
-//
-//            ACTION_NEXT -> {
-//                playNext()
-//            }
-//
-//            ACTION_PREV -> {
-//                playPrev()
-//            }
-//
-//            ACTION_SEEK -> {
-//                val seekValue = intent.getLongExtra(EXTRA_SEEK_VALUE, -1L)
-//                if (seekValue != -1L) {
-//                    seekTo(seekValue)
-//                }
-//            }
-//
-//            ACTION_REPEAT -> {
-//                val repeatMode = intent.getIntExtra(EXTRA_REPEAT_MODE, -1)
-//                if (repeatMode != -1) {
-//                    setRepeatMode(repeatMode)
-//                }
-//            }
-//
-//            ACTION_SHUFFLE -> {
-//                val shuffleMode = intent.getBooleanExtra(EXTRA_SHUFFLE_MODE, false)
-//                setShuffleMode(shuffleMode)
-//            }
-//
-//            else -> {
-//                throw IllegalArgumentException("Unsupported action ${intent?.action}")
-//            }
-//        }
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -117,6 +56,10 @@ class MusicService : Service() {
 
     fun seekTo(seekValue: Long) {
         mediaPlayer.seekTo(seekValue.toInt())
+    }
+
+    fun getCurrentPosition(): Int {
+        return mediaPlayer.currentPosition
     }
 
     fun toggleMute() {
@@ -162,7 +105,7 @@ class MusicService : Service() {
         } else if (currentPlaying.first == 0) {
             listSong[listSong.size - 1]
         } else {
-            listSong[(currentPlaying.first ?: 1) - 1]
+            listSong[(currentPlaying.first) - 1]
         }
         playSong(song)
     }
@@ -175,7 +118,7 @@ class MusicService : Service() {
         val currentPlaying = currentPlaying.value
 
         val song = if (isShuffle) {
-            val index = Random(listSong.size - 1).nextInt()
+            val index = Random.nextInt(0, listSong.size-1)
             listSong[index]
         } else {
             if (currentPlaying == null) {
@@ -183,7 +126,7 @@ class MusicService : Service() {
             } else if (currentPlaying.first == listSong.size - 1) {
                 listSong[0]
             } else {
-                listSong[(currentPlaying.first ?: -1) + 1]
+                listSong[(currentPlaying.first) + 1]
             }
         }
         playSong(song)
@@ -196,15 +139,23 @@ class MusicService : Service() {
         }
         if (currentPlaying.value?.second == song) {
             if (mediaPlayer.isPlaying) {
-                mediaPlayer.pause()
+                pause()
                 isPlayingFlow.value = false
             } else {
-                mediaPlayer.start()
+                resume()
                 isPlayingFlow.value = true
             }
         } else {
             playSong(song)
         }
+    }
+
+    fun pause() {
+        mediaPlayer.pause()
+    }
+
+    fun resume() {
+        mediaPlayer.start()
     }
 
     private fun playSong(song: Song) {
@@ -244,5 +195,10 @@ class MusicService : Service() {
         fun getMusicService(): MusicService {
             return this@MusicService
         }
+    }
+
+    private fun onSongCompletedBroadcast() {
+        val intent = Intent("com.nghiatd.mixic.SONG_COMPLETED")
+        sendBroadcast(intent)
     }
 }

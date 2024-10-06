@@ -48,6 +48,13 @@
         android:gravity="center"
         android:textSize="18sp"
         android:layout_marginTop="10dp"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:focusable="true"
+        android:freezesText="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_art"
@@ -77,11 +84,12 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
+        android:id="@+id/scroll_lyrics"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:scrollbars="none"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/img_art_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_artist">
@@ -91,6 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="20dp"
+            android:gravity="center"
             tools:text="Thấp thoáng ánh mắt đôi môi mang theo hương mê say
                         \nEm cho anh tan trong miên man quên luôn đi đêm ngày
                         \nChạm nhẹ vội vàng hai ba giây nhưng con tim đâu hay
@@ -238,8 +247,8 @@
 
         <ImageView
             android:id="@+id/btn_repeat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="60dp"
             android:src="@drawable/icon_repeat_off"
