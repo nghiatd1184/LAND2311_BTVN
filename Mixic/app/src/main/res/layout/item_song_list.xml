@@ -64,7 +64,7 @@
         app:lottie_colorFilter="@color/main_component_color"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/play_animation"
-        app:lottie_repeatMode="reverse" />
+        app:lottie_repeatMode="restart" />
 
     <ImageView
         android:id="@+id/imgMenu"

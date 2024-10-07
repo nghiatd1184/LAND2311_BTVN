@@ -1,7 +1,6 @@
 package com.nghiatd.mixic.data.api
 
 import com.nghiatd.mixic.data.model.LyricsResponse
-import com.nghiatd.mixic.data.model.Song
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

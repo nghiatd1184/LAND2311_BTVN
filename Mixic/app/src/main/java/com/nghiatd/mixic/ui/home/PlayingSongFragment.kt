@@ -31,7 +31,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.await
 import java.util.Locale
 
 class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener {
@@ -43,7 +42,6 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
     private lateinit var songCompletionReceiver: OnSongCompletionReceiver
     private val isApi33OrHigher = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,11 +50,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
         songCompletionReceiver = OnSongCompletionReceiver(this)
         val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_COMPLETED")
         if (isApi33OrHigher) {
-            requireActivity().registerReceiver(
-                songCompletionReceiver,
-                intentFilter,
-                Context.RECEIVER_NOT_EXPORTED
-            )
+            requireActivity().registerReceiver(songCompletionReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
         } else {
             requireActivity().registerReceiver(songCompletionReceiver, intentFilter)
         }
@@ -255,8 +249,8 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
                 scrollLyrics.visibility = View.VISIBLE
             }
 
-            scrollLyrics.setOnClickListener {
-                it.visibility = View.GONE
+            tvLyrics.setOnClickListener {
+                scrollLyrics.visibility = View.GONE
                 tvShowLyrics.visibility = View.VISIBLE
             }
         }
@@ -266,6 +260,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
         val currentPlaying = service?.currentPlaying?.value?.second
         val isPlaying = service?.isPlayingFlow?.value
         val totalTime = convertMillisToTime(currentPlaying?.duration ?: 0)
+        binding.tvLyrics.setText(R.string.blank)
         setLyric()
         binding.apply {
             scrollLyrics.visibility = View.GONE
@@ -335,14 +330,18 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
     private fun setLyric() {
         lifecycleScope.launch {
             try {
+                binding.loading.visibility = View.VISIBLE
                 val song = service?.currentPlaying?.value?.second
                 val response: LyricsResponse = withContext(Dispatchers.IO) {
-                    RetrofitExtension.OVH_LYRICS.getLyrics(song!!.artist, song.name).execute().body()
-                        ?: LyricsResponse("")
+                    RetrofitExtension.OVH_LYRICS.getLyrics(song!!.artist, song.name).execute().body() ?: LyricsResponse("")
                 }
+                binding.loading.visibility = View.GONE
+                binding.tvLyrics.visibility = View.VISIBLE
                 binding.tvLyrics.text = response.lyrics
             } catch (e: Exception) {
-                binding.tvLyrics.text = "No data"
+                binding.loading.visibility = View.GONE
+                binding.tvLyrics.visibility = View.VISIBLE
+                binding.tvLyrics.setText(R.string.error_loading_lyrics)
             }
         }
     }

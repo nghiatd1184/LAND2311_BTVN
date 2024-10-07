@@ -18,4 +18,7 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="sign_out">Sign Out</string>
     <string name="expand">Expand</string>
+    <string name="loading_lyrics">Loading Lyrics...</string>
+    <string name="error_loading_lyrics">Cannot find lyrics for this song</string>
+    <string name="blank"> </string>
 </resources>
