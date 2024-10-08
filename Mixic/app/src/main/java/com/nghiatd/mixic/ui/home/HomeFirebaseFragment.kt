@@ -30,7 +30,6 @@ class HomeFirebaseFragment : Fragment() {
         val bottomNav = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.bottom_nav)
         binding.apply {
 
-
         }
     }
 }

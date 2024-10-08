@@ -5,7 +5,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,28 +24,17 @@ import com.nghiatd.mixic.databinding.FragmentPlayingSongBinding
 import com.nghiatd.mixic.receiver.OnSongCompletionReceiver
 import com.nghiatd.mixic.service.MusicService
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.Locale
+import kotlinx.coroutines.*
 
 class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener {
 
     private lateinit var binding: FragmentPlayingSongBinding
     private var service: MusicService? = null
-    private lateinit var textNotify: String
     private var updateJobs: Job? = null
     private lateinit var songCompletionReceiver: OnSongCompletionReceiver
     private val isApi33OrHigher = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         songCompletionReceiver = OnSongCompletionReceiver(this)
         val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_COMPLETED")
         if (isApi33OrHigher) {
@@ -77,74 +65,43 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
     private fun initMuteUi() {
         val isMute = service?.isMute?.value
         val btnMuteRes = if (isMute == true) R.drawable.icon_mute else R.drawable.icon_mute_off
-        Glide.with(binding.btnMute)
-            .load(btnMuteRes)
-            .into(binding.btnMute)
+        Glide.with(binding.btnMute).load(btnMuteRes).into(binding.btnMute)
     }
 
     private fun initRepeatUi() {
         val repeatMode = service?.repeatMode?.value
-        when (repeatMode) {
-            MusicService.REPEAT_MODE_OFF -> {
-                val btnRepeatRes = R.drawable.icon_repeat_off
-                Glide.with(binding.btnRepeat)
-                    .load(btnRepeatRes)
-                    .into(binding.btnRepeat)
-            }
-
-            MusicService.REPEAT_MODE_ONE -> {
-                val btnRepeatRes = R.drawable.icon_repeat_one
-                Glide.with(binding.btnRepeat)
-                    .load(btnRepeatRes)
-                    .into(binding.btnRepeat)
-            }
-
-            else -> {
-                val btnRepeatRes = R.drawable.icon_repeat_all
-                Glide.with(binding.btnRepeat)
-                    .load(btnRepeatRes)
-                    .into(binding.btnRepeat)
-            }
+        val btnRepeatRes = when (repeatMode) {
+            MusicService.REPEAT_MODE_OFF -> R.drawable.icon_repeat_off
+            MusicService.REPEAT_MODE_ONE -> R.drawable.icon_repeat_one
+            else -> R.drawable.icon_repeat_all
         }
+        Glide.with(binding.btnRepeat).load(btnRepeatRes).into(binding.btnRepeat)
     }
 
     private fun initShuffleUi() {
         val isShuffle = service?.isShuffle?.value
-        val btnShuffleRes =
-            if (isShuffle == true) R.drawable.icon_shuffle_on else R.drawable.icon_shuffle_off
-        Glide.with(binding.btnShuffle)
-            .load(btnShuffleRes)
-            .into(binding.btnShuffle)
+        val btnShuffleRes = if (isShuffle == true) R.drawable.icon_shuffle_on else R.drawable.icon_shuffle_off
+        Glide.with(binding.btnShuffle).load(btnShuffleRes).into(binding.btnShuffle)
     }
 
     private fun initClick() {
         binding.apply {
             imgDownCollapse.setOnClickListener {
                 parentFragmentManager.popBackStack()
-                val minimizedLayout =
-                    (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
+                val minimizedLayout = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
                 minimizedLayout?.visibility = View.VISIBLE
-                val bottomNav =
-                    (parentFragment as HomeFragment).view?.findViewById<View>(R.id.bottom_nav)
+                val bottomNav = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.bottom_nav)
                 bottomNav?.visibility = View.VISIBLE
                 updateJobs?.cancel()
             }
 
             btnPlayPause.setOnClickListener {
                 val song = service?.currentPlaying?.value?.second
-                val imgRes =
-                    if (service?.isPlayingFlow?.value == true) R.drawable.icon_play_reverse else R.drawable.icon_pause_reverse
-                Glide.with(btnPlayPause)
-                    .load(imgRes)
-                    .into(btnPlayPause)
-                val btnPlayPause =
-                    (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
-                        ?.findViewById<ImageView>(R.id.btn_play_pause)
-                val imgResMinimized =
-                    if (service?.isPlayingFlow?.value == true) R.drawable.icon_play else R.drawable.icon_pause
-                Glide.with(btnPlayPause!!)
-                    .load(imgResMinimized)
-                    .into(btnPlayPause)
+                val imgRes = if (service?.isPlayingFlow?.value == true) R.drawable.icon_play_reverse else R.drawable.icon_pause_reverse
+                Glide.with(btnPlayPause).load(imgRes).into(btnPlayPause)
+                val btnPlayPauseMinimized = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)?.findViewById<ImageView>(R.id.btn_play_pause)
+                val imgResMinimized = if (service?.isPlayingFlow?.value == true) R.drawable.icon_play else R.drawable.icon_pause
+                Glide.with(btnPlayPauseMinimized!!).load(imgResMinimized).into(btnPlayPauseMinimized)
 
                 if (service?.isPlayingFlow?.value == true) updateJobs?.cancel() else updateSeekBarProgress()
                 service?.playPause(song)
@@ -166,64 +123,41 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
             }
 
             btnMute.setOnClickListener {
-                val btnMuteRes =
-                    if (service?.isMute?.value == true) R.drawable.icon_mute_off else R.drawable.icon_mute
-                Glide.with(btnMute)
-                    .load(btnMuteRes)
-                    .into(btnMute)
+                val btnMuteRes = if (service?.isMute?.value == true) R.drawable.icon_mute_off else R.drawable.icon_mute
+                Glide.with(btnMute).load(btnMuteRes).into(btnMute)
                 service?.toggleMute()
             }
 
             btnRepeat.setOnClickListener {
-                when (service?.repeatMode?.value) {
-                    MusicService.REPEAT_MODE_OFF -> {
-                        val btnRepeatRes = R.drawable.icon_repeat_one
-                        Glide.with(btnRepeat)
-                            .load(btnRepeatRes)
-                            .into(btnRepeat)
-                        service?.setRepeatMode(MusicService.REPEAT_MODE_ONE)
-                        textNotify = "Repeat ONE!"
-                    }
-
-                    MusicService.REPEAT_MODE_ONE -> {
-                        val btnRepeatRes = R.drawable.icon_repeat_all
-                        Glide.with(btnRepeat)
-                            .load(btnRepeatRes)
-                            .into(btnRepeat)
-                        service?.setRepeatMode(MusicService.REPEAT_MODE_ALL)
-                        textNotify = "Repeat ALL!"
-                    }
-
-                    else -> {
-                        val btnRepeatRes = R.drawable.icon_repeat_off
-                        Glide.with(btnRepeat)
-                            .load(btnRepeatRes)
-                            .into(btnRepeat)
-                        service?.setRepeatMode(MusicService.REPEAT_MODE_OFF)
-                        textNotify = "Repeat OFF!"
-                    }
+                val btnRepeatRes = when (service?.repeatMode?.value) {
+                    MusicService.REPEAT_MODE_OFF -> R.drawable.icon_repeat_one
+                    MusicService.REPEAT_MODE_ONE -> R.drawable.icon_repeat_all
+                    else -> R.drawable.icon_repeat_off
                 }
+                Glide.with(btnRepeat).load(btnRepeatRes).into(btnRepeat)
+                val textNotify = when (service?.repeatMode?.value) {
+                    MusicService.REPEAT_MODE_OFF -> "Repeat ONE!"
+                    MusicService.REPEAT_MODE_ONE -> "Repeat ALL!"
+                    else -> "Repeat OFF!"
+                }
+                service?.setRepeatMode(when (service?.repeatMode?.value) {
+                    MusicService.REPEAT_MODE_OFF -> MusicService.REPEAT_MODE_ONE
+                    MusicService.REPEAT_MODE_ONE -> MusicService.REPEAT_MODE_ALL
+                    else -> MusicService.REPEAT_MODE_OFF
+                })
                 Toast.makeText(requireContext(), textNotify, Toast.LENGTH_SHORT).show()
             }
 
             btnShuffle.setOnClickListener {
-                val btnShuffleRes =
-                    if (service?.isShuffle?.value == true) R.drawable.icon_shuffle_off else R.drawable.icon_shuffle_on
-                textNotify =
-                    if (service?.isShuffle?.value == true) "Shuffle OFF!" else "Shuffle ON!"
-                Glide.with(btnShuffle)
-                    .load(btnShuffleRes)
-                    .into(btnShuffle)
+                val btnShuffleRes = if (service?.isShuffle?.value == true) R.drawable.icon_shuffle_off else R.drawable.icon_shuffle_on
+                val textNotify = if (service?.isShuffle?.value == true) "Shuffle OFF!" else "Shuffle ON!"
+                Glide.with(btnShuffle).load(btnShuffleRes).into(btnShuffle)
                 service?.setShuffleMode(!service!!.isShuffle.value)
                 Toast.makeText(requireContext(), textNotify, Toast.LENGTH_SHORT).show()
             }
 
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
                         service?.seekTo(progress.toLong())
                         binding.tvCurrentTime.text = convertMillisToTime(progress.toLong())
@@ -241,7 +175,6 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
                         updateSeekBarProgress()
                     }
                 }
-
             })
 
             tvShowLyrics.setOnClickListener {
@@ -270,18 +203,10 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
             tvName.isSelected = true
             tvArtist.text = currentPlaying?.artist
             val artUri = Uri.parse(currentPlaying?.image)
-            val btnPlayPauseRes =
-                if (isPlaying == true) R.drawable.icon_pause_reverse else R.drawable.icon_play_reverse
-            Glide.with(imgArt)
-                .load(artUri)
-                .into(imgArt)
-            Glide.with(imgArtBackground)
-                .load(artUri)
-                .apply(RequestOptions.bitmapTransform(BlurTransformation(30)))
-                .into(imgArtBackground)
-            Glide.with(btnPlayPause)
-                .load(btnPlayPauseRes)
-                .into(btnPlayPause)
+            val btnPlayPauseRes = if (isPlaying == true) R.drawable.icon_pause_reverse else R.drawable.icon_play_reverse
+            Glide.with(imgArt).load(artUri).into(imgArt)
+            Glide.with(imgArtBackground).load(artUri).apply(RequestOptions.bitmapTransform(BlurTransformation(30))).into(imgArtBackground)
+            Glide.with(btnPlayPause).load(btnPlayPauseRes).into(btnPlayPause)
             seekBar.apply {
                 max = currentPlaying!!.duration.toInt()
                 progress = service?.getCurrentPosition() ?: 0
@@ -302,15 +227,14 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
     private fun convertMillisToTime(millis: Long): String {
         val minutes = millis / 1000 / 60
         val seconds = millis / 1000 % 60
-        return String.format(Locale.US, "%02d:%02d", minutes, seconds)
+        return "%02d:%02d".format(minutes, seconds)
     }
 
     private fun minimizedSetViewOnCommand() {
         lifecycleScope.launch {
             service?.currentPlaying?.collect { currentPlaying ->
                 val song = currentPlaying?.second
-                val minimizedLayout =
-                    (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
+                val minimizedLayout = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
                 val tvName = minimizedLayout?.findViewById<TextView>(R.id.tv_name)
                 val tvArtist = minimizedLayout?.findViewById<TextView>(R.id.tv_artist)
                 val imgThumb = minimizedLayout?.findViewById<ImageView>(R.id.img_thumb)
@@ -318,11 +242,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
                 tvName?.text = song?.name
                 tvArtist?.text = song?.artist
                 val uri = Uri.parse(song?.image)
-                Glide.with(imgThumb!!)
-                    .load(uri)
-                    .apply(RequestOptions().transform(RoundedCorners(15)))
-                    .into(imgThumb)
-
+                Glide.with(imgThumb!!).load(uri).apply(RequestOptions().transform(RoundedCorners(15))).into(imgThumb)
             }
         }
     }
@@ -332,7 +252,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
             try {
                 binding.loading.visibility = View.VISIBLE
                 val song = service?.currentPlaying?.value?.second
-                val response: LyricsResponse = withContext(Dispatchers.IO) {
+                val response = withContext(Dispatchers.IO) {
                     RetrofitExtension.OVH_LYRICS.getLyrics(song!!.artist, song.name).execute().body() ?: LyricsResponse("")
                 }
                 binding.loading.visibility = View.GONE

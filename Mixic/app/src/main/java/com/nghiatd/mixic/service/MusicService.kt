@@ -1,11 +1,30 @@
 package com.nghiatd.mixic.service
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
+import android.media.session.MediaSession
+import android.net.Uri
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
+import androidx.media.session.MediaButtonReceiver
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +46,6 @@ class MusicService : Service() {
     private val allSongs = _allSongs.asStateFlow()
     val currentPlaying = MutableStateFlow<Pair<Int, Song>?>(null)
     val isPlayingFlow = MutableStateFlow(false)
-
     val repeatMode = MutableStateFlow(REPEAT_MODE_OFF)
     val isShuffle = MutableStateFlow(false)
     val isMute = MutableStateFlow(false)
@@ -43,7 +61,7 @@ class MusicService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     fun setShuffleMode(shuffleMode: Boolean) {
@@ -118,7 +136,7 @@ class MusicService : Service() {
         val currentPlaying = currentPlaying.value
 
         val song = if (isShuffle) {
-            val index = Random.nextInt(0, listSong.size-1)
+            val index = Random.nextInt(0, listSong.size - 1)
             listSong[index]
         } else {
             if (currentPlaying == null) {

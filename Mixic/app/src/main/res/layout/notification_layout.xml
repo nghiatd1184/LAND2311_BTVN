@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="110dp">
+
+    <ImageView
+        android:id="@+id/iv_album_art"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/splash_img" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_component_reverse_50opacity" />
+
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textSize="18sp"
+        android:gravity="center"
+        tools:text="Talk to me"/>
+
+    <TextView
+        android:id="@+id/tv_artist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:fontFamily="@font/main_font"
+        android:singleLine="true"
+        android:textColor="@color/grey_color"
+        android:textSize="14sp"
+        android:layout_below="@id/tv_name"
+        tools:text="Chikapu" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_below="@id/tv_artist">
+
+        <ImageView
+            android:id="@+id/iv_previous"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/icon_previous" />
+
+        <ImageView
+            android:id="@+id/iv_play_pause"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginHorizontal="10dp"
+            android:src="@drawable/icon_play" />
+
+        <ImageView
+            android:id="@+id/iv_next"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/icon_next" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

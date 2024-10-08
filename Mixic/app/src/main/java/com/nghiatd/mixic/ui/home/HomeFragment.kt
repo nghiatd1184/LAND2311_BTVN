@@ -58,12 +58,20 @@ class HomeFragment : Fragment() {
     }
 
     private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-    private val permission = if (isAtLeast13) Manifest.permission.READ_MEDIA_AUDIO
-    else Manifest.permission.READ_EXTERNAL_STORAGE
+    private val permissions = if (isAtLeast13) {
+        arrayOf(
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    } else {
+        arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
 
-    private val requestReadExternalPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions.all { it.value }) {
                 //TODO
             } else {
                 showPermissionDialog()
@@ -90,12 +98,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkPermission() {
-        if (checkSelfPermission(
-                requireContext(),
-                permission
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestReadExternalIfNeed()
+        if (permissions.any { checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED }) {
+            requestPermissionsIfNeed()
         } else {
             //TODO
         }
@@ -170,9 +174,7 @@ class HomeFragment : Fragment() {
                     minimizedSetViewOnCommand()
                 }
             }
-
         }
-
     }
 
     private fun minimizedSetViewOnCommand() {
@@ -205,22 +207,13 @@ class HomeFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun requestReadExternalIfNeed() {
-        when {
-            checkSelfPermission(requireContext(), permission)
-                    == PackageManager.PERMISSION_GRANTED -> {
-                //TODO
-            }
-
-            shouldShowRequestPermissionRationale(permission) -> {
-                showPermissionDialog()
-            }
-
-            else -> {
-                requestReadExternalPermissionLauncher.launch(
-                    permission
-                )
-            }
+    private fun requestPermissionsIfNeed() {
+        if (permissions.all { checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED }) {
+            //TODO
+        } else if (permissions.any { shouldShowRequestPermissionRationale(it) }) {
+            showPermissionDialog()
+        } else {
+            requestPermissionsLauncher.launch(permissions)
         }
     }
 
@@ -246,10 +239,7 @@ class HomeFragment : Fragment() {
             .commit()
     }
 
-    private fun isFragmentInBackStack(
-        fragmentManager: FragmentManager,
-        fragmentTag: String
-    ): Boolean {
+    private fun isFragmentInBackStack(fragmentManager: FragmentManager, fragmentTag: String): Boolean {
         val backStackEntryCount = fragmentManager.backStackEntryCount
 
         for (i in 0 until backStackEntryCount) {
