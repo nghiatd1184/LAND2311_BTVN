@@ -47,7 +47,7 @@ class SongRepository(val context: Context) {
                     val albumId = cursor.getLong(albumIdColum)
                     val data = cursor.getString(dataColum)
                     val albumArtUri = getAlbumArtUri(context, albumId)
-                    val song = Song(id, title, artist, duration, albumArtUri.toString(), data)
+                    val song = Song(id.toString(), title, artist, duration, albumArtUri.toString(), data)
                     listSongs.add(song)
                 }
             }
