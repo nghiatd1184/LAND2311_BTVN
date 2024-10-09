@@ -8,8 +8,7 @@
         <ImageView
             android:id="@+id/img_feature"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="16:9"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
             tools:src="@drawable/img_splash_2"
             app:layout_constraintStart_toStartOf="parent"

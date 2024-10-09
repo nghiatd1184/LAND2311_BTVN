@@ -19,7 +19,6 @@ class SongRepository(val context: Context) {
                 MediaStore.Audio.Media._ID,
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.DATA
             )
@@ -36,18 +35,16 @@ class SongRepository(val context: Context) {
                 val idColum = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
                 val titleColum = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
                 val artistColum = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
-                val durationColum = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
                 val albumIdColum = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
                 val dataColum = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idColum)
                     val title = cursor.getString(titleColum)
                     val artist = cursor.getString(artistColum)
-                    val duration = cursor.getLong(durationColum)
                     val albumId = cursor.getLong(albumIdColum)
                     val data = cursor.getString(dataColum)
                     val albumArtUri = getAlbumArtUri(context, albumId)
-                    val song = Song(id.toString(), title, artist, duration, albumArtUri.toString(), data)
+                    val song = Song(id.toString(), title, artist, albumArtUri.toString(), data)
                     listSongs.add(song)
                 }
             }

@@ -177,6 +177,10 @@ class MusicService : Service() {
         }
     }
 
+    fun getDuration(): Int {
+        return mediaPlayer.duration
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         scope.cancel()

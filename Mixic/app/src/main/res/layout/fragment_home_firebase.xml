@@ -10,9 +10,9 @@
         android:id="@+id/img_logo"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="10dp"
         android:padding="7dp"
         android:src="@drawable/logo"
-        android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_app_name"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,9 +23,9 @@
         android:id="@+id/tv_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:fontFamily="@font/main_font_bold_italic"
         android:text="@string/app_name"
-        android:layout_marginTop="10dp"
         android:textSize="25sp"
         app:layout_constraintStart_toEndOf="@+id/img_logo"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,8 +34,8 @@
         android:id="@+id/img_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_search"
         android:layout_marginEnd="10dp"
+        android:src="@drawable/icon_search"
         app:layout_constraintBottom_toBottomOf="@+id/tv_app_name"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,8 +44,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="none"
         android:layout_marginHorizontal="10dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,12 +63,21 @@
                 android:text="@string/featured"
                 android:textSize="20sp" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/view_pager_feature"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                tools:sample="@layout/item_feature" />
+                android:layout_height="wrap_content">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/view_pager_feature"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintDimensionRatio="16:9"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:sample="@layout/item_feature" />
+                
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,17 +85,17 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/recent_played"
                 android:textSize="20sp" />
-            
+
             <TextView
                 android:id="@+id/tv_recent_played_des"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/songs_you_ve_played_recently"
-                android:fontFamily="@font/main_font"
-                android:textColor="@color/grey_color"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
-                android:visibility="gone"
-                android:layout_gravity="center_horizontal"/>
+                android:fontFamily="@font/main_font"
+                android:text="@string/songs_you_ve_played_recently"
+                android:textColor="@color/grey_color"
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_recent_played"

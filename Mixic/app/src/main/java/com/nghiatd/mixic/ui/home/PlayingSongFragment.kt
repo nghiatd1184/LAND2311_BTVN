@@ -192,7 +192,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
     private fun updateUiOnChangeSong() {
         val currentPlaying = service?.currentPlaying?.value?.second
         val isPlaying = service?.isPlayingFlow?.value
-        val totalTime = convertMillisToTime(currentPlaying?.duration ?: 0)
+        val totalTime = convertMillisToTime(service?.getDuration()?.toLong() ?: 0)
         binding.tvLyrics.setText(R.string.blank)
         setLyric()
         binding.apply {
@@ -208,7 +208,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
             Glide.with(imgArtBackground).load(artUri).apply(RequestOptions.bitmapTransform(BlurTransformation(30))).into(imgArtBackground)
             Glide.with(btnPlayPause).load(btnPlayPauseRes).into(btnPlayPause)
             seekBar.apply {
-                max = currentPlaying!!.duration.toInt()
+                max = service?.getDuration() ?: 0
                 progress = service?.getCurrentPosition() ?: 0
             }
         }
