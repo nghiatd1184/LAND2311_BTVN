@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.R
-import com.nghiatd.mixic.adapter.DeviceSongAdapter
+import com.nghiatd.mixic.adapter.SongAdapter
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.viewmodel.SongViewModel
 import com.nghiatd.mixic.databinding.FragmentDeviceBinding
@@ -27,13 +27,10 @@ class DeviceFragment : Fragment() {
 
     private lateinit var binding: FragmentDeviceBinding
     private lateinit var viewModel: SongViewModel
-
     private var service: MusicService? = null
 
-    private val deviceSongAdapter = DeviceSongAdapter { song ->
+    private val songAdapter = SongAdapter { song ->
         service?.playPause(song)
-        val minimizedLayout = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
-        if (View.GONE == minimizedLayout?.visibility) minimizedLayout.visibility = View.VISIBLE
         minimizedInitView(song)
     }
 
@@ -57,7 +54,7 @@ class DeviceFragment : Fragment() {
 
     private fun initView() {
         binding.recyclerViewDeviceSong.apply {
-            adapter = deviceSongAdapter
+            adapter = songAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
     }
@@ -70,6 +67,7 @@ class DeviceFragment : Fragment() {
         val imgThumb = minimizedLayout?.findViewById<ImageView>(R.id.img_thumb)
         val artUri = Uri.parse(song.image)
 
+        if (View.GONE == minimizedLayout?.visibility) minimizedLayout.visibility = View.VISIBLE
         tvName?.text = song.name
         tvArtist?.text = song.artist
         Glide.with(imgThumb!!)
@@ -81,14 +79,14 @@ class DeviceFragment : Fragment() {
     private fun listenViewModel() {
         lifecycleScope.launch {
             viewModel.allSongs.collectLatest { allSongs ->
-                deviceSongAdapter.submitList(allSongs)
+                songAdapter.submitList(allSongs)
                 service?.setPlayList(allSongs)
             }
         }
 
         lifecycleScope.launch {
             service?.isPlayingFlow?.collectLatest { isPlaying ->
-                deviceSongAdapter.isPlaying = isPlaying
+                songAdapter.isPlaying = isPlaying
                 val imgPlayPause = if (isPlaying) R.drawable.icon_pause else R.drawable.icon_play
                 val minimizedPlayPauseBtn =
                     (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
@@ -101,7 +99,7 @@ class DeviceFragment : Fragment() {
 
         lifecycleScope.launch {
             service?.currentPlaying?.collectLatest { currentPlaying ->
-                deviceSongAdapter.playingSong = currentPlaying?.second
+                songAdapter.playingSong = currentPlaying?.second
             }
         }
     }

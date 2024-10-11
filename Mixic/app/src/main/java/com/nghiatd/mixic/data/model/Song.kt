@@ -6,4 +6,5 @@ data class Song(
     val artist: String,
     val image: String,
     val data: String
-)
+) {
+}

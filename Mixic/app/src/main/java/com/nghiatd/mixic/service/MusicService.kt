@@ -24,7 +24,7 @@ class MusicService : Service() {
 
     private val scope = CoroutineScope(Dispatchers.Main)
     private val _allSongs = MutableStateFlow<List<Song>>(emptyList())
-    private val allSongs = _allSongs.asStateFlow()
+    val allSongs = _allSongs.asStateFlow()
     val currentPlaying = MutableStateFlow<Pair<Int, Song>?>(null)
     val isPlayingFlow = MutableStateFlow(false)
     val repeatMode = MutableStateFlow(REPEAT_MODE_OFF)

@@ -76,7 +76,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:sample="@layout/item_feature" />
-                
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -145,7 +145,7 @@
                 android:textSize="20sp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_category"
+                android:id="@+id/rv_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp" />

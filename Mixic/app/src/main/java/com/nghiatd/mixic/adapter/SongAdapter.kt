@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -15,7 +14,7 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.databinding.ItemSongListBinding
 
-class DeviceSongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, DeviceSongAdapter.DeviceSongViewHolder>(object :
+class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapter.DeviceSongViewHolder>(object :
     DiffUtil.ItemCallback<Song>() {
     override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
         return oldItem.name == newItem.name

@@ -76,6 +76,8 @@
         android:gravity="center"
         android:textColor="@color/grey_color"
         android:textSize="14sp"
+        android:singleLine="true"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_name"
