@@ -28,10 +28,16 @@ class DeviceFragment : Fragment() {
     private lateinit var binding: FragmentDeviceBinding
     private lateinit var viewModel: SongViewModel
     private var service: MusicService? = null
+    private var servicePlayList: MutableList<Song> = emptyList<Song>().toMutableList()
 
-    private val songAdapter = SongAdapter { song ->
-        service?.playPause(song)
-        minimizedInitView(song)
+    private val songAdapter: SongAdapter by lazy {
+        SongAdapter { song ->
+            if (servicePlayList != songAdapter.currentList) {
+                service?.setPlayList(songAdapter.currentList)
+            }
+            service?.playPause(song)
+            minimizedInitView(song)
+        }
     }
 
     override fun onCreateView(
@@ -80,7 +86,6 @@ class DeviceFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.allSongs.collectLatest { allSongs ->
                 songAdapter.submitList(allSongs)
-                service?.setPlayList(allSongs)
             }
         }
 
@@ -100,6 +105,13 @@ class DeviceFragment : Fragment() {
         lifecycleScope.launch {
             service?.currentPlaying?.collectLatest { currentPlaying ->
                 songAdapter.playingSong = currentPlaying?.second
+            }
+        }
+
+        lifecycleScope.launch {
+            service?.allSongs?.collectLatest {
+                this@DeviceFragment.servicePlayList.clear()
+                this@DeviceFragment.servicePlayList.addAll(it)
             }
         }
     }

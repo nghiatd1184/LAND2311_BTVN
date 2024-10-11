@@ -43,7 +43,7 @@ class SongRepository(val context: Context) {
                     val artist = cursor.getString(artistColum)
                     val albumId = cursor.getLong(albumIdColum)
                     val data = cursor.getString(dataColum)
-                    val albumArtUri = getAlbumArtUri(context, albumId)
+                    val albumArtUri = getAlbumArtUri(albumId)
                     val song = Song(id.toString(), title, artist, albumArtUri.toString(), data)
                     listSongs.add(song)
                 }
@@ -56,7 +56,7 @@ class SongRepository(val context: Context) {
         listSongs
     }
 
-    private fun getAlbumArtUri(context: Context, albumId: Long): Uri {
+    private fun getAlbumArtUri(albumId: Long): Uri {
         val albumArtUri = Uri.parse("content://media/external/audio/albumart")
         return ContentUris.withAppendedId(albumArtUri, albumId)
     }

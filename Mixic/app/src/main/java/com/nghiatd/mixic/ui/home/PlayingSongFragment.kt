@@ -25,24 +25,25 @@ import com.nghiatd.mixic.receiver.OnSongCompletionReceiver
 import com.nghiatd.mixic.service.MusicService
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 
 class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener {
 
     private lateinit var binding: FragmentPlayingSongBinding
     private var service: MusicService? = null
-    private var updateJobs: Job? = null
     private lateinit var songCompletionReceiver: OnSongCompletionReceiver
-    private val isApi33OrHigher = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+    private var updateJobs: Job? = null
+    private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        service = (parentFragment as HomeFragment).getMusicService()
         songCompletionReceiver = OnSongCompletionReceiver(this)
         val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_COMPLETED")
-        if (isApi33OrHigher) {
-            requireActivity().registerReceiver(songCompletionReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+        if (isAtLeast13) {
+            requireActivity().registerReceiver(songCompletionReceiver, intentFilter, Context.RECEIVER_EXPORTED)
         } else {
             requireActivity().registerReceiver(songCompletionReceiver, intentFilter)
         }
-        service = (parentFragment as HomeFragment).getMusicService()
         binding = FragmentPlayingSongBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -87,38 +88,29 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
     private fun initClick() {
         binding.apply {
             imgDownCollapse.setOnClickListener {
-                parentFragmentManager.popBackStack()
                 val minimizedLayout = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
                 minimizedLayout?.visibility = View.VISIBLE
                 val bottomNav = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.bottom_nav)
                 bottomNav?.visibility = View.VISIBLE
                 updateJobs?.cancel()
+                parentFragmentManager.popBackStack()
             }
 
             btnPlayPause.setOnClickListener {
                 val song = service?.currentPlaying?.value?.second
                 val imgRes = if (service?.isPlayingFlow?.value == true) R.drawable.icon_play_reverse else R.drawable.icon_pause_reverse
                 Glide.with(btnPlayPause).load(imgRes).into(btnPlayPause)
-                val btnPlayPauseMinimized = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)?.findViewById<ImageView>(R.id.btn_play_pause)
-                val imgResMinimized = if (service?.isPlayingFlow?.value == true) R.drawable.icon_play else R.drawable.icon_pause
-                Glide.with(btnPlayPauseMinimized!!).load(imgResMinimized).into(btnPlayPauseMinimized)
-
                 if (service?.isPlayingFlow?.value == true) updateJobs?.cancel() else updateSeekBarProgress()
                 service?.playPause(song)
-                minimizedSetViewOnCommand()
             }
 
             btnNext.setOnClickListener {
                 service?.playNext()
-                minimizedSetViewOnCommand()
-                updateUiOnChangeSong()
                 binding.seekBar.progress = 0
             }
 
             btnPrevious.setOnClickListener {
                 service?.playPrev()
-                minimizedSetViewOnCommand()
-                updateUiOnChangeSong()
                 binding.seekBar.progress = 0
             }
 
@@ -204,7 +196,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
             tvArtist.text = currentPlaying?.artist
             val artUri = Uri.parse(currentPlaying?.image)
             val btnPlayPauseRes = if (isPlaying == true) R.drawable.icon_pause_reverse else R.drawable.icon_play_reverse
-            Glide.with(imgArt).load(artUri).into(imgArt)
+            Glide.with(imgArt).load(artUri).apply(RequestOptions().transform(RoundedCorners(15))).into(imgArt)
             Glide.with(imgArtBackground).load(artUri).apply(RequestOptions.bitmapTransform(BlurTransformation(30))).into(imgArtBackground)
             Glide.with(btnPlayPause).load(btnPlayPauseRes).into(btnPlayPause)
             seekBar.apply {
@@ -230,23 +222,6 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
         return "%02d:%02d".format(minutes, seconds)
     }
 
-    private fun minimizedSetViewOnCommand() {
-        lifecycleScope.launch {
-            service?.currentPlaying?.collect { currentPlaying ->
-                val song = currentPlaying?.second
-                val minimizedLayout = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
-                val tvName = minimizedLayout?.findViewById<TextView>(R.id.tv_name)
-                val tvArtist = minimizedLayout?.findViewById<TextView>(R.id.tv_artist)
-                val imgThumb = minimizedLayout?.findViewById<ImageView>(R.id.img_thumb)
-
-                tvName?.text = song?.name
-                tvArtist?.text = song?.artist
-                val uri = Uri.parse(song?.image)
-                Glide.with(imgThumb!!).load(uri).apply(RequestOptions().transform(RoundedCorners(15))).into(imgThumb)
-            }
-        }
-    }
-
     private fun setLyric() {
         lifecycleScope.launch {
             try {
@@ -269,11 +244,10 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
     override fun onDestroyView() {
         super.onDestroyView()
         updateJobs?.cancel()
-        requireActivity().unregisterReceiver(songCompletionReceiver)
     }
 
     override fun onSongCompletion() {
         updateUiOnChangeSong()
-        minimizedSetViewOnCommand()
     }
+
 }

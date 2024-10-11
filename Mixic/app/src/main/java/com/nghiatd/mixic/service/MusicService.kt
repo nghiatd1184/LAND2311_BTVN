@@ -110,6 +110,7 @@ class MusicService : Service() {
     }
 
     fun playNext() {
+        Log.d("NGHIA_CHECK", "playNext is called")
         val listSong = allSongs.value
         if (listSong.isEmpty()) return
 
@@ -172,9 +173,7 @@ class MusicService : Service() {
     }
 
     fun setPlayList(list: List<Song>) {
-        scope.launch {
-            _allSongs.value = list
-        }
+        _allSongs.value = list
     }
 
     fun getDuration(): Int {

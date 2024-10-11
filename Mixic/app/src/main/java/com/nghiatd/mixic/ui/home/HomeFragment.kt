@@ -2,12 +2,14 @@ package com.nghiatd.mixic.ui.home
 
 import android.Manifest
 import android.content.ComponentName
+import android.content.Context
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
 import android.content.Intent.CATEGORY_DEFAULT
 import android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.Intent.FLAG_ACTIVITY_NO_HISTORY
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -34,16 +36,18 @@ import com.nghiatd.mixic.MainActivity
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.databinding.FragmentHomeBinding
+import com.nghiatd.mixic.receiver.OnSongCompletionReceiver
 import com.nghiatd.mixic.service.MusicService
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener {
 
     private lateinit var binding: FragmentHomeBinding
 
     private var service: MusicService? = null
     private var isBound = false
+    private lateinit var songCompletionReceiver: OnSongCompletionReceiver
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicBinder
@@ -83,6 +87,13 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        songCompletionReceiver = OnSongCompletionReceiver(this)
+        val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_COMPLETED")
+        if (isAtLeast13) {
+            requireActivity().registerReceiver(songCompletionReceiver, intentFilter, Context.RECEIVER_EXPORTED)
+        } else {
+            requireActivity().registerReceiver(songCompletionReceiver, intentFilter)
+        }
         Intent(requireActivity(), MusicService::class.java).also { intent ->
             requireActivity().bindService(intent, serviceConnection, BIND_AUTO_CREATE)
             requireActivity().startService(intent)
@@ -157,11 +168,9 @@ class HomeFragment : Fragment() {
                 }
                 btnNext.setOnClickListener {
                     service?.playNext()
-                    minimizedSetViewOnCommand()
                 }
                 btnPrevious.setOnClickListener {
                     service?.playPrev()
-                    minimizedSetViewOnCommand()
                 }
                 btnPlayPause.setOnClickListener {
                     val song = service?.currentPlaying?.value?.second
@@ -171,13 +180,12 @@ class HomeFragment : Fragment() {
                         .load(imgRes)
                         .into(btnPlayPause)
                     service?.playPause(song)
-                    minimizedSetViewOnCommand()
                 }
             }
         }
     }
 
-    private fun minimizedSetViewOnCommand() {
+    private fun minimizedSetViewOnSongComplete() {
         lifecycleScope.launch {
             service?.currentPlaying?.collect { currentPlaying ->
                 val song = currentPlaying?.second
@@ -257,9 +265,14 @@ class HomeFragment : Fragment() {
             requireContext().unbindService(serviceConnection)
             isBound = false
         }
+        requireActivity().unregisterReceiver(songCompletionReceiver)
     }
 
     fun getMusicService(): MusicService? {
         return this@HomeFragment.service
+    }
+
+    override fun onSongCompletion() {
+        minimizedSetViewOnSongComplete()
     }
 }

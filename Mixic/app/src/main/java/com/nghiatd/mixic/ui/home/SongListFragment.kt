@@ -30,14 +30,13 @@ class SongListFragment : Fragment() {
 
     private lateinit var binding: FragmentSongListBinding
     private lateinit var sharedViewModel: SharedDataViewModel
-    private lateinit var servicePlayList: List<Song>
+    private var servicePlayList: MutableList<Song> = emptyList<Song>().toMutableList()
     private var feature: Feature? = null
     private var category: Category? = null
     private var service: MusicService? = null
 
     private val songAdapter: SongAdapter by lazy {
         SongAdapter { song ->
-            Log.d("NGHIA_CHECK", "song: ${service?.allSongs?.value}")
             if (servicePlayList != songAdapter.currentList) {
                 service?.setPlayList(songAdapter.currentList)
             }
@@ -122,12 +121,6 @@ class SongListFragment : Fragment() {
         lifecycleScope.launch {
             sharedViewModel.selectedCategory.collectLatest {
                 this@SongListFragment.category = it
-            }
-        }
-
-        lifecycleScope.launch {
-            service?.allSongs?.collectLatest {
-                this@SongListFragment.servicePlayList = it
             }
         }
 

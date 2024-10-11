@@ -29,9 +29,15 @@ class HomeFirebaseFragment : Fragment() {
     private lateinit var sharedViewModel: SharedDataViewModel
     private val featureList = mutableListOf<Feature>()
     private val categoryList = mutableListOf<Category>()
-    private val featureAdapter : FeatureAdapter by lazy { FeatureAdapter(featureList) }
+    private val featureAdapter : FeatureAdapter by lazy { FeatureAdapter(featureList) {feature ->
+        sharedViewModel.setFeature(feature)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, SongListFragment())
+            .addToBackStack(null)
+            .commit()
+    }}
+
     private val categoryAdapter : CategoryAdapter by lazy { CategoryAdapter(categoryList) {category ->
-        Log.d("NGHIA_CHECK", "category: $category")
         sharedViewModel.setCategory(category)
         parentFragmentManager.beginTransaction()
             .replace(R.id.container, SongListFragment())

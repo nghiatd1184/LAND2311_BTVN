@@ -28,7 +28,7 @@ class FirebaseDataViewModel : ViewModel() {
     private fun getAllFeature() {
         val fireBaseFireStore = FirebaseFirestore.getInstance()
         fireBaseFireStore.collection("feature")
-            .addSnapshotListener { value, error ->
+            .addSnapshotListener { value, _ ->
                 val allFeature = mutableListOf<Feature>()
                 val tasks = mutableListOf<Task<DocumentSnapshot>>()
                 value?.documents?.forEach { documentSnapshot ->
@@ -38,7 +38,7 @@ class FirebaseDataViewModel : ViewModel() {
                     val songsRefs = documentSnapshot.get("songs") as? List<DocumentReference>
                     val songs = mutableListOf<Song>()
                     songsRefs?.forEach { songRef ->
-                        songRef.get().addOnSuccessListener { songSnapshot ->
+                        songRef.get().addOnSuccessListener { _ ->
                             val task = songRef.get().addOnSuccessListener { songSnapshot ->
                                 val songId = songSnapshot.id
                                 val songName =
@@ -55,8 +55,11 @@ class FirebaseDataViewModel : ViewModel() {
                             tasks.add(task)
                         }
                     }
-                    val feature = Feature(id, name, image, songs)
-                    allFeature.add(feature)
+                    Tasks.whenAllComplete(tasks).addOnCompleteListener {
+                        songs.sortBy { it.name }
+                        val feature = Feature(id, name,image, songs)
+                        allFeature.add(feature)
+                    }
                 }
                 Tasks.whenAllComplete(tasks).addOnCompleteListener {
                     _allFeature.value = allFeature
@@ -91,8 +94,11 @@ class FirebaseDataViewModel : ViewModel() {
                         }
                         tasks.add(task)
                     }
-                    val category = Category(id, name, songs = songs)
-                    allCategory.add(category)
+                    Tasks.whenAllComplete(tasks).addOnCompleteListener {
+                        songs.sortBy { it.name }
+                        val category = Category(id, name, songs)
+                        allCategory.add(category)
+                    }
                 }
                 Tasks.whenAllComplete(tasks).addOnCompleteListener {
                     _allCategory.value = allCategory
