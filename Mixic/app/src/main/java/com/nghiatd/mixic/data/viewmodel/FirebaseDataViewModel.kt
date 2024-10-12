@@ -1,6 +1,5 @@
 package com.nghiatd.mixic.data.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -20,9 +19,13 @@ class FirebaseDataViewModel : ViewModel() {
     private val _allCategory = MutableStateFlow<List<Category>>(emptyList())
     val allCategory = _allCategory.asStateFlow()
 
+    private val _allSong = MutableStateFlow<List<Song>>(emptyList())
+    val allSong = _allSong.asStateFlow()
+
     init {
         getAllCategory()
         getAllFeature()
+        getAllSong()
     }
 
     private fun getAllFeature() {
@@ -40,17 +43,7 @@ class FirebaseDataViewModel : ViewModel() {
                     songsRefs?.forEach { songRef ->
                         songRef.get().addOnSuccessListener { _ ->
                             val task = songRef.get().addOnSuccessListener { songSnapshot ->
-                                val songId = songSnapshot.id
-                                val songName =
-                                    songSnapshot.getString("name") ?: return@addOnSuccessListener
-                                val songArtist =
-                                    songSnapshot.getString("artist") ?: return@addOnSuccessListener
-                                val songImage =
-                                    songSnapshot.getString("image") ?: return@addOnSuccessListener
-                                val songData =
-                                    songSnapshot.getString("data") ?: return@addOnSuccessListener
-                                val song = Song(songId, songName, songArtist, songImage, songData)
-                                songs.add(song)
+                                songs.add(songSnapshot.toObject(Song::class.java) ?: return@addOnSuccessListener)
                             }
                             tasks.add(task)
                         }
@@ -67,6 +60,7 @@ class FirebaseDataViewModel : ViewModel() {
                 }
     }
 
+
     private fun getAllCategory() {
         val fireBaseFireStore = FirebaseFirestore.getInstance()
         fireBaseFireStore.collection("category")
@@ -80,17 +74,7 @@ class FirebaseDataViewModel : ViewModel() {
                     val songs = mutableListOf<Song>()
                     songsRefs?.forEach { songRef ->
                         val task = songRef.get().addOnSuccessListener { songSnapshot ->
-                            val songId = songSnapshot.id
-                            val songName =
-                                songSnapshot.getString("name") ?: return@addOnSuccessListener
-                            val songArtist =
-                                songSnapshot.getString("artist") ?: return@addOnSuccessListener
-                            val songImage =
-                                songSnapshot.getString("image") ?: return@addOnSuccessListener
-                            val songData =
-                                songSnapshot.getString("data") ?: return@addOnSuccessListener
-                            val song = Song(songId, songName, songArtist, songImage, songData)
-                            songs.add(song)
+                            songs.add(songSnapshot.toObject(Song::class.java) ?: return@addOnSuccessListener)
                         }
                         tasks.add(task)
                     }
@@ -103,6 +87,23 @@ class FirebaseDataViewModel : ViewModel() {
                 Tasks.whenAllComplete(tasks).addOnCompleteListener {
                     _allCategory.value = allCategory
                 }
+            }
+    }
+
+    private fun getAllSong() {
+        val fireBaseFireStore = FirebaseFirestore.getInstance()
+        fireBaseFireStore.collection("song")
+            .addSnapshotListener { value, _ ->
+                val allSong = mutableListOf<Song>()
+                value?.documents?.forEach { documentSnapshot ->
+                    val id = documentSnapshot.id
+                    val name = documentSnapshot.getString("name") ?: return@forEach
+                    val image = documentSnapshot.getString("image") ?: return@forEach
+                    val url = documentSnapshot.getString("url") ?: return@forEach
+                    val song = Song(id, name, image, url)
+                    allSong.add(song)
+                }
+                _allSong.value = allSong
             }
     }
 }

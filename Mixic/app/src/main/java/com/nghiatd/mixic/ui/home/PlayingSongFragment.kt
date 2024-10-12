@@ -244,6 +244,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
     override fun onDestroyView() {
         super.onDestroyView()
         updateJobs?.cancel()
+        requireActivity().unregisterReceiver(songCompletionReceiver)
     }
 
     override fun onSongCompletion() {

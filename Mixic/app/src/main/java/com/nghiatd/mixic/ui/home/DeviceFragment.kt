@@ -17,7 +17,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.adapter.SongAdapter
 import com.nghiatd.mixic.data.model.Song
-import com.nghiatd.mixic.data.viewmodel.SongViewModel
+import com.nghiatd.mixic.data.viewmodel.DeviceSongViewModel
 import com.nghiatd.mixic.databinding.FragmentDeviceBinding
 import com.nghiatd.mixic.service.MusicService
 import kotlinx.coroutines.flow.collectLatest
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 class DeviceFragment : Fragment() {
 
     private lateinit var binding: FragmentDeviceBinding
-    private lateinit var viewModel: SongViewModel
+    private lateinit var viewModel: DeviceSongViewModel
     private var service: MusicService? = null
     private var servicePlayList: MutableList<Song> = emptyList<Song>().toMutableList()
 
@@ -45,8 +45,8 @@ class DeviceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModeFactory = SongViewModel.SongViewModelFactory(requireContext())
-        viewModel = ViewModelProvider(this, viewModeFactory)[SongViewModel::class.java]
+        val viewModeFactory = DeviceSongViewModel.SongViewModelFactory(requireContext())
+        viewModel = ViewModelProvider(this, viewModeFactory)[DeviceSongViewModel::class.java]
         service = (parentFragment as HomeFragment).getMusicService()
         listenViewModel()
         binding = FragmentDeviceBinding.inflate(inflater, container, false)
