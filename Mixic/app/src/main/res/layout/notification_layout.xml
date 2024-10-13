@@ -26,6 +26,7 @@
         android:ellipsize="marquee"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:textColor="@color/main_component_color"
         android:freezesText="true"
         android:marqueeRepeatLimit="marquee_forever"
         android:scrollHorizontally="true"
@@ -52,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
         android:layout_below="@id/tv_artist">
 

@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class SongRepository(val context: Context) {
-    suspend fun getAllSongs() = withContext(Dispatchers.IO) {
+    suspend fun getAllDeviceSongs() = withContext(Dispatchers.IO) {
         val listSongs = ArrayList<Song>()
 
         try {

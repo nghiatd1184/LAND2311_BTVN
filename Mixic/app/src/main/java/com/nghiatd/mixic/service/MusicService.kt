@@ -1,8 +1,13 @@
 package com.nghiatd.mixic.service
 
+
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import android.media.audiofx.BassBoost
+import android.media.audiofx.Equalizer
+import android.media.audiofx.Virtualizer
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
@@ -12,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class MusicService : Service() {
@@ -30,15 +34,51 @@ class MusicService : Service() {
     val repeatMode = MutableStateFlow(REPEAT_MODE_OFF)
     val isShuffle = MutableStateFlow(false)
     val isMute = MutableStateFlow(false)
+    private lateinit var equalizer: Equalizer
+    private lateinit var bassBoost: BassBoost
+    private lateinit var virtualizer: Virtualizer
 
     private val mediaPlayer = MediaPlayer().apply {
         setOnPreparedListener {
             start()
-            onSongCompletedBroadcast()
+            onSongStartBroadcast()
         }
         setOnCompletionListener {
             playOnEnd()
         }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        val audioSessionId = getAudioSessionId()
+        equalizer = Equalizer(0, audioSessionId).apply { enabled = true }
+        bassBoost = BassBoost(0, audioSessionId).apply { enabled = true }
+        virtualizer = Virtualizer(0, audioSessionId).apply { enabled = true }
+
+        val sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val minEQLevel = equalizer.bandLevelRange[0]
+        val maxEQLevel = equalizer.bandLevelRange[1]
+
+        for (i in 0 until equalizer.numberOfBands) {
+            val bandIndex = i.toShort()
+            val savedLevel = sharedPreferences.getInt("BandLevel_$i", equalizer.getBandLevel(bandIndex).toInt())
+            val adjustedLevel = savedLevel.coerceIn(minEQLevel.toInt(), maxEQLevel.toInt())
+            equalizer.setBandLevel(bandIndex, adjustedLevel.toShort())
+        }
+
+        val bassBoostStrength = sharedPreferences.getInt("BassBoostStrength", bassBoost.roundedStrength.toInt())
+        bassBoost.setStrength(bassBoostStrength.toShort())
+
+        val virtualizerStrength = sharedPreferences.getInt("VirtualizerStrength", virtualizer.roundedStrength.toInt())
+        virtualizer.setStrength(virtualizerStrength.toShort())
+
+        val isEqualizerEnabled = sharedPreferences.getBoolean("EqualizerState", false)
+        equalizer.enabled = isEqualizerEnabled
+        bassBoost.enabled = isEqualizerEnabled
+        virtualizer.enabled = isEqualizerEnabled
+
+        isShuffle.value = sharedPreferences.getBoolean("ShuffleMode", false)
+        repeatMode.value = sharedPreferences.getInt("RepeatMode", REPEAT_MODE_OFF)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -47,10 +87,18 @@ class MusicService : Service() {
 
     fun setShuffleMode(shuffleMode: Boolean) {
         this.isShuffle.value = shuffleMode
+        val sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("ShuffleMode", shuffleMode)
+        editor.apply()
     }
 
     fun setRepeatMode(repeatMode: Int) {
         this.repeatMode.value = repeatMode
+        val sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("RepeatMode", repeatMode)
+        editor.apply()
     }
 
     fun seekTo(seekValue: Long) {
@@ -68,6 +116,10 @@ class MusicService : Service() {
         } else {
             mediaPlayer.setVolume(1f, 1f)
         }
+    }
+
+    fun getAudioSessionId(): Int {
+        return mediaPlayer.audioSessionId
     }
 
     private fun playOnEnd() {
@@ -110,7 +162,6 @@ class MusicService : Service() {
     }
 
     fun playNext() {
-        Log.d("NGHIA_CHECK", "playNext is called")
         val listSong = allSongs.value
         if (listSong.isEmpty()) return
 
@@ -187,6 +238,9 @@ class MusicService : Service() {
             mediaPlayer.stop()
         }
         mediaPlayer.release()
+        equalizer.release()
+        bassBoost.release()
+        virtualizer.release()
     }
 
     override fun onBind(intent: Intent?): IBinder {
@@ -199,8 +253,8 @@ class MusicService : Service() {
         }
     }
 
-    private fun onSongCompletedBroadcast() {
-        val intent = Intent("com.nghiatd.mixic.SONG_COMPLETED")
+    private fun onSongStartBroadcast() {
+        val intent = Intent("com.nghiatd.mixic.SONG_START")
         sendBroadcast(intent)
     }
 }

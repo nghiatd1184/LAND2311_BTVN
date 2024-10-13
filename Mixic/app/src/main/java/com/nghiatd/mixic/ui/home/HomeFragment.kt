@@ -23,36 +23,32 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.MainActivity
 import com.nghiatd.mixic.R
-import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.databinding.FragmentHomeBinding
-import com.nghiatd.mixic.receiver.OnSongCompletionReceiver
+import com.nghiatd.mixic.receiver.SongReceiver
 import com.nghiatd.mixic.service.MusicService
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener {
+class HomeFragment : Fragment(), SongReceiver.SongListener {
 
     private lateinit var binding: FragmentHomeBinding
 
     private var service: MusicService? = null
     private var isBound = false
-    private lateinit var songCompletionReceiver: OnSongCompletionReceiver
+    private lateinit var songReceiver: SongReceiver
+
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicBinder
             this@HomeFragment.service = binder.getMusicService()
             isBound = true
+            replaceFragment(HomeFirebaseFragment(), "Firebase")
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -87,17 +83,20 @@ class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        songCompletionReceiver = OnSongCompletionReceiver(this)
-        val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_COMPLETED")
+        songReceiver = SongReceiver(this)
+        val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_START")
         if (isAtLeast13) {
-            requireActivity().registerReceiver(songCompletionReceiver, intentFilter, Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(
+                songReceiver,
+                intentFilter,
+                Context.RECEIVER_EXPORTED
+            )
         } else {
-            requireActivity().registerReceiver(songCompletionReceiver, intentFilter)
+            requireActivity().registerReceiver(songReceiver, intentFilter)
         }
-        Intent(requireActivity(), MusicService::class.java).also { intent ->
-            requireActivity().bindService(intent, serviceConnection, BIND_AUTO_CREATE)
-            requireActivity().startService(intent)
-        }
+        val intent = Intent(requireActivity(), MusicService::class.java)
+        requireActivity().bindService(intent, serviceConnection, BIND_AUTO_CREATE)
+
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -109,7 +108,12 @@ class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener
     }
 
     private fun checkPermission() {
-        if (permissions.any { checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED }) {
+        if (permissions.any {
+                checkSelfPermission(
+                    requireContext(),
+                    it
+                ) != PackageManager.PERMISSION_GRANTED
+            }) {
             requestPermissionsIfNeed()
         } else {
             //TODO
@@ -117,7 +121,6 @@ class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener
     }
 
     private fun initView() {
-        replaceFragment(HomeFirebaseFragment(), "Firebase")
         binding.apply {
             bottomNav.setOnItemSelectedListener {
                 when (it.itemId) {
@@ -185,22 +188,22 @@ class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener
         }
     }
 
-    private fun minimizedSetViewOnSongComplete() {
-        lifecycleScope.launch {
-            service?.currentPlaying?.collect { currentPlaying ->
-                val song = currentPlaying?.second
-                binding.minimizedLayout.apply {
-                    tvName.text = song?.name
-                    tvArtist.text = song?.artist
-                    val uri = Uri.parse(song?.image)
-                    Glide.with(imgThumb)
-                        .load(uri)
-                        .apply(RequestOptions().transform(RoundedCorners(15)))
-                        .into(imgThumb)
-
-                }
-            }
+    private fun minimizedSetViewOnSongStart() {
+        val song = service?.currentPlaying?.value?.second
+        val playingSongFragment = isFragmentInBackStack(childFragmentManager, "PlayingSong")
+        if (binding.minimizedLayout.root.visibility == View.GONE && !playingSongFragment) {
+            binding.minimizedLayout.root.visibility = View.VISIBLE
         }
+        binding.minimizedLayout.apply {
+            tvName.text = song?.name
+            tvArtist.text = song?.artist
+            val uri = Uri.parse(song?.image)
+            Glide.with(imgThumb)
+                .load(uri)
+                .apply(RequestOptions().transform(RoundedCorners(15)))
+                .into(imgThumb)
+        }
+
     }
 
     private fun openAppSettings() {
@@ -216,7 +219,12 @@ class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener
     }
 
     private fun requestPermissionsIfNeed() {
-        if (permissions.all { checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED }) {
+        if (permissions.all {
+                checkSelfPermission(
+                    requireContext(),
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }) {
             //TODO
         } else if (permissions.any { shouldShowRequestPermissionRationale(it) }) {
             showPermissionDialog()
@@ -247,7 +255,10 @@ class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener
             .commit()
     }
 
-    private fun isFragmentInBackStack(fragmentManager: FragmentManager, fragmentTag: String): Boolean {
+    private fun isFragmentInBackStack(
+        fragmentManager: FragmentManager,
+        fragmentTag: String
+    ): Boolean {
         val backStackEntryCount = fragmentManager.backStackEntryCount
 
         for (i in 0 until backStackEntryCount) {
@@ -265,14 +276,14 @@ class HomeFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener
             requireContext().unbindService(serviceConnection)
             isBound = false
         }
-        requireActivity().unregisterReceiver(songCompletionReceiver)
+        requireActivity().unregisterReceiver(songReceiver)
     }
 
     fun getMusicService(): MusicService? {
         return this@HomeFragment.service
     }
 
-    override fun onSongCompletion() {
-        minimizedSetViewOnSongComplete()
+    override fun onSongStart() {
+        minimizedSetViewOnSongStart()
     }
 }

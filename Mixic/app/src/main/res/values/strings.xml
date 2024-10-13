@@ -21,4 +21,20 @@
     <string name="loading_lyrics">Loading Lyrics...</string>
     <string name="error_loading_lyrics">Cannot find lyrics for this song</string>
     <string name="blank"> </string>
+    <string name="songs_on_cloud">Songs on Cloud</string>
+    <string name="songs_on_your_device">Songs on Your Device</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="enable_equalizer">Enable Equalizer </string>
+    <string name="_60_hz">60 Hz</string>
+    <string name="_230_hz">230 Hz</string>
+    <string name="_910_hz">910 Hz</string>
+    <string name="_3_khz">3 kHz</string>
+    <string name="_14_khz">14 kHz</string>
+    <string name="classical">Classical</string>
+    <string name="pop">Pop</string>
+    <string name="edm">EDM</string>
+    <string name="jazz">Jazz</string>
+    <string name="surround_sound">Surround Sound</string>
+    <string name="bass_boost">Bass Boost</string>
+    <string name="rock">Rock</string>
 </resources>

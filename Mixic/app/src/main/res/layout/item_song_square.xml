@@ -3,24 +3,51 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginEnd="10dp">
 
-    <ImageView
-        android:id="@+id/img_art"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="100dp"
-        android:layout_height="100dp"
-        tools:src="@drawable/splash_img"
-        android:scaleType="centerCrop"/>
-        
+        android:layout_height="100dp">
+        <ImageView
+            android:id="@+id/img_art"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:src="@drawable/splash_img"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_playing"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            app:lottie_autoPlay="true"
+            android:visibility="visible"
+            app:lottie_colorFilter="@color/white"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/play_animation"
+            app:lottie_repeatMode="restart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:maxLines="1"
-        android:ellipsize="end"
-        tools:text="Song for you"/>
+        tools:text="Song for you"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:focusable="true"
+        android:freezesText="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true"/>
 
     <TextView
         android:id="@+id/tv_artist"

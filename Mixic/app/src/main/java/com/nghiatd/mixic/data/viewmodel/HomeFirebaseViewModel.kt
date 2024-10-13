@@ -8,24 +8,26 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nghiatd.mixic.data.model.Category
 import com.nghiatd.mixic.data.model.Feature
+import com.nghiatd.mixic.data.model.Section
 import com.nghiatd.mixic.data.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class FirebaseDataViewModel : ViewModel() {
+class HomeFirebaseViewModel : ViewModel() {
     private val _allFeature = MutableStateFlow<List<Feature>>(emptyList())
     val allFeature = _allFeature.asStateFlow()
 
     private val _allCategory = MutableStateFlow<List<Category>>(emptyList())
     val allCategory = _allCategory.asStateFlow()
 
-    private val _allSong = MutableStateFlow<List<Song>>(emptyList())
-    val allSong = _allSong.asStateFlow()
+
+    private val _allSection = MutableStateFlow<List<Section>>(emptyList())
+    val allSection = _allSection.asStateFlow()
 
     init {
         getAllCategory()
         getAllFeature()
-        getAllSong()
+        getAllSection()
     }
 
     private fun getAllFeature() {
@@ -90,20 +92,33 @@ class FirebaseDataViewModel : ViewModel() {
             }
     }
 
-    private fun getAllSong() {
+    private fun getAllSection() {
         val fireBaseFireStore = FirebaseFirestore.getInstance()
-        fireBaseFireStore.collection("song")
+        fireBaseFireStore.collection("section")
             .addSnapshotListener { value, _ ->
-                val allSong = mutableListOf<Song>()
+                val allSection = mutableListOf<Section>()
+                val tasks = mutableListOf<Task<DocumentSnapshot>>()
                 value?.documents?.forEach { documentSnapshot ->
                     val id = documentSnapshot.id
                     val name = documentSnapshot.getString("name") ?: return@forEach
-                    val image = documentSnapshot.getString("image") ?: return@forEach
-                    val url = documentSnapshot.getString("url") ?: return@forEach
-                    val song = Song(id, name, image, url)
-                    allSong.add(song)
+                    val songsRefs = documentSnapshot.get("songs") as? List<DocumentReference>
+                    val songs = mutableListOf<Song>()
+                    songsRefs?.forEach { songRef ->
+                        val task = songRef.get().addOnSuccessListener { songSnapshot ->
+                            songs.add(songSnapshot.toObject(Song::class.java) ?: return@addOnSuccessListener)
+                        }
+                        tasks.add(task)
+                    }
+                    Tasks.whenAllComplete(tasks).addOnCompleteListener {
+                        songs.sortBy { it.name }
+                        val section = Section(id, name, songs)
+                        allSection.add(section)
+                    }
                 }
-                _allSong.value = allSong
+                Tasks.whenAllComplete(tasks).addOnCompleteListener {
+                    _allSection.value = allSection
+                }
             }
     }
+
 }

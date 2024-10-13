@@ -10,20 +10,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class DeviceSongViewModel(private val repository: SongRepository) : ViewModel() {
+class DeviceViewModel(private val repository: SongRepository) : ViewModel() {
     private val _allSongs = MutableStateFlow<List<Song>>(emptyList())
     val allSongs = _allSongs.asStateFlow()
 
     init {
         viewModelScope.launch {
-            _allSongs.value = repository.getAllSongs()
+            _allSongs.value = repository.getAllDeviceSongs()
         }
     }
 
     class SongViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(DeviceSongViewModel::class.java)) {
-                return DeviceSongViewModel(SongRepository(context)) as T
+            if (modelClass.isAssignableFrom(DeviceViewModel::class.java)) {
+                return DeviceViewModel(SongRepository(context)) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

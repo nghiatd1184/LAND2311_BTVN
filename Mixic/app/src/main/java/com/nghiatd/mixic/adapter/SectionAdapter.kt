@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
-import com.nghiatd.mixic.databinding.ItemSongListBinding
+import com.nghiatd.mixic.databinding.ItemSongSquareBinding
 
-class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapter.SongViewHolder>(object :
+class SectionAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SectionAdapter.SectionViewHolder>(object :
     DiffUtil.ItemCallback<Song>() {
     override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
         return oldItem.name == newItem.name
@@ -36,19 +36,18 @@ class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapt
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        return SongViewHolder(
-            ItemSongListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionViewHolder {
+        return SectionViewHolder(
+            ItemSongSquareBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class SongViewHolder(private val binding: ItemSongListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SectionViewHolder(private val binding: ItemSongSquareBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
-            binding.tvName.isSelected = true
             binding.tvName.text = song.name
             binding.tvArtist.text = song.artist
             val uri = Uri.parse(song.image)
@@ -65,9 +64,9 @@ class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapt
             }
 
             binding.root.setOnClickListener {
+                binding.tvName.isSelected = true
                 onItemClick(song)
             }
-
             val lottieView = binding.lottiePlaying
             if(isPlaying) {
                 if(playingSong == song) {

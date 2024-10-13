@@ -1,16 +1,17 @@
 package com.nghiatd.mixic.ui.home
 
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
+import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.SeekBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -21,30 +22,30 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.api.RetrofitExtension
 import com.nghiatd.mixic.data.model.LyricsResponse
 import com.nghiatd.mixic.databinding.FragmentPlayingSongBinding
-import com.nghiatd.mixic.receiver.OnSongCompletionReceiver
+import com.nghiatd.mixic.receiver.SongReceiver
 import com.nghiatd.mixic.service.MusicService
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collectLatest
 
-class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionListener {
+class PlayingSongFragment : Fragment(), SongReceiver.SongListener {
 
     private lateinit var binding: FragmentPlayingSongBinding
     private var service: MusicService? = null
-    private lateinit var songCompletionReceiver: OnSongCompletionReceiver
+    private lateinit var songCompletionReceiver: SongReceiver
     private var updateJobs: Job? = null
     private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         service = (parentFragment as HomeFragment).getMusicService()
-        songCompletionReceiver = OnSongCompletionReceiver(this)
-        val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_COMPLETED")
+        songCompletionReceiver = SongReceiver(this)
+        val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_START")
         if (isAtLeast13) {
             requireActivity().registerReceiver(songCompletionReceiver, intentFilter, Context.RECEIVER_EXPORTED)
         } else {
             requireActivity().registerReceiver(songCompletionReceiver, intentFilter)
         }
         binding = FragmentPlayingSongBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -94,6 +95,13 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
                 bottomNav?.visibility = View.VISIBLE
                 updateJobs?.cancel()
                 parentFragmentManager.popBackStack()
+            }
+
+            imgEqualizer.setOnClickListener {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.container, EqualizerFragment())
+                    .addToBackStack(null)
+                    .commit()
             }
 
             btnPlayPause.setOnClickListener {
@@ -197,7 +205,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
             val artUri = Uri.parse(currentPlaying?.image)
             val btnPlayPauseRes = if (isPlaying == true) R.drawable.icon_pause_reverse else R.drawable.icon_play_reverse
             Glide.with(imgArt).load(artUri).apply(RequestOptions().transform(RoundedCorners(15))).into(imgArt)
-            Glide.with(imgArtBackground).load(artUri).apply(RequestOptions.bitmapTransform(BlurTransformation(30))).into(imgArtBackground)
+            Glide.with(imgArtBackground).load(artUri).apply(RequestOptions.bitmapTransform(BlurTransformation(15))).into(imgArtBackground)
             Glide.with(btnPlayPause).load(btnPlayPauseRes).into(btnPlayPause)
             seekBar.apply {
                 max = service?.getDuration() ?: 0
@@ -247,7 +255,7 @@ class PlayingSongFragment : Fragment(), OnSongCompletionReceiver.SongCompletionL
         requireActivity().unregisterReceiver(songCompletionReceiver)
     }
 
-    override fun onSongCompletion() {
+    override fun onSongStart() {
         updateUiOnChangeSong()
     }
 
