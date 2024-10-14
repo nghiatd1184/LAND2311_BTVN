@@ -20,29 +20,26 @@ import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var viewModel: SharedDataViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(requireActivity())[SharedDataViewModel::class.java]
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        listenViewModel()
-        initViews()
+        initView()
         initClicks()
     }
 
-    private fun initViews() {
-        val sharedPref = requireContext().getSharedPreferences("data", Context.MODE_PRIVATE)
-        val latestEmail = sharedPref.getString("latest_login_email", "")
-        binding.edtEmail.setText(latestEmail)
+    private fun initView() {
+        val sharedPref = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val email = sharedPref.getString("latest_login_email", "")
+        binding.edtEmail.setText(email)
         binding.edtPassword.requestFocus()
     }
 
@@ -74,18 +71,6 @@ class LoginFragment : Fragment() {
             }
             tvForgotPassword.setOnClickListener {
                 replaceFragment(ForgotPasswordFragment())
-            }
-        }
-    }
-
-    private fun listenViewModel() {
-        lifecycleScope.launch {
-            viewModel.selectedUser.collectLatest { user ->
-                Log.d("NGHIA", "listenViewModel: $user")
-                if (user != null) {
-                    binding.edtEmail.setText(user.email)
-                    binding.edtPassword.requestFocus()
-                }
             }
         }
     }

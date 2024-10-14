@@ -18,14 +18,12 @@ import kotlinx.coroutines.launch
 
 class ForgotPasswordFragment : Fragment() {
     private lateinit var binding: FragmentForgotPasswordBinding
-    private lateinit var viewModel: SharedDataViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(requireActivity())[SharedDataViewModel::class.java]
         binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -38,7 +36,6 @@ class ForgotPasswordFragment : Fragment() {
     private fun initClick() {
         binding.apply {
             imgBack.setOnClickListener {
-                viewModel.setUser(null)
                 parentFragmentManager.popBackStack()
             }
             btnFindPassword.setOnClickListener {
@@ -55,8 +52,6 @@ class ForgotPasswordFragment : Fragment() {
                                     getString(R.string.reset_password_success),
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                val user = User(email = email)
-                                viewModel.setUser(user)
                                 parentFragmentManager.popBackStack()
                             } else {
                                 Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()

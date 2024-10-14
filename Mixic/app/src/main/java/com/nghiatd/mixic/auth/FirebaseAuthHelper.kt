@@ -8,22 +8,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
-fun registerUserByEmail(email: String, password: String, name: String) = callbackFlow<Task<AuthResult>> {
+fun registerUserByEmail(email: String, password: String) = callbackFlow<Task<AuthResult>> {
     var listener: ((Task<AuthResult>) -> Unit)? = { task ->
-        if (task.isSuccessful) {
-            val user = mapOf(
-                "email" to email,
-                "name" to name,
-                "uuid" to task.result?.user?.uid,
-                "avatar" to ""
-            )
-            FirebaseFirestore.getInstance().collection("user")
-                .add(user)
-                .addOnSuccessListener { trySend(task) }
-                .addOnFailureListener { trySend(task) }
-        } else {
-            trySend(task)
-        }
+        trySend(task)
     }
     val firebaseAuth = FirebaseAuth.getInstance()
     firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -32,8 +19,6 @@ fun registerUserByEmail(email: String, password: String, name: String) = callbac
         listener = null
     }
 }
-
-
 
 fun login(email: String, password: String) = callbackFlow<Task<AuthResult>> {
     var listener: ((Task<AuthResult>) -> Unit)? = { task ->

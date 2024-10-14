@@ -31,6 +31,11 @@ class ProfileFragment : Fragment() {
         initClick()
     }
 
+    private fun initView(){
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val email = firebaseAuth.currentUser?.email.toString()
+    }
+
     private fun initClick() {
         binding.apply {
             tvSignOut.setOnClickListener {
