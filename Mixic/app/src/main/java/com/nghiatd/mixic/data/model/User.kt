@@ -1,6 +1,8 @@
 package com.nghiatd.mixic.data.model
 
 data class User(
-    val email: String,
-    val password: String
+    val uuid : String="",
+    val email: String="",
+    val name: String = "",
+    val avatar: String = ""
 )

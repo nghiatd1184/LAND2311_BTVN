@@ -15,8 +15,6 @@ import com.bumptech.glide.Glide
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.adapter.SongAdapter
 import com.nghiatd.mixic.data.model.Song
-import com.nghiatd.mixic.data.viewmodel.HomeFirebaseViewModel
-import com.nghiatd.mixic.data.viewmodel.DeviceViewModel
 import com.nghiatd.mixic.data.viewmodel.SearchViewModel
 import com.nghiatd.mixic.databinding.FragmentSearchBinding
 import com.nghiatd.mixic.service.MusicService

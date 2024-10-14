@@ -42,6 +42,7 @@ class HomeFragment : Fragment(), SongReceiver.SongListener {
     private var service: MusicService? = null
     private var isBound = false
     private lateinit var songReceiver: SongReceiver
+    private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -56,27 +57,6 @@ class HomeFragment : Fragment(), SongReceiver.SongListener {
             isBound = false
         }
     }
-
-    private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-    private val permissions = if (isAtLeast13) {
-        arrayOf(
-            Manifest.permission.READ_MEDIA_AUDIO,
-            Manifest.permission.POST_NOTIFICATIONS
-        )
-    } else {
-        arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-    }
-
-    private val requestPermissionsLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions.all { it.value }) {
-                //TODO
-            } else {
-                showPermissionDialog()
-            }
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,20 +84,6 @@ class HomeFragment : Fragment(), SongReceiver.SongListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        checkPermission()
-    }
-
-    private fun checkPermission() {
-        if (permissions.any {
-                checkSelfPermission(
-                    requireContext(),
-                    it
-                ) != PackageManager.PERMISSION_GRANTED
-            }) {
-            requestPermissionsIfNeed()
-        } else {
-            //TODO
-        }
     }
 
     private fun initView() {
@@ -206,51 +172,9 @@ class HomeFragment : Fragment(), SongReceiver.SongListener {
 
     }
 
-    private fun openAppSettings() {
-        val intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", requireContext().packageName, null)
-            addCategory(CATEGORY_DEFAULT)
-            addFlags(FLAG_ACTIVITY_NEW_TASK)
-            addFlags(FLAG_ACTIVITY_NO_HISTORY)
-            addFlags(FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-        }
-
-        startActivity(intent)
-    }
-
-    private fun requestPermissionsIfNeed() {
-        if (permissions.all {
-                checkSelfPermission(
-                    requireContext(),
-                    it
-                ) == PackageManager.PERMISSION_GRANTED
-            }) {
-            //TODO
-        } else if (permissions.any { shouldShowRequestPermissionRationale(it) }) {
-            showPermissionDialog()
-        } else {
-            requestPermissionsLauncher.launch(permissions)
-        }
-    }
-
-    private fun showPermissionDialog() {
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle("Notice!")
-            setCancelable(false)
-            setMessage("This app needs to access device storage to get music files. Please grant permission and restart the app!")
-            setPositiveButton("Accept") { _, _ ->
-                (activity as MainActivity).finish()
-                openAppSettings()
-            }
-            setNegativeButton("Deny") { _, _ ->
-                (activity as MainActivity).finish()
-            }
-        }.show()
-    }
-
     private fun replaceFragment(fragment: Fragment, name: String?) {
         childFragmentManager.beginTransaction()
-            .replace(binding.container.id, fragment)
+            .replace(R.id.container, fragment)
             .addToBackStack(name)
             .commit()
     }

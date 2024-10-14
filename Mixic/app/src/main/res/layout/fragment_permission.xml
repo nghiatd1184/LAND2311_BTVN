@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="20dp"
+    android:background="@color/background_color">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_continue">
+
+        <TextView
+            android:id="@+id/tv_permission_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_title"
+            android:fontFamily="@font/main_font_bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_permission_subtitle_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nescessary_permissions"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_permission_title"/>
+
+        <ImageView
+            android:id="@+id/img_external_storage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            tools:src="@drawable/icon_music"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_permission_subtitle_1"/>
+
+        <TextView
+            android:id="@+id/tv_external_storage_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="External Storage"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toEndOf="@id/img_external_storage"
+            app:layout_constraintTop_toTopOf="@id/img_external_storage"/>
+
+        <TextView
+            android:id="@+id/tv_external_storage_subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/external_storage_des"
+            android:textSize="11sp"
+            android:textColor="@color/grey_color"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toEndOf="@+id/img_external_storage"
+            app:layout_constraintTop_toBottomOf="@id/tv_external_storage_title"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_permission_subtitle_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/optional_permissions"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_external_storage_subtitle"/>
+
+        <ImageView
+            android:id="@+id/img_notification"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/icon_notification"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_permission_subtitle_2"/>
+
+        <TextView
+            android:id="@+id/tv_notification_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notification"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toEndOf="@id/img_notification"
+            app:layout_constraintTop_toTopOf="@id/img_notification"/>
+
+        <TextView
+            android:id="@+id/tv_notification_subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/notification_des"
+            android:textSize="11sp"
+            android:textColor="@color/grey_color"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toEndOf="@+id/img_notification"
+            app:layout_constraintTop_toBottomOf="@id/tv_notification_title"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/main_component_color"
+        android:text="@string/btn_continue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
