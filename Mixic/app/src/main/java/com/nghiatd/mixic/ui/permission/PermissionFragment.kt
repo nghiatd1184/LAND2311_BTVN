@@ -127,14 +127,14 @@ class PermissionFragment : Fragment() {
 
     private fun showPermissionDialog() {
         AlertDialog.Builder(requireContext()).apply {
-            setTitle("Notice!")
+            setTitle(getString(R.string.notice))
             setCancelable(false)
-            setMessage("This app needs to access device storage to get music files. Please grant permission and restart the app!")
-            setPositiveButton("Accept") { _, _ ->
+            setMessage(getString(R.string.alert_on_denied_storage))
+            setPositiveButton(getString(R.string.accept)) { _, _ ->
                 (activity as MainActivity).finish()
                 openAppSettings()
             }
-            setNegativeButton("Deny") { _, _ ->
+            setNegativeButton(getString(R.string.deny)) { _, _ ->
                 (activity as MainActivity).finish()
             }
         }.show()

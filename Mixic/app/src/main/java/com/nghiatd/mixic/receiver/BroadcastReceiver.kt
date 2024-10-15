@@ -3,9 +3,8 @@ package com.nghiatd.mixic.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 
-class SongReceiver(private val listener: SongListener) : BroadcastReceiver() {
+class BroadcastReceiver(private val listener: SongListener) : BroadcastReceiver() {
 
     interface SongListener {
         fun onSongStart()

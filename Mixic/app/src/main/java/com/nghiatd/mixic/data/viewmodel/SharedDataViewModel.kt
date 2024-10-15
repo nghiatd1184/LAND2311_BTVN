@@ -9,8 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SharedDataViewModel : ViewModel() {
-    private val _selectedUser = MutableStateFlow<User?>(null)
-    val selectedUser = _selectedUser.asStateFlow()
 
     private val _selectedFeature = MutableStateFlow<Feature?>(null)
     val selectedFeature = _selectedFeature.asStateFlow()
@@ -20,10 +18,6 @@ class SharedDataViewModel : ViewModel() {
 
     private val _selectedSection = MutableStateFlow<Section?>(null)
     val selectedSection = _selectedSection.asStateFlow()
-
-    fun setUser(user: User?) {
-        _selectedUser.value = user
-    }
 
     fun setFeature(feature: Feature?) {
         _selectedFeature.value = feature

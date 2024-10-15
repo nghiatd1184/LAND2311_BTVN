@@ -58,7 +58,7 @@
         android:layout_height="50dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imgMenu"
+        app:layout_constraintEnd_toStartOf="@+id/img_menu"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         android:visibility="gone"
@@ -68,7 +68,7 @@
         app:lottie_repeatMode="restart" />
 
     <ImageView
-        android:id="@+id/imgMenu"
+        android:id="@+id/img_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon_menu_vertical"

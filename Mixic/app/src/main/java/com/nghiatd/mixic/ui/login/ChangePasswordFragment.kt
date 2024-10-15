@@ -37,6 +37,8 @@ class ChangePasswordFragment : Fragment() {
             }
 
             btnChangePassword.setOnClickListener {
+                binding.loading.visibility = View.VISIBLE
+                binding.btnChangePassword.visibility = View.GONE
                 val oldPassword = edtCurrentPassword.text.toString()
                 val newPassword = edtNewPassword.text.toString()
                 val confirmPassword = edtConfirmNewPassword.text.toString()
@@ -58,6 +60,8 @@ class ChangePasswordFragment : Fragment() {
                         }
                     }
                 }
+                binding.loading.visibility = View.GONE
+                binding.btnChangePassword.visibility = View.VISIBLE
             }
         }
     }

@@ -16,7 +16,7 @@ class FeatureAdapter(private val features: List<Feature>, private val onItemClic
         fun bind(feature: Feature) {
             Glide.with(binding.imgFeature)
                 .load(feature.image)
-                .apply(RequestOptions().transform(RoundedCorners(30)))
+                .apply(RequestOptions().transform(RoundedCorners(15)))
                 .into(binding.imgFeature)
             binding.root.setOnClickListener {
                 onItemClick(feature)

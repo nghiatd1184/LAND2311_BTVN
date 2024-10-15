@@ -8,11 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.auth.login
-import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentLoginBinding
 import com.nghiatd.mixic.ui.home.HomeFragment
 import kotlinx.coroutines.flow.collectLatest
@@ -37,7 +36,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun initView() {
-        val sharedPref = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val sharedPref = requireContext().getSharedPreferences("data", Context.MODE_PRIVATE)
         val email = sharedPref.getString("latest_login_email", "")
         binding.edtEmail.setText(email)
         binding.edtPassword.requestFocus()
@@ -46,10 +45,16 @@ class LoginFragment : Fragment() {
     private fun initClicks() {
         binding.apply {
             btnLogin.setOnClickListener {
+                binding.loading.visibility = View.VISIBLE
+                binding.btnLogin.visibility = View.GONE
                 val email = edtEmail.text.toString()
                 val password = edtPassword.text.toString()
                 if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(requireContext(), R.string.email_or_password_empty.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.email_or_password_empty.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {
@@ -57,14 +62,21 @@ class LoginFragment : Fragment() {
                             if (task.isSuccessful) {
                                 parentFragmentManager.beginTransaction()
                                     .replace(R.id.main_container, HomeFragment())
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .commit()
                             } else {
-                                Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    task.exception?.message.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
 
                     }
                 }
+                binding.loading.visibility = View.GONE
+                binding.btnLogin.visibility = View.VISIBLE
             }
             tvSignUp.setOnClickListener {
                 replaceFragment(SignUpFragment())
@@ -78,6 +90,7 @@ class LoginFragment : Fragment() {
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.main_container, fragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .addToBackStack(null)
             .commit()
     }

@@ -39,6 +39,8 @@ class ForgotPasswordFragment : Fragment() {
                 parentFragmentManager.popBackStack()
             }
             btnFindPassword.setOnClickListener {
+                binding.loading.visibility = View.VISIBLE
+                binding.btnFindPassword.visibility = View.GONE
                 val email = edtEmail.text.toString()
                 if (email.isEmpty()) {
                     Toast.makeText(requireContext(), getString(R.string.please_fill_email), Toast.LENGTH_SHORT).show()
@@ -59,6 +61,8 @@ class ForgotPasswordFragment : Fragment() {
                         }
                     }
                 }
+                binding.loading.visibility = View.GONE
+                binding.btnFindPassword.visibility = View.VISIBLE
             }
         }
     }

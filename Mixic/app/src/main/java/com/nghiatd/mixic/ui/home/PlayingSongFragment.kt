@@ -1,13 +1,10 @@
 package com.nghiatd.mixic.ui.home
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
-import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,22 +19,22 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.api.RetrofitExtension
 import com.nghiatd.mixic.data.model.LyricsResponse
 import com.nghiatd.mixic.databinding.FragmentPlayingSongBinding
-import com.nghiatd.mixic.receiver.SongReceiver
+import com.nghiatd.mixic.receiver.BroadcastReceiver
 import com.nghiatd.mixic.service.MusicService
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.*
 
-class PlayingSongFragment : Fragment(), SongReceiver.SongListener {
+class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
 
     private lateinit var binding: FragmentPlayingSongBinding
     private var service: MusicService? = null
-    private lateinit var songCompletionReceiver: SongReceiver
+    private lateinit var songCompletionReceiver: BroadcastReceiver
     private var updateJobs: Job? = null
     private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         service = (parentFragment as HomeFragment).getMusicService()
-        songCompletionReceiver = SongReceiver(this)
+        songCompletionReceiver = BroadcastReceiver(this)
         val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_START")
         if (isAtLeast13) {
             requireActivity().registerReceiver(songCompletionReceiver, intentFilter, Context.RECEIVER_EXPORTED)

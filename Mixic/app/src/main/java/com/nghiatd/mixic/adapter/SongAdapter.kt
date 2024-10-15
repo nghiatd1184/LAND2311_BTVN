@@ -1,18 +1,24 @@
 package com.nghiatd.mixic.adapter
 
 import android.net.Uri
+import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.storage.FirebaseStorage
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.databinding.ItemSongListBinding
+import java.io.File
 
 class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapter.SongViewHolder>(object :
     DiffUtil.ItemCallback<Song>() {
@@ -68,6 +74,25 @@ class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapt
                 onItemClick(song)
             }
 
+            binding.imgMenu.setOnClickListener { view ->
+                val popupMenu = PopupMenu(view.context, view)
+                popupMenu.menuInflater.inflate(R.menu.menu_song_options, popupMenu.menu)
+                popupMenu.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.action_download -> {
+                            downloadSong(song)
+                            true
+                        }
+                        R.id.action_details -> {
+                            // Handle add to playlist action
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popupMenu.show()
+            }
+
             val lottieView = binding.lottiePlaying
             if(isPlaying) {
                 if(playingSong == song) {
@@ -85,6 +110,24 @@ class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapt
                 } else {
                     lottieView.visibility = View.GONE
                 }
+            }
+        }
+    }
+
+    private fun downloadSong(song: Song) {
+        Log.d("NGHIA", "song: $song")
+        try {
+            song.id.toInt()
+            Log.d("NGHIA", "Song already in local storage")
+        } catch (e: Exception) {
+            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(song.data)
+            val localFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "${song.name} - ${song.artist}.mp3")
+
+            storageRef.getFile(localFile).addOnSuccessListener {
+                Log.d("NGHIA", "path: ${localFile.absolutePath}")
+                Log.d("NGHIA", "Downloaded")
+            }.addOnFailureListener {
+                Log.d("NGHIA", "Failed")
             }
         }
     }
