@@ -1,6 +1,7 @@
 package com.nghiatd.mixic.ui.permission
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Intent
 import android.content.Intent.CATEGORY_DEFAULT
 import android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
@@ -14,6 +15,7 @@ import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.checkSelfPermission
@@ -126,18 +128,23 @@ class PermissionFragment : Fragment() {
     }
 
     private fun showPermissionDialog() {
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle(getString(R.string.notice))
-            setCancelable(false)
-            setMessage(getString(R.string.alert_on_denied_storage))
-            setPositiveButton(getString(R.string.accept)) { _, _ ->
-                (activity as MainActivity).finish()
-                openAppSettings()
-            }
-            setNegativeButton(getString(R.string.deny)) { _, _ ->
-                (activity as MainActivity).finish()
-            }
-        }.show()
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.custom_normal_dialog)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val tvMessage : TextView = dialog.findViewById(R.id.tv_message)
+        val positiveButton : TextView = dialog.findViewById(R.id.tv_positive)
+        val negativeButton : TextView = dialog.findViewById(R.id.tv_negative)
+        tvMessage.text = getString(R.string.alert_on_denied_storage)
+        positiveButton.setOnClickListener {
+            (activity as MainActivity).finish()
+            openAppSettings()
+        }
+        negativeButton.setOnClickListener {
+            (activity as MainActivity).finish()
+        }
+        dialog.show()
     }
 
     private fun replaceFragment() {

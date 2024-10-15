@@ -4,6 +4,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import com.google.firebase.Timestamp
 import com.nghiatd.mixic.data.model.Song
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,7 +45,8 @@ class SongRepository(val context: Context) {
                     val albumId = cursor.getLong(albumIdColum)
                     val data = cursor.getString(dataColum)
                     val albumArtUri = getAlbumArtUri(albumId)
-                    val song = Song(id.toString(), title, artist, albumArtUri.toString(), data)
+                    val time = Timestamp.now()
+                    val song = Song(id.toString(), title, artist, albumArtUri.toString(), data, time)
                     listSongs.add(song)
                 }
             }

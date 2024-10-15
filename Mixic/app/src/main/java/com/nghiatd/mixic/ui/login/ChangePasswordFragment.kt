@@ -54,14 +54,16 @@ class ChangePasswordFragment : Fragment() {
                             if (task.isSuccessful) {
                                 Toast.makeText(requireContext(), getString(R.string.change_password_success), Toast.LENGTH_SHORT).show()
                                 parentFragmentManager.popBackStack()
+                                binding.loading.visibility = View.GONE
+                                binding.btnChangePassword.visibility = View.VISIBLE
                             } else {
                                 Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
+                                binding.loading.visibility = View.GONE
+                                binding.btnChangePassword.visibility = View.VISIBLE
                             }
                         }
                     }
                 }
-                binding.loading.visibility = View.GONE
-                binding.btnChangePassword.visibility = View.VISIBLE
             }
         }
     }

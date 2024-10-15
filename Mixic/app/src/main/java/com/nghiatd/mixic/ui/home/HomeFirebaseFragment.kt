@@ -72,6 +72,13 @@ class HomeFirebaseFragment : Fragment() {
         service?.playPause(song)
     } }
 
+    private val newSongsAdapter: SectionAdapter by lazy { SectionAdapter { song ->
+        if (servicePlayList != newSongsAdapter.currentList) {
+            service?.setPlayList(newSongsAdapter.currentList)
+        }
+        service?.playPause(song)
+    } }
+
     private val handler = Handler(Looper.getMainLooper())
     private val autoScrollRunnable = object : Runnable {
         override fun run() {
@@ -106,7 +113,6 @@ class HomeFirebaseFragment : Fragment() {
         initViewFeature()
         initViewCategory()
         handler.postDelayed(autoScrollRunnable, 3000)
-
     }
 
     private fun initViewFeature() {
@@ -137,6 +143,15 @@ class HomeFirebaseFragment : Fragment() {
         }
 
         lifecycleScope.launch {
+            firebaseViewModel.newSongs.collectLatest {
+                if (it.isNotEmpty()) {
+                    val section = Section("section_new_songs", "New Songs", it)
+                    setupSection(section, binding.newSongsTitle, binding.newSongsRv, binding.newSongsViewAll, newSongsAdapter)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
             firebaseViewModel.allCategory.collectLatest {
                 categoryList.clear()
                 categoryList.addAll(it)
@@ -162,6 +177,7 @@ class HomeFirebaseFragment : Fragment() {
             service?.isPlayingFlow?.collectLatest { isPlaying ->
                 section1Adapter.isPlaying = isPlaying
                 section2Adapter.isPlaying = isPlaying
+                newSongsAdapter.isPlaying = isPlaying
                 val imgPlayPause = if (isPlaying) R.drawable.icon_pause else R.drawable.icon_play
                 val minimizedPlayPauseBtn =
                     (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
@@ -176,6 +192,7 @@ class HomeFirebaseFragment : Fragment() {
             service?.currentPlaying?.collectLatest { currentPlaying ->
                 section1Adapter.playingSong = currentPlaying?.second
                 section2Adapter.playingSong = currentPlaying?.second
+                newSongsAdapter.playingSong = currentPlaying?.second
             }
         }
     }
@@ -194,7 +211,7 @@ class HomeFirebaseFragment : Fragment() {
             adapter = sectionAdapter
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
-        sectionAdapter.submitList(section.songs)
+        sectionAdapter.submitList(section.songs.take(5))
         sectionAdapter.notifyDataSetChanged()
     }
 

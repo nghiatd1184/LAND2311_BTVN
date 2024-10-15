@@ -1,5 +1,6 @@
 package com.nghiatd.mixic.ui.login
 
+import android.app.Dialog
 import android.content.Intent
 import android.content.Intent.CATEGORY_DEFAULT
 import android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
@@ -14,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -109,19 +111,21 @@ class UpdateProfileFragment : Fragment() {
                         updateProfile(name, null).collectLatest { task ->
                             if (task.isSuccessful) {
                                 replaceFragment()
+                                binding.loading.visibility = View.GONE
+                                binding.btnLayout.visibility = View.VISIBLE
                             } else {
                                 Toast.makeText(
                                     requireContext(),
                                     getString(R.string.update_profile_error),
                                     Toast.LENGTH_SHORT
                                 ).show()
-
+                                binding.loading.visibility = View.GONE
+                                binding.btnLayout.visibility = View.VISIBLE
                             }
                         }
                     }
                 }
-                binding.loading.visibility = View.GONE
-                binding.btnLayout.visibility = View.VISIBLE
+
             }
 
             btnSkip.setOnClickListener {
@@ -155,18 +159,23 @@ class UpdateProfileFragment : Fragment() {
     }
 
     private fun showPermissionDialog() {
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle(getString(R.string.notice))
-            setCancelable(false)
-            setMessage(getString(R.string.alert_on_denied_image))
-            setPositiveButton(R.string.accept) { _, _ ->
-                (activity as MainActivity).finish()
-                openAppSettings()
-            }
-            setNegativeButton(R.string.deny) { _, _ ->
-                (activity as MainActivity).finish()
-            }
-        }.show()
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.custom_normal_dialog)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val tvMessage : TextView = dialog.findViewById(R.id.tv_message)
+        val positiveButton : TextView = dialog.findViewById(R.id.tv_positive)
+        val negativeButton : TextView = dialog.findViewById(R.id.tv_negative)
+        tvMessage.text = getString(R.string.alert_on_denied_image)
+        positiveButton.setOnClickListener {
+            (activity as MainActivity).finish()
+            openAppSettings()
+        }
+        negativeButton.setOnClickListener {
+            (activity as MainActivity).finish()
+        }
+        dialog.show()
     }
 
     private fun openAppSettings() {

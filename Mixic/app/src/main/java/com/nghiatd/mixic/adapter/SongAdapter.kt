@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -80,11 +81,11 @@ class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapt
                 popupMenu.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.action_download -> {
-                            downloadSong(song)
+                            downloadSong(song, view)
                             true
                         }
                         R.id.action_details -> {
-                            // Handle add to playlist action
+                            Toast.makeText(view.context, "Details", Toast.LENGTH_SHORT).show()
                             true
                         }
                         else -> false
@@ -114,20 +115,18 @@ class SongAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SongAdapt
         }
     }
 
-    private fun downloadSong(song: Song) {
-        Log.d("NGHIA", "song: $song")
+    private fun downloadSong(song: Song, view: View) {
         try {
             song.id.toInt()
-            Log.d("NGHIA", "Song already in local storage")
+            Toast.makeText(view.context, getString(view.context, R.string.download_already_exist), Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(song.data)
             val localFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "${song.name} - ${song.artist}.mp3")
 
             storageRef.getFile(localFile).addOnSuccessListener {
-                Log.d("NGHIA", "path: ${localFile.absolutePath}")
-                Log.d("NGHIA", "Downloaded")
+                Toast.makeText(view.context, getString(view.context, R.string.download_success), Toast.LENGTH_SHORT).show()
             }.addOnFailureListener {
-                Log.d("NGHIA", "Failed")
+                Toast.makeText(view.context, getString(view.context, R.string.download_error), Toast.LENGTH_SHORT).show()
             }
         }
     }

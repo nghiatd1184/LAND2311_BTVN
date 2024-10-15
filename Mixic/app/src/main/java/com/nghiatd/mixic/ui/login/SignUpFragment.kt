@@ -66,15 +66,17 @@ class SignUpFragment : Fragment() {
                                     .replace(R.id.main_container, UpdateProfileFragment())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .commit()
+
+                                binding.loading.visibility = View.GONE
+                                binding.btnSignUp.visibility = View.VISIBLE
                             } else {
                                 Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
-
+                                binding.loading.visibility = View.GONE
+                                binding.btnSignUp.visibility = View.VISIBLE
                             }
                         }
                     }
                 }
-                binding.loading.visibility = View.GONE
-                binding.btnSignUp.visibility = View.VISIBLE
             }
         }
     }

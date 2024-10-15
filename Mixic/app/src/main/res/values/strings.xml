@@ -81,4 +81,7 @@
     <string name="alert_on_denied_image">You need to grant permission to access device images to update profile. Please grant permission and restart the app!</string>
     <string name="accept">Accept</string>
     <string name="deny">Deny</string>
+    <string name="download_already_exist">This song already in your device!</string>
+    <string name="download_success">Download success!</string>
+    <string name="download_error">Download error!</string>
 </resources>

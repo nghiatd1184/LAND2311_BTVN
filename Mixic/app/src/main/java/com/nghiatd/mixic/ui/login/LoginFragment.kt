@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.FirebaseAuth
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.auth.login
 import com.nghiatd.mixic.databinding.FragmentLoginBinding
@@ -52,31 +53,40 @@ class LoginFragment : Fragment() {
                 if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(
                         requireContext(),
-                        R.string.email_or_password_empty.toString(),
+                        getString(R.string.email_or_password_empty),
                         Toast.LENGTH_SHORT
                     ).show()
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {
                         login(email, password).collectLatest { task ->
+                            val displayName = FirebaseAuth.getInstance().currentUser?.displayName ?: ""
+                            val message = "Welcome back $displayName!"
                             if (task.isSuccessful) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 parentFragmentManager.beginTransaction()
                                     .replace(R.id.main_container, HomeFragment())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .commit()
+                                binding.loading.visibility = View.GONE
+                                binding.btnLogin.visibility = View.VISIBLE
                             } else {
                                 Toast.makeText(
                                     requireContext(),
                                     task.exception?.message.toString(),
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                binding.loading.visibility = View.GONE
+                                binding.btnLogin.visibility = View.VISIBLE
                             }
                         }
 
                     }
                 }
-                binding.loading.visibility = View.GONE
-                binding.btnLogin.visibility = View.VISIBLE
             }
             tvSignUp.setOnClickListener {
                 replaceFragment(SignUpFragment())

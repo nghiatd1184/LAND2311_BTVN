@@ -55,14 +55,17 @@ class ForgotPasswordFragment : Fragment() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 parentFragmentManager.popBackStack()
+                                binding.loading.visibility = View.GONE
+                                binding.btnFindPassword.visibility = View.VISIBLE
                             } else {
                                 Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
+                                binding.loading.visibility = View.GONE
+                                binding.btnFindPassword.visibility = View.VISIBLE
                             }
                         }
                     }
                 }
-                binding.loading.visibility = View.GONE
-                binding.btnFindPassword.visibility = View.VISIBLE
+
             }
         }
     }

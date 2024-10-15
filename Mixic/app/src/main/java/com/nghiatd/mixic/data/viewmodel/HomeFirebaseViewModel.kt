@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query.Direction
 import com.nghiatd.mixic.data.model.Category
 import com.nghiatd.mixic.data.model.Feature
 import com.nghiatd.mixic.data.model.Section
@@ -24,10 +25,29 @@ class HomeFirebaseViewModel : ViewModel() {
     private val _allSection = MutableStateFlow<List<Section>>(emptyList())
     val allSection = _allSection.asStateFlow()
 
+    private val _newSongs = MutableStateFlow<List<Song>>(emptyList())
+    val newSongs = _newSongs.asStateFlow()
+
     init {
         getAllCategory()
         getAllFeature()
         getAllSection()
+        get10NewSongs()
+    }
+
+    private fun get10NewSongs() {
+        val fireBaseFireStore = FirebaseFirestore.getInstance()
+        fireBaseFireStore.collection("song")
+            .orderBy("time", Direction.DESCENDING)
+            .limit(10)
+            .addSnapshotListener { value, _ ->
+                val newSongs = mutableListOf<Song>()
+                value?.documents?.forEach { documentSnapshot ->
+                    val song = documentSnapshot.toObject(Song::class.java) ?: return@forEach
+                    newSongs.add(song)
+                }
+                _newSongs.value = newSongs
+            }
     }
 
     private fun getAllFeature() {
