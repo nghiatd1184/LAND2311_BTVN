@@ -19,6 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
+import com.nghiatd.mixic.MyApplication
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.api.RetrofitExtension
 import com.nghiatd.mixic.data.model.LyricsResponse
@@ -34,7 +35,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
 
     private lateinit var binding: FragmentPlayingSongBinding
     private var service: MusicService? = null
-    private lateinit var songCompletionReceiver: BroadcastReceiver
+    private lateinit var broadcastReceiver: BroadcastReceiver
     private var updateJobs: Job? = null
     private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
@@ -44,16 +45,16 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
         savedInstanceState: Bundle?
     ): View {
         service = (parentFragment as HomeFragment).getMusicService()
-        songCompletionReceiver = BroadcastReceiver(this)
-        val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_START")
+        broadcastReceiver = BroadcastReceiver(this)
+        val intentFilter = IntentFilter(MyApplication.ACTION_SONG_START)
         if (isAtLeast13) {
             requireActivity().registerReceiver(
-                songCompletionReceiver,
+                broadcastReceiver,
                 intentFilter,
                 Context.RECEIVER_EXPORTED
             )
         } else {
-            requireActivity().registerReceiver(songCompletionReceiver, intentFilter)
+            requireActivity().registerReceiver(broadcastReceiver, intentFilter)
         }
         binding = FragmentPlayingSongBinding.inflate(inflater, container, false)
 
@@ -86,7 +87,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     }
 
     private fun initDownloadUi() {
-        val song = service?.currentPlaying?.value?.second
+        val song = service?.currentPlaying?.value
         try {
             song?.id?.toInt()
             binding.imgDownload.visibility = View.GONE
@@ -139,12 +140,12 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
             }
 
             imgDownload.setOnClickListener {
-                val song = service?.currentPlaying?.value?.second
+                val song = service?.currentPlaying?.value
                 downloadSong(song!!)
             }
 
             btnPlayPause.setOnClickListener {
-                val song = service?.currentPlaying?.value?.second
+                val song = service?.currentPlaying?.value
                 val imgRes =
                     if (service?.isPlayingFlow?.value == true) R.drawable.icon_play_reverse else R.drawable.icon_pause_reverse
                 Glide.with(btnPlayPause)
@@ -248,7 +249,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     }
 
     private fun updateUiOnChangeSong() {
-        val currentPlaying = service?.currentPlaying?.value?.second
+        val currentPlaying = service?.currentPlaying?.value
         val isPlaying = service?.isPlayingFlow?.value
         val totalTime = convertMillisToTime(service?.getDuration()?.toLong() ?: 0)
         binding.tvLyrics.setText(R.string.blank)
@@ -305,7 +306,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
         lifecycleScope.launch {
             try {
                 binding.loading.visibility = View.VISIBLE
-                val song = service?.currentPlaying?.value?.second
+                val song = service?.currentPlaying?.value
                 val response = withContext(Dispatchers.IO) {
                     RetrofitExtension.OVH_LYRICS.getLyrics(song!!.artist, song.name).execute()
                         .body() ?: LyricsResponse("")
@@ -324,7 +325,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     override fun onDestroyView() {
         super.onDestroyView()
         updateJobs?.cancel()
-        requireActivity().unregisterReceiver(songCompletionReceiver)
+        requireActivity().unregisterReceiver(broadcastReceiver)
     }
 
     override fun onSongStart() {

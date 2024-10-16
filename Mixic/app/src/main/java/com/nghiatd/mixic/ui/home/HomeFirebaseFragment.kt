@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -189,9 +190,9 @@ class HomeFirebaseFragment : Fragment() {
 
         lifecycleScope.launch {
             service?.currentPlaying?.collectLatest { currentPlaying ->
-                section1Adapter.playingSong = currentPlaying?.second
-                section2Adapter.playingSong = currentPlaying?.second
-                newSongsAdapter.playingSong = currentPlaying?.second
+                section1Adapter.playingSong = currentPlaying
+                section2Adapter.playingSong = currentPlaying
+                newSongsAdapter.playingSong = currentPlaying
             }
         }
     }

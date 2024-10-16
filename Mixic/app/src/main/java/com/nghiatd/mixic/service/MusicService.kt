@@ -47,7 +47,7 @@ class MusicService : Service() {
     private val scope = CoroutineScope(Dispatchers.Main)
     private val _allSongs = MutableStateFlow<List<Song>>(emptyList())
     val allSongs = _allSongs.asStateFlow()
-    val currentPlaying = MutableStateFlow<Pair<Int, Song>?>(null)
+    val currentPlaying = MutableStateFlow<Song?>(null)
     val isPlayingFlow = MutableStateFlow(false)
     val repeatMode = MutableStateFlow(REPEAT_MODE_OFF)
     val isShuffle = MutableStateFlow(false)
@@ -64,9 +64,8 @@ class MusicService : Service() {
             scope.launch {
                 isPlayingFlow.collectLatest {
                     val playbackSpeed = if (it) 1f else 0f
-                    val btnPlayPause = if (it) R.drawable.icon_pause else R.drawable.icon_play
                     val playbackState = if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
-                    showNotification(btnPlayPause, playbackState, playbackSpeed)
+                    showNotification(playbackState, playbackSpeed)
                 }
             }
         }
@@ -110,11 +109,6 @@ class MusicService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            MyApplication.ACTION_NEXT -> playNext()
-            MyApplication.ACTION_PREVIOUS -> playPrev()
-            MyApplication.ACTION_PLAY_PAUSE -> playPause(currentPlaying.value?.second)
-        }
         return START_STICKY
     }
 
@@ -160,16 +154,14 @@ class MusicService : Service() {
         val listSong = allSongs.value
         when (repeatMode) {
             REPEAT_MODE_OFF -> {
-                if (currentPlaying.value?.first == listSong.size - 1) {
+                val currentPlayingIndex = listSong.indexOf(currentPlaying.value)
+                if (currentPlayingIndex == listSong.size - 1) {
                     isPlayingFlow.value = false
                 } else playNext()
             }
 
             REPEAT_MODE_ONE -> {
-                val currentPlaying = currentPlaying.value
-                currentPlaying?.let {
-                    playSong(it.second)
-                }
+                currentPlaying.value?.let { playSong(it) }
             }
 
             REPEAT_MODE_ALL -> {
@@ -182,14 +174,12 @@ class MusicService : Service() {
         val listSong = allSongs.value
         if (listSong.isEmpty()) return
 
-        val currentPlaying = currentPlaying.value
+        val currentPlayingIndex = listSong.indexOf(currentPlaying.value)
 
-        val song = if (currentPlaying == null) {
-            listSong[listSong.size - 1]
-        } else if (currentPlaying.first == 0) {
+        val song = if (currentPlayingIndex == -1 || currentPlayingIndex == 0) {
             listSong[listSong.size - 1]
         } else {
-            listSong[(currentPlaying.first) - 1]
+            listSong[currentPlayingIndex - 1]
         }
         playSong(song)
     }
@@ -199,18 +189,16 @@ class MusicService : Service() {
         if (listSong.isEmpty()) return
 
         val isShuffle = isShuffle.value
-        val currentPlaying = currentPlaying.value
+        val currentPlayingIndex = listSong.indexOf(currentPlaying.value)
 
         val song = if (isShuffle) {
             val index = Random.nextInt(0, listSong.size - 1)
             listSong[index]
         } else {
-            if (currentPlaying == null) {
-                listSong[0]
-            } else if (currentPlaying.first == listSong.size - 1) {
+            if (currentPlayingIndex == -1 || currentPlayingIndex == listSong.size - 1) {
                 listSong[0]
             } else {
-                listSong[(currentPlaying.first) + 1]
+                listSong[currentPlayingIndex + 1]
             }
         }
         playSong(song)
@@ -221,7 +209,7 @@ class MusicService : Service() {
             playSong(allSongs.value[0])
             return
         }
-        if (currentPlaying.value?.second == song) {
+        if (currentPlaying.value == song) {
             if (mediaPlayer.isPlaying) {
                 pause()
                 isPlayingFlow.value = false
@@ -247,7 +235,7 @@ class MusicService : Service() {
         val listSong = allSongs.value
         mediaPlayer.reset()
         val index = listSong.indexOf(song)
-        currentPlaying.value = index to song
+        currentPlaying.value = listSong[index]
         try {
             mediaPlayer.setDataSource(song.data)
         } catch (e: Exception) {
@@ -287,34 +275,22 @@ class MusicService : Service() {
     }
 
     private fun onSongStartBroadcast() {
-        val intent = Intent("com.nghiatd.mixic.SONG_START")
+        val intent = Intent(MyApplication.ACTION_SONG_START)
         sendBroadcast(intent)
     }
 
-    private suspend fun showNotification(btnPlayPause: Int, playbackState: Int, playbackSpeed: Float) {
-        val song = currentPlaying.value?.second
-        val intent = Intent(this, MusicService::class.java)
-        val contentIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-        val prevIntent = Intent(this, BroadcastReceiver::class.java)
-            .setAction(MyApplication.ACTION_PREVIOUS)
-        val prevPending = PendingIntent.getBroadcast(this, 0, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val nextIntent = Intent(this, BroadcastReceiver::class.java)
-            .setAction(MyApplication.ACTION_NEXT)
-        val nextPending = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val playPauseIntent = Intent(this, BroadcastReceiver::class.java)
-            .setAction(MyApplication.ACTION_PLAY_PAUSE)
-        val playPausePending = PendingIntent.getBroadcast(this, 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
+    private suspend fun showNotification(playbackState: Int, playbackSpeed: Float) {
+        val song = currentPlaying.value
         val picture = song?.image
         val thumb: Bitmap = withContext(Dispatchers.IO) {
-            if (picture != null) {
+            try {
                 Glide.with(this@MusicService)
                     .asBitmap()
                     .load(picture)
                     .apply(RequestOptions().transform(BlurTransformation(5, 2)))
                     .submit()
                     .get()
-            } else {
+            } catch (e: Exception) {
                 Glide.with(this@MusicService)
                     .asBitmap()
                     .load(R.drawable.splash_img)
@@ -363,9 +339,6 @@ class MusicService : Service() {
             .setContentTitle(song?.name)
             .setContentText(song?.artist)
             .setLargeIcon(thumb)
-            .addAction(R.drawable.icon_previous, "Previous", prevPending)
-            .addAction(btnPlayPause, "Play/Pause", playPausePending)
-            .addAction(R.drawable.icon_next, "Next", nextPending)
             .setStyle(
                 MediaStyle()
                     .setMediaSession(mediaSessionCompat.sessionToken))

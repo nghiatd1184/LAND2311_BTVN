@@ -141,7 +141,7 @@ class SearchFragment : Fragment() {
 
         lifecycleScope.launch {
             service?.currentPlaying?.collectLatest { currentPlaying ->
-                adapter.playingSong = currentPlaying?.second
+                adapter.playingSong = currentPlaying
             }
         }
 

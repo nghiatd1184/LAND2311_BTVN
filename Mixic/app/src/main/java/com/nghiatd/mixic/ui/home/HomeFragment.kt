@@ -11,35 +11,40 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.R
+import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.databinding.FragmentHomeBinding
 import com.nghiatd.mixic.receiver.BroadcastReceiver
 import com.nghiatd.mixic.service.MusicService
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), BroadcastReceiver.SongListener {
+class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
 
     private var service: MusicService? = null
     private var isBound = false
-    private lateinit var broadcastReceiver: BroadcastReceiver
-    private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.MusicBinder
             this@HomeFragment.service = binder.getMusicService()
             isBound = true
+            requireActivity().startForegroundService(Intent(requireActivity(), MusicService::class.java))
+            minimizedSetViewOnSongStart()
             replaceFragment(HomeFirebaseFragment(), "Firebase")
         }
 
@@ -54,20 +59,8 @@ class HomeFragment : Fragment(), BroadcastReceiver.SongListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        broadcastReceiver = BroadcastReceiver(this)
-        val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_START")
-        if (isAtLeast13) {
-            requireActivity().registerReceiver(
-                broadcastReceiver,
-                intentFilter,
-                Context.RECEIVER_EXPORTED
-            )
-        } else {
-            requireActivity().registerReceiver(broadcastReceiver, intentFilter)
-        }
         val intent = Intent(requireActivity(), MusicService::class.java)
         requireActivity().bindService(intent, serviceConnection, BIND_AUTO_CREATE)
-
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -120,7 +113,6 @@ class HomeFragment : Fragment(), BroadcastReceiver.SongListener {
             }
 
             minimizedLayout.apply {
-                tvName.isSelected = true
                 btnExpand.setOnClickListener {
                     minimizedLayout.root.visibility = View.GONE
                     bottomNav.visibility = View.GONE
@@ -130,7 +122,7 @@ class HomeFragment : Fragment(), BroadcastReceiver.SongListener {
                     service?.playNext()
                 }
                 btnPlayPause.setOnClickListener {
-                    val song = service?.currentPlaying?.value?.second
+                    val song = service?.currentPlaying?.value
                     val imgRes =
                         if (service?.isPlayingFlow?.value == true) R.drawable.icon_play else R.drawable.icon_pause
                     Glide.with(btnPlayPause)
@@ -144,24 +136,30 @@ class HomeFragment : Fragment(), BroadcastReceiver.SongListener {
     }
 
     private fun minimizedSetViewOnSongStart() {
-        val song = service?.currentPlaying?.value?.second
-        val playingSongFragment = isFragmentInBackStack(childFragmentManager, "PlayingSong")
-        if (binding.minimizedLayout.root.visibility == View.GONE && !playingSongFragment) {
-            binding.minimizedLayout.root.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            service?.currentPlaying?.collectLatest { currentPlaying ->
+                val song : Song? = currentPlaying
+                song?.let {
+                    val playingSongFragment = isFragmentInBackStack(childFragmentManager, "PlayingSong")
+                    if (binding.minimizedLayout.root.visibility == View.GONE && !playingSongFragment) {
+                        binding.minimizedLayout.root.visibility = View.VISIBLE
+                    }
+                    binding.minimizedLayout.apply {
+                        tvName.text = song.name
+                        tvName.isSelected = true
+                        tvArtist.text = song.artist
+                        val uri = Uri.parse(song.image)
+                        Glide.with(imgThumb)
+                            .load(uri)
+                            .transition(DrawableTransitionOptions.withCrossFade(500))
+                            .apply(RequestOptions().transform(RoundedCorners(15)))
+                            .error(R.mipmap.ic_launcher)
+                            .into(imgThumb)
+                    }
+                }
+
+            }
         }
-        binding.minimizedLayout.apply {
-            tvName.text = song?.name
-            tvArtist.text = song?.artist
-            val uri = Uri.parse(song?.image)
-            Glide.with(imgThumb)
-                .load(uri)
-                .transition(DrawableTransitionOptions.withCrossFade(500))
-                .apply(RequestOptions().transform(RoundedCorners(15)))
-                .into(imgThumb)
-
-
-        }
-
     }
 
     private fun replaceFragment(fragment: Fragment, name: String?) {
@@ -195,14 +193,10 @@ class HomeFragment : Fragment(), BroadcastReceiver.SongListener {
             requireContext().unbindService(serviceConnection)
             isBound = false
         }
-        requireActivity().unregisterReceiver(broadcastReceiver)
     }
 
     fun getMusicService(): MusicService? {
         return this@HomeFragment.service
     }
 
-    override fun onSongStart() {
-        minimizedSetViewOnSongStart()
-    }
 }

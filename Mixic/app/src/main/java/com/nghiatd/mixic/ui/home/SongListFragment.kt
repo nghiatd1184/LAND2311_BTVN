@@ -165,7 +165,7 @@ class SongListFragment : Fragment() {
 
         lifecycleScope.launch {
             service?.currentPlaying?.collectLatest { currentPlaying ->
-                songAdapter.playingSong = currentPlaying?.second
+                songAdapter.playingSong = currentPlaying
             }
         }
     }
