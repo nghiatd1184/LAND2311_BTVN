@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
@@ -55,11 +56,13 @@ class SectionAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, Sectio
                 Glide.with(binding.imgArt)
                     .load(uri)
                     .apply(RequestOptions().transform(RoundedCorners(15)))
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(binding.imgArt)
             } else {
                 Glide.with(binding.imgArt)
                     .load(R.drawable.splash_img)
                     .apply(RequestOptions().transform(RoundedCorners(15)))
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(binding.imgArt)
             }
 

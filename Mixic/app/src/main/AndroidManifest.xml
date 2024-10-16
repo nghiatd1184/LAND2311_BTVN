@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -30,10 +31,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.MusicService" android:foregroundServiceType="mediaPlayback"/>
+        <service android:name=".service.MusicService" android:foregroundServiceType="mediaPlayback" android:enabled="true"/>
         <receiver android:name=".receiver.BroadcastReceiver" android:exported="false" android:enabled="true">
             <intent-filter>
                 <action android:name="com.nghiatd.mixic.SONG_START" />
+                <action android:name="action_play_pause" />
+                <action android:name="action_next" />
+                <action android:name="action_previous" />
             </intent-filter>
         </receiver>
     </application>

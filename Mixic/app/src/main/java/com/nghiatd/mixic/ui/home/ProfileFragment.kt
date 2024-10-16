@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.nghiatd.mixic.MainActivity
 import com.nghiatd.mixic.R
@@ -49,9 +50,11 @@ class ProfileFragment : Fragment() {
             photoUrl?.let {
                 Glide.with(profileImage)
                     .load(it)
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(profileImage)
             } ?: Glide.with(profileImage)
                 .load(R.drawable.default_avatar)
+                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(profileImage)
         }
     }

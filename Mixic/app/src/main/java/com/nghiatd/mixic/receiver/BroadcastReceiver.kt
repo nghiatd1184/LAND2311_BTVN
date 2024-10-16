@@ -3,16 +3,38 @@ package com.nghiatd.mixic.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.nghiatd.mixic.service.MusicService
 
-class BroadcastReceiver(private val listener: SongListener) : BroadcastReceiver() {
+class BroadcastReceiver() : BroadcastReceiver() {
+
+    private var listener: SongListener? = null
 
     interface SongListener {
         fun onSongStart()
     }
 
+    constructor(listener: SongListener) : this() {
+        this.listener = listener
+    }
+
+    fun setSongListener(listener: SongListener) {
+        this.listener = listener
+    }
+
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == "com.nghiatd.mixic.SONG_START") {
-            listener.onSongStart()
+        val actionName = intent?.action
+        val serviceIntent = Intent(context, MusicService::class.java)
+        if (actionName != null) {
+            when (actionName) {
+                "com.nghiatd.mixic.SONG_START" -> {
+                    listener?.onSongStart()
+                }
+                else -> {
+                    context?.startService(serviceIntent.apply {
+                        action = actionName
+                    })
+                }
+            }
         }
     }
 }

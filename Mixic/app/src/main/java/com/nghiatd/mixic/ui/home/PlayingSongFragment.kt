@@ -5,6 +5,8 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,15 +16,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.storage.FirebaseStorage
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.api.RetrofitExtension
 import com.nghiatd.mixic.data.model.LyricsResponse
+import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.databinding.FragmentPlayingSongBinding
 import com.nghiatd.mixic.receiver.BroadcastReceiver
 import com.nghiatd.mixic.service.MusicService
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.*
+import java.io.File
 
 class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
 
@@ -32,12 +38,20 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     private var updateJobs: Job? = null
     private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         service = (parentFragment as HomeFragment).getMusicService()
         songCompletionReceiver = BroadcastReceiver(this)
         val intentFilter = IntentFilter("com.nghiatd.mixic.SONG_START")
         if (isAtLeast13) {
-            requireActivity().registerReceiver(songCompletionReceiver, intentFilter, Context.RECEIVER_EXPORTED)
+            requireActivity().registerReceiver(
+                songCompletionReceiver,
+                intentFilter,
+                Context.RECEIVER_EXPORTED
+            )
         } else {
             requireActivity().registerReceiver(songCompletionReceiver, intentFilter)
         }
@@ -57,6 +71,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
         initShuffleUi()
         initMuteUi()
         initRepeatUi()
+        initDownloadUi()
         updateUiOnChangeSong()
         updateSeekBarProgress()
     }
@@ -64,7 +79,20 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     private fun initMuteUi() {
         val isMute = service?.isMute?.value
         val btnMuteRes = if (isMute == true) R.drawable.icon_mute else R.drawable.icon_mute_off
-        Glide.with(binding.btnMute).load(btnMuteRes).into(binding.btnMute)
+        Glide.with(binding.btnMute)
+            .load(btnMuteRes)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
+            .into(binding.btnMute)
+    }
+
+    private fun initDownloadUi() {
+        val song = service?.currentPlaying?.value?.second
+        try {
+            song?.id?.toInt()
+            binding.imgDownload.visibility = View.GONE
+        } catch (e: Exception) {
+            binding.imgDownload.visibility = View.VISIBLE
+        }
     }
 
     private fun initRepeatUi() {
@@ -74,21 +102,30 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
             MusicService.REPEAT_MODE_ONE -> R.drawable.icon_repeat_one
             else -> R.drawable.icon_repeat_all
         }
-        Glide.with(binding.btnRepeat).load(btnRepeatRes).into(binding.btnRepeat)
+        Glide.with(binding.btnRepeat)
+            .load(btnRepeatRes)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
+            .into(binding.btnRepeat)
     }
 
     private fun initShuffleUi() {
         val isShuffle = service?.isShuffle?.value
-        val btnShuffleRes = if (isShuffle == true) R.drawable.icon_shuffle_on else R.drawable.icon_shuffle_off
-        Glide.with(binding.btnShuffle).load(btnShuffleRes).into(binding.btnShuffle)
+        val btnShuffleRes =
+            if (isShuffle == true) R.drawable.icon_shuffle_on else R.drawable.icon_shuffle_off
+        Glide.with(binding.btnShuffle)
+            .load(btnShuffleRes)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
+            .into(binding.btnShuffle)
     }
 
     private fun initClick() {
         binding.apply {
             imgDownCollapse.setOnClickListener {
-                val minimizedLayout = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
+                val minimizedLayout =
+                    (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
                 minimizedLayout?.visibility = View.VISIBLE
-                val bottomNav = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.bottom_nav)
+                val bottomNav =
+                    (parentFragment as HomeFragment).view?.findViewById<View>(R.id.bottom_nav)
                 bottomNav?.visibility = View.VISIBLE
                 updateJobs?.cancel()
                 parentFragmentManager.popBackStack()
@@ -101,10 +138,19 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
                     .commit()
             }
 
+            imgDownload.setOnClickListener {
+                val song = service?.currentPlaying?.value?.second
+                downloadSong(song!!)
+            }
+
             btnPlayPause.setOnClickListener {
                 val song = service?.currentPlaying?.value?.second
-                val imgRes = if (service?.isPlayingFlow?.value == true) R.drawable.icon_play_reverse else R.drawable.icon_pause_reverse
-                Glide.with(btnPlayPause).load(imgRes).into(btnPlayPause)
+                val imgRes =
+                    if (service?.isPlayingFlow?.value == true) R.drawable.icon_play_reverse else R.drawable.icon_pause_reverse
+                Glide.with(btnPlayPause)
+                    .load(imgRes)
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                    .into(btnPlayPause)
                 if (service?.isPlayingFlow?.value == true) updateJobs?.cancel() else updateSeekBarProgress()
                 service?.playPause(song)
             }
@@ -120,8 +166,12 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
             }
 
             btnMute.setOnClickListener {
-                val btnMuteRes = if (service?.isMute?.value == true) R.drawable.icon_mute_off else R.drawable.icon_mute
-                Glide.with(btnMute).load(btnMuteRes).into(btnMute)
+                val btnMuteRes =
+                    if (service?.isMute?.value == true) R.drawable.icon_mute_off else R.drawable.icon_mute
+                Glide.with(btnMute)
+                    .load(btnMuteRes)
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                    .into(btnMute)
                 service?.toggleMute()
             }
 
@@ -137,24 +187,35 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
                     MusicService.REPEAT_MODE_ONE -> "Repeat ALL!"
                     else -> "Repeat OFF!"
                 }
-                service?.setRepeatMode(when (service?.repeatMode?.value) {
-                    MusicService.REPEAT_MODE_OFF -> MusicService.REPEAT_MODE_ONE
-                    MusicService.REPEAT_MODE_ONE -> MusicService.REPEAT_MODE_ALL
-                    else -> MusicService.REPEAT_MODE_OFF
-                })
+                service?.setRepeatMode(
+                    when (service?.repeatMode?.value) {
+                        MusicService.REPEAT_MODE_OFF -> MusicService.REPEAT_MODE_ONE
+                        MusicService.REPEAT_MODE_ONE -> MusicService.REPEAT_MODE_ALL
+                        else -> MusicService.REPEAT_MODE_OFF
+                    }
+                )
                 Toast.makeText(requireContext(), textNotify, Toast.LENGTH_SHORT).show()
             }
 
             btnShuffle.setOnClickListener {
-                val btnShuffleRes = if (service?.isShuffle?.value == true) R.drawable.icon_shuffle_off else R.drawable.icon_shuffle_on
-                val textNotify = if (service?.isShuffle?.value == true) "Shuffle OFF!" else "Shuffle ON!"
-                Glide.with(btnShuffle).load(btnShuffleRes).into(btnShuffle)
+                val btnShuffleRes =
+                    if (service?.isShuffle?.value == true) R.drawable.icon_shuffle_off else R.drawable.icon_shuffle_on
+                val textNotify =
+                    if (service?.isShuffle?.value == true) "Shuffle OFF!" else "Shuffle ON!"
+                Glide.with(btnShuffle)
+                    .load(btnShuffleRes)
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                    .into(btnShuffle)
                 service?.setShuffleMode(!service!!.isShuffle.value)
                 Toast.makeText(requireContext(), textNotify, Toast.LENGTH_SHORT).show()
             }
 
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
                     if (fromUser) {
                         service?.seekTo(progress.toLong())
                         binding.tvCurrentTime.text = convertMillisToTime(progress.toLong())
@@ -200,10 +261,23 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
             tvName.isSelected = true
             tvArtist.text = currentPlaying?.artist
             val artUri = Uri.parse(currentPlaying?.image)
-            val btnPlayPauseRes = if (isPlaying == true) R.drawable.icon_pause_reverse else R.drawable.icon_play_reverse
-            Glide.with(imgArt).load(artUri).apply(RequestOptions().transform(RoundedCorners(15))).into(imgArt)
-            Glide.with(imgArtBackground).load(artUri).apply(RequestOptions.bitmapTransform(BlurTransformation(15))).into(imgArtBackground)
-            Glide.with(btnPlayPause).load(btnPlayPauseRes).into(btnPlayPause)
+            val btnPlayPauseRes =
+                if (isPlaying == true) R.drawable.icon_pause_reverse else R.drawable.icon_play_reverse
+            Glide.with(imgArt)
+                .load(artUri)
+                .apply(RequestOptions().transform(RoundedCorners(15)))
+                .transition(DrawableTransitionOptions.withCrossFade(500))
+                .into(imgArt)
+            Glide.with(imgArtBackground).load(artUri).apply(
+                RequestOptions
+                    .bitmapTransform(BlurTransformation(15))
+            )
+                .transition(DrawableTransitionOptions.withCrossFade(500))
+                .into(imgArtBackground)
+            Glide.with(btnPlayPause)
+                .load(btnPlayPauseRes)
+                .transition(DrawableTransitionOptions.withCrossFade(500))
+                .into(btnPlayPause)
             seekBar.apply {
                 max = service?.getDuration() ?: 0
                 progress = service?.getCurrentPosition() ?: 0
@@ -233,7 +307,8 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
                 binding.loading.visibility = View.VISIBLE
                 val song = service?.currentPlaying?.value?.second
                 val response = withContext(Dispatchers.IO) {
-                    RetrofitExtension.OVH_LYRICS.getLyrics(song!!.artist, song.name).execute().body() ?: LyricsResponse("")
+                    RetrofitExtension.OVH_LYRICS.getLyrics(song!!.artist, song.name).execute()
+                        .body() ?: LyricsResponse("")
                 }
                 binding.loading.visibility = View.GONE
                 binding.tvLyrics.visibility = View.VISIBLE
@@ -254,6 +329,27 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
 
     override fun onSongStart() {
         updateUiOnChangeSong()
+    }
+
+    private fun downloadSong(song: Song) {
+        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(song.data)
+        val localFile = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+            "${song.name} - ${song.artist}.mp3"
+        )
+
+        storageRef.getFile(localFile).addOnSuccessListener {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.download_success), Toast.LENGTH_SHORT
+            ).show()
+        }.addOnFailureListener {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.download_error), Toast.LENGTH_SHORT
+            ).show()
+        }
+
     }
 
 }

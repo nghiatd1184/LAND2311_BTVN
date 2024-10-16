@@ -20,10 +20,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.google.firebase.auth.FirebaseAuth
 import com.nghiatd.mixic.MainActivity
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.databinding.FragmentPermissionBinding
 import com.nghiatd.mixic.ui.home.HomeFragment
+import com.nghiatd.mixic.ui.login.LoginFragment
 
 class PermissionFragment : Fragment() {
 
@@ -148,9 +151,18 @@ class PermissionFragment : Fragment() {
     }
 
     private fun replaceFragment() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.main_container, HomeFragment())
-            .commit()
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.let {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_container, HomeFragment())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
+        } ?: run {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_container, LoginFragment())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.data.model.Category
 import com.nghiatd.mixic.databinding.ItemCategoryBinding
@@ -42,6 +43,7 @@ class CategoryAdapter(private val categories: List<Category>, private val onItem
     private fun loadImage(image: ImageView, url: String) {
         Glide.with(image)
             .load(url)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
             .into(image)
     }
 

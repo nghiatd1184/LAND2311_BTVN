@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.adapter.SongAdapter
 import com.nghiatd.mixic.data.model.Category
@@ -66,6 +67,7 @@ class SongListFragment : Fragment() {
             binding.imgFeature.visibility = View.VISIBLE
             Glide.with(binding.imgFeature)
                 .load(feature?.image)
+                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(binding.imgFeature)
         } else if (category != null) {
             binding.tvName.text = category?.name
@@ -81,15 +83,19 @@ class SongListFragment : Fragment() {
         binding.imgForNonFeature.visibility = View.VISIBLE
         Glide.with(binding.img1)
             .load(songs[0].image)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
             .into(binding.img1)
         Glide.with(binding.img2)
             .load(songs[1].image)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
             .into(binding.img2)
         Glide.with(binding.img3)
             .load(songs[2].image)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
             .into(binding.img3)
         Glide.with(binding.img4)
             .load(songs[3].image)
+            .transition(DrawableTransitionOptions.withCrossFade(500))
             .into(binding.img4)
     }
 
@@ -152,6 +158,7 @@ class SongListFragment : Fragment() {
                         ?.findViewById<ImageView>(R.id.btn_play_pause)
                 Glide.with(minimizedPlayPauseBtn!!)
                     .load(imgPlayPause)
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(minimizedPlayPauseBtn)
             }
         }

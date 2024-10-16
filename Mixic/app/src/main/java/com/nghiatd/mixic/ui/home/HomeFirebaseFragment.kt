@@ -3,7 +3,6 @@ package com.nghiatd.mixic.ui.home
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.adapter.CategoryAdapter
 import com.nghiatd.mixic.adapter.FeatureAdapter
 import com.nghiatd.mixic.adapter.SectionAdapter
-import com.nghiatd.mixic.adapter.SongAdapter
 import com.nghiatd.mixic.data.model.Category
 import com.nghiatd.mixic.data.model.Feature
 import com.nghiatd.mixic.data.model.Section
@@ -39,6 +37,7 @@ class HomeFirebaseFragment : Fragment() {
     private val featureList = mutableListOf<Feature>()
     private val categoryList = mutableListOf<Category>()
     private val sectionList = mutableListOf<Section>()
+    private lateinit var newSongs: Section
     private lateinit var servicePlayList: MutableList<Song>
     private var service: MusicService? = null
 
@@ -59,22 +58,22 @@ class HomeFirebaseFragment : Fragment() {
     }}
 
     private val section1Adapter: SectionAdapter by lazy { SectionAdapter { song ->
-        if (servicePlayList != section1Adapter.currentList) {
-            service?.setPlayList(section1Adapter.currentList)
+        if (servicePlayList != sectionList[0].songs) {
+            service?.setPlayList(sectionList[0].songs)
         }
         service?.playPause(song)
     } }
 
     private val section2Adapter: SectionAdapter by lazy { SectionAdapter { song ->
-        if (servicePlayList != section2Adapter.currentList) {
-            service?.setPlayList(section2Adapter.currentList)
+        if (servicePlayList != sectionList[1].songs) {
+            service?.setPlayList(sectionList[1].songs)
         }
         service?.playPause(song)
     } }
 
     private val newSongsAdapter: SectionAdapter by lazy { SectionAdapter { song ->
-        if (servicePlayList != newSongsAdapter.currentList) {
-            service?.setPlayList(newSongsAdapter.currentList)
+        if (servicePlayList != newSongs.songs) {
+            service?.setPlayList(newSongs.songs)
         }
         service?.playPause(song)
     } }
@@ -145,8 +144,8 @@ class HomeFirebaseFragment : Fragment() {
         lifecycleScope.launch {
             firebaseViewModel.newSongs.collectLatest {
                 if (it.isNotEmpty()) {
-                    val section = Section("section_new_songs", "New Songs", it)
-                    setupSection(section, binding.newSongsTitle, binding.newSongsRv, binding.newSongsViewAll, newSongsAdapter)
+                    newSongs = Section("section_new_songs", "New Songs", it)
+                    setupSection(newSongs, binding.newSongsTitle, binding.newSongsRv, binding.newSongsViewAll, newSongsAdapter)
                 }
             }
         }

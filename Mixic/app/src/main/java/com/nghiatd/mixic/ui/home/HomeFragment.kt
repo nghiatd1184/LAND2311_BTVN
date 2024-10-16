@@ -10,7 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
+import android.support.v4.media.session.MediaSessionCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.databinding.FragmentHomeBinding
@@ -128,15 +129,13 @@ class HomeFragment : Fragment(), BroadcastReceiver.SongListener {
                 btnNext.setOnClickListener {
                     service?.playNext()
                 }
-                btnPrevious.setOnClickListener {
-                    service?.playPrev()
-                }
                 btnPlayPause.setOnClickListener {
                     val song = service?.currentPlaying?.value?.second
                     val imgRes =
                         if (service?.isPlayingFlow?.value == true) R.drawable.icon_play else R.drawable.icon_pause
                     Glide.with(btnPlayPause)
                         .load(imgRes)
+                        .transition(DrawableTransitionOptions.withCrossFade(500))
                         .into(btnPlayPause)
                     service?.playPause(song)
                 }
@@ -156,8 +155,11 @@ class HomeFragment : Fragment(), BroadcastReceiver.SongListener {
             val uri = Uri.parse(song?.image)
             Glide.with(imgThumb)
                 .load(uri)
+                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .apply(RequestOptions().transform(RoundedCorners(15)))
                 .into(imgThumb)
+
+
         }
 
     }
