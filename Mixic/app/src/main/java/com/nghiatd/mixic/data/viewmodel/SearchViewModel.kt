@@ -20,7 +20,7 @@ class SearchViewModel(private val repository: SongRepository) : ViewModel() {
     val songsFromFirebase = _songsFromFirebase.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _songsFromDevice.value = repository.getAllDeviceSongs()
         }
         getAllFirebaseSong()

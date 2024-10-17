@@ -18,7 +18,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -33,10 +32,8 @@ import com.nghiatd.mixic.auth.updateProfile
 import com.nghiatd.mixic.auth.uploadPhotoToFirebaseStorage
 import com.nghiatd.mixic.databinding.FragmentUpdateProfileBinding
 import com.nghiatd.mixic.ui.home.HomeFragment
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class UpdateProfileFragment : Fragment() {
 

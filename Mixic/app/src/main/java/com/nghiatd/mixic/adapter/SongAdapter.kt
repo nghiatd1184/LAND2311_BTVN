@@ -60,40 +60,17 @@ class SongAdapter(val onItemClick: (Song) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
             binding.tvName.isSelected = true
-
             binding.tvName.text = song.name
             binding.tvArtist.text = song.artist
-            val uri = Uri.parse(song.image)
 
             Glide.with(binding.imgArt)
-                .load(uri)
+                .load(song.image)
                 .transition(DrawableTransitionOptions.withCrossFade(500))
                 .error(R.drawable.logo)
                 .into(binding.imgArt)
 
             binding.root.setOnClickListener {
                 onItemClick(song)
-            }
-
-            binding.imgMenu.setOnClickListener { view ->
-                val popupMenu = PopupMenu(view.context, view)
-                popupMenu.menuInflater.inflate(R.menu.menu_song_options, popupMenu.menu)
-                popupMenu.setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.action_download -> {
-                            downloadSong(song, view)
-                            true
-                        }
-
-                        R.id.action_details -> {
-                            Toast.makeText(view.context, "Details", Toast.LENGTH_SHORT).show()
-                            true
-                        }
-
-                        else -> false
-                    }
-                }
-                popupMenu.show()
             }
 
             val lottieView = binding.lottiePlaying
@@ -113,37 +90,6 @@ class SongAdapter(val onItemClick: (Song) -> Unit) :
                 } else {
                     lottieView.visibility = View.GONE
                 }
-            }
-        }
-    }
-
-    private fun downloadSong(song: Song, view: View) {
-        try {
-            song.id.toInt()
-            Toast.makeText(
-                view.context,
-                getString(view.context, R.string.download_already_exist),
-                Toast.LENGTH_SHORT
-            ).show()
-        } catch (e: Exception) {
-            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(song.data)
-            val localFile = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
-                "${song.name} - ${song.artist}.mp3"
-            )
-
-            storageRef.getFile(localFile).addOnSuccessListener {
-                Toast.makeText(
-                    view.context,
-                    getString(view.context, R.string.download_success),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }.addOnFailureListener {
-                Toast.makeText(
-                    view.context,
-                    getString(view.context, R.string.download_error),
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         }
     }

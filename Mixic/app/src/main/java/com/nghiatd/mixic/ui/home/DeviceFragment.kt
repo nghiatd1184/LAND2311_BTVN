@@ -43,7 +43,7 @@ class DeviceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val viewModeFactory = DeviceViewModel.SongViewModelFactory(requireContext())
-        viewModel = ViewModelProvider(this, viewModeFactory)[DeviceViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), viewModeFactory)[DeviceViewModel::class.java]
         service = (parentFragment as HomeFragment).getMusicService()
         listenViewModel()
         binding = FragmentDeviceBinding.inflate(inflater, container, false)

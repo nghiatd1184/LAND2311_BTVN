@@ -2,7 +2,6 @@ package com.nghiatd.mixic.ui.login
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,8 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.auth.login
 import com.nghiatd.mixic.databinding.FragmentLoginBinding
 import com.nghiatd.mixic.ui.home.HomeFragment
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -71,7 +68,6 @@ class LoginFragment : Fragment() {
                                     message,
                                     Toast.LENGTH_SHORT
                                 ).show()
-
                                 parentFragmentManager.beginTransaction()
                                     .replace(R.id.main_container, HomeFragment())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

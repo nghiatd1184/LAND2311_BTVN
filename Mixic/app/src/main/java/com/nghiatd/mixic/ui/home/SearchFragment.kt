@@ -50,7 +50,7 @@ class SearchFragment : Fragment() {
     ): View {
         service = (parentFragment as HomeFragment).getMusicService()
         val viewModeFactory = SearchViewModel.SongViewModelFactory(requireContext())
-        viewModel = ViewModelProvider(this, viewModeFactory)[SearchViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), viewModeFactory)[SearchViewModel::class.java]
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }

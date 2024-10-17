@@ -16,7 +16,7 @@ class DeviceViewModel(private val repository: SongRepository) : ViewModel() {
     val allSongs = _allSongs.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _allSongs.value = repository.getAllDeviceSongs()
         }
     }

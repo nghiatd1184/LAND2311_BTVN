@@ -10,10 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.auth.changePassword
 import com.nghiatd.mixic.databinding.FragmentChangePasswordBinding
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ChangePasswordFragment : Fragment() {
     private lateinit var binding: FragmentChangePasswordBinding

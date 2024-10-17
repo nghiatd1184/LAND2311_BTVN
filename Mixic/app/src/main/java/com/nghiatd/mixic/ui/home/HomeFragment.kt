@@ -94,6 +94,15 @@ class HomeFragment : Fragment() {
                         true
                     }
 
+                    R.id.playlists -> {
+                        if (isFragmentInBackStack(childFragmentManager, "Playlist")) {
+                            childFragmentManager.popBackStack("Playlist", 0)
+                        } else {
+                            replaceFragment(PlaylistFragment(), "Playlist")
+                        }
+                        true
+                    }
+
                     R.id.search -> {
                         if (isFragmentInBackStack(childFragmentManager, "Search")) {
                             childFragmentManager.popBackStack("Search", 0)
@@ -177,7 +186,6 @@ class HomeFragment : Fragment() {
             childFragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .addToBackStack(name)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()
         }
     }

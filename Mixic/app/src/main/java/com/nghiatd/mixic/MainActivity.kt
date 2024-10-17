@@ -3,6 +3,7 @@ package com.nghiatd.mixic
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsetsController
 import androidx.activity.enableEdgeToEdge
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentTransaction
+import com.google.gson.Gson
+import com.nghiatd.mixic.data.model.Playlist
 import com.nghiatd.mixic.ui.splash.SplashFragment
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +30,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        val sharedPref = getSharedPreferences("data", MODE_PRIVATE)
+        val sharedPref = this.getSharedPreferences("data", MODE_PRIVATE)
+//        val playlists = listOf(
+//            Playlist("1", "My Playlist", mutableListOf()),
+//        )
+//        val json = Gson().toJson(playlists)
+//        Log.d("NGHIA", "initView: $json")
+//        sharedPref.edit().putString("playlists", json).apply()
         val theme = sharedPref.getInt("theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         AppCompatDelegate.setDefaultNightMode(theme)
 

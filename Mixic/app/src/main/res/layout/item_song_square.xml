@@ -7,39 +7,41 @@
     android:orientation="vertical"
     android:layout_marginEnd="10dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp">
         <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:cardCornerRadius="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-            <ImageView
-                android:id="@+id/img_art"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:src="@drawable/splash_img"
-                android:scaleType="centerCrop"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp">
+
+                <ImageView
+                    android:id="@+id/img_art"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:src="@drawable/splash_img"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_playing"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerCrop"
+                    app:lottie_autoPlay="true"
+                    android:visibility="visible"
+                    app:lottie_colorFilter="@color/white"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/play_animation"
+                    app:lottie_repeatMode="restart"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
-
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottie_playing"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:scaleType="centerCrop"
-            app:lottie_autoPlay="true"
-            android:visibility="visible"
-            app:lottie_colorFilter="@color/white"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/play_animation"
-            app:lottie_repeatMode="restart"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/tv_name"

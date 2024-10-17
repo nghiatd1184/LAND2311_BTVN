@@ -1,7 +1,6 @@
 package com.nghiatd.mixic.auth
 
 import android.net.Uri
-import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.EmailAuthProvider

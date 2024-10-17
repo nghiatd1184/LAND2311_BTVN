@@ -1,25 +1,18 @@
 package com.nghiatd.mixic.ui.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.auth.registerUserByEmail
-import com.nghiatd.mixic.data.model.User
-import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentSignUpBinding
-import com.nghiatd.mixic.ui.home.HomeFragment
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding

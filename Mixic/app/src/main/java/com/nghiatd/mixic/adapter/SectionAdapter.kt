@@ -15,16 +15,17 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.databinding.ItemSongSquareBinding
 
-class SectionAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, SectionAdapter.SectionViewHolder>(object :
-    DiffUtil.ItemCallback<Song>() {
-    override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
-        return oldItem.name == newItem.name
-    }
+class SectionAdapter(val onItemClick: (Song) -> Unit) :
+    ListAdapter<Song, SectionAdapter.SectionViewHolder>(object :
+        DiffUtil.ItemCallback<Song>() {
+        override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
+            return oldItem.name == newItem.name
+        }
 
-    override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
-        return oldItem.id == newItem.id
-    }
-}) {
+        override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+            return oldItem.id == newItem.id
+        }
+    }) {
 
     var isPlaying = false
         set(value) {
@@ -47,31 +48,25 @@ class SectionAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, Sectio
         holder.bind(getItem(position))
     }
 
-    inner class SectionViewHolder(private val binding: ItemSongSquareBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SectionViewHolder(private val binding: ItemSongSquareBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
             binding.tvName.text = song.name
             binding.tvArtist.text = song.artist
-            val uri = Uri.parse(song.image)
-            if(uri != null) {
-                Glide.with(binding.imgArt)
-                    .load(uri)
-                    .transition(DrawableTransitionOptions.withCrossFade(500))
-                    .into(binding.imgArt)
-            } else {
-                Glide.with(binding.imgArt)
-                    .load(R.drawable.splash_img)
-                    .transition(DrawableTransitionOptions.withCrossFade(500))
-                    .into(binding.imgArt)
-            }
+            Glide.with(binding.root)
+                .load(song.image)
+                .transition(DrawableTransitionOptions.withCrossFade(500))
+                .error(R.drawable.logo)
+                .into(binding.imgArt)
 
             binding.root.setOnClickListener {
                 binding.tvName.isSelected = true
                 onItemClick(song)
             }
             val lottieView = binding.lottiePlaying
-            if(isPlaying) {
-                if(playingSong == song) {
-                    if(lottieView.visibility == View.GONE) {
+            if (isPlaying) {
+                if (playingSong == song) {
+                    if (lottieView.visibility == View.GONE) {
                         lottieView.visibility = View.VISIBLE
                     } else {
                         lottieView.resumeAnimation()
@@ -80,7 +75,7 @@ class SectionAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, Sectio
                     lottieView.visibility = View.GONE
                 }
             } else {
-                if(playingSong == song) {
+                if (playingSong == song) {
                     lottieView.pauseAnimation()
                 } else {
                     lottieView.visibility = View.GONE

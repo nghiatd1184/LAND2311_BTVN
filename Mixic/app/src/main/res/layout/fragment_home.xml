@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/main_component_reverse"
-        app:menu="@menu/navigation"
+        app:menu="@menu/menu_navigation"
         app:itemIconTint="@drawable/nav_item_color_state"
         app:itemTextColor="@drawable/nav_item_color_state"
         app:itemTextAppearanceActiveBoldEnabled="true"

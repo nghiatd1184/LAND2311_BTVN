@@ -8,52 +8,48 @@
     android:paddingTop="10dp"
     android:background="@color/background_color">
 
-    <EditText
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/search_here"
-        android:importantForAutofill="yes"
-        android:inputType="text"
-        android:drawableStart="@drawable/icon_search"
-        android:imeOptions="actionSearch"
+        android:text="@string/playlists"
+        android:textSize="20sp"
+        android:padding="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/search_from_cloud"
+        android:id="@+id/cloud_playlist"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent="0.49"
         android:gravity="center"
-        android:text="@string/search_from_cloud"
+        android:text="@string/cloud_s_playlist"
         tools:fontFamily="@font/main_font_bold"
         tools:background="@drawable/shape_setting_item_bg"
-        android:layout_marginTop="10dp"
         android:paddingVertical="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 
     <TextView
-        android:id="@+id/search_from_device"
+        android:id="@+id/device_playlist"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent="0.49"
         android:gravity="center"
         tools:fontFamily="@font/main_font"
-        android:text="@string/search_from_your_device"
-        android:layout_marginTop="10dp"
+        android:text="@string/your_device_s_playlist"
         android:paddingVertical="5dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/search_result"
+        android:id="@+id/rv_playlist"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_from_cloud"
+        app:layout_constraintTop_toBottomOf="@+id/cloud_playlist"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 

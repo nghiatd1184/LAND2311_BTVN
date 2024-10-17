@@ -161,10 +161,28 @@
         android:id="@+id/img_download"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:padding="10dp"
         android:visibility="visible"
         android:src="@drawable/icon_download"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_equalizer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:src="@drawable/icon_equalizer"
+        app:layout_constraintEnd_toStartOf="@+id/img_download"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btn_mute"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:padding="10dp"
+        tools:src="@drawable/icon_mute_off"
+        app:layout_constraintEnd_toStartOf="@+id/img_equalizer"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -177,20 +195,20 @@
         app:layout_constraintTop_toBottomOf="@+id/img_art_background">
 
         <ImageView
-            android:id="@+id/img_equalizer"
+            android:id="@+id/img_add_to_playlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:src="@drawable/icon_equalizer"
+            android:src="@drawable/icon_add"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/btn_mute"
+            android:id="@+id/img_queue"
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:padding="10dp"
-            tools:src="@drawable/icon_mute_off"
+            android:src="@drawable/icon_queue_list"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -204,7 +222,7 @@
             android:progressTint="@color/main_component_color"
             android:thumbTint="@color/main_component_color"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_mute"
+            app:layout_constraintTop_toBottomOf="@+id/img_queue"
             tools:progress="10" />
 
         <TextView

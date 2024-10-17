@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,6 +50,7 @@ class HomeFirebaseFragment : Fragment() {
         FeatureAdapter { feature ->
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container, SongListFragment())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit()
             sharedViewModel.setFeature(feature)
@@ -59,6 +61,7 @@ class HomeFirebaseFragment : Fragment() {
         CategoryAdapter { category ->
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container, SongListFragment())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit()
             sharedViewModel.setCategory(category)
@@ -247,6 +250,7 @@ class HomeFirebaseFragment : Fragment() {
             sharedViewModel.setSection(section)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container, SongListFragment())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit()
         }

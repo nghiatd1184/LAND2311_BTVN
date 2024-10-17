@@ -6,17 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.auth.forgotPassword
-import com.nghiatd.mixic.data.model.User
-import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentForgotPasswordBinding
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ForgotPasswordFragment : Fragment() {
     private lateinit var binding: FragmentForgotPasswordBinding

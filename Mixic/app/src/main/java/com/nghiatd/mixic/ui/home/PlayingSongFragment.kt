@@ -15,6 +15,8 @@ import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
@@ -27,6 +29,7 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.api.RetrofitExtension
 import com.nghiatd.mixic.data.model.LyricsResponse
 import com.nghiatd.mixic.data.model.Song
+import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentPlayingSongBinding
 import com.nghiatd.mixic.receiver.BroadcastReceiver
 import com.nghiatd.mixic.service.MusicService
@@ -37,6 +40,7 @@ import java.io.File
 class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
 
     private lateinit var binding: FragmentPlayingSongBinding
+    private lateinit var sharedViewModel: SharedDataViewModel
     private var service: MusicService? = null
     private lateinit var broadcastReceiver: BroadcastReceiver
     private var updateJobs: Job? = null
@@ -48,6 +52,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
         savedInstanceState: Bundle?
     ): View {
         service = (parentFragment as HomeFragment).getMusicService()
+        sharedViewModel = ViewModelProvider(requireActivity())[SharedDataViewModel::class.java]
         broadcastReceiver = BroadcastReceiver(this)
         val intentFilter = IntentFilter(MyApplication.ACTION_SONG_START)
         if (isAtLeast13) {
@@ -124,6 +129,16 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
 
     private fun initClick() {
         binding.apply {
+            imgAddToPlaylist.setOnClickListener {
+                val song = service?.currentPlaying?.value
+                sharedViewModel.setSong(song)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.container, AddSongToPlayListFragment())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
             imgDownCollapse.setOnClickListener {
                 val container = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.container)
                 container?.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up))
