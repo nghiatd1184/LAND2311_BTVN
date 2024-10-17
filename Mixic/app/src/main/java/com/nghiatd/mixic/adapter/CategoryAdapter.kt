@@ -1,28 +1,34 @@
 package com.nghiatd.mixic.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 import com.nghiatd.mixic.data.model.Category
 import com.nghiatd.mixic.databinding.ItemCategoryBinding
 
-class CategoryAdapter(private val categories: List<Category>, private val onItemClick: (Category) -> Unit) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(private val onItemClick: (Category) -> Unit) : ListAdapter<Category, CategoryAdapter.CategoryViewHolder>(object :
+    DiffUtil.ItemCallback<Category>() {
+    override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+        return oldItem.name == newItem.name
+    }
+
+    override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
+        return oldItem.id == newItem.id
+    }
+}) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CategoryViewHolder(binding, onItemClick)
     }
 
-    override fun getItemCount(): Int = categories.size
-
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(categories[position])
+        holder.bind(getItem(position))
     }
 
     inner class CategoryViewHolder(private val binding: ItemCategoryBinding, private val onItemClick: (Category) -> Unit) : RecyclerView.ViewHolder(binding.root) {

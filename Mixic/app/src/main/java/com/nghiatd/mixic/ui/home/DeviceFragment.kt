@@ -16,8 +16,10 @@ import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.viewmodel.DeviceViewModel
 import com.nghiatd.mixic.databinding.FragmentDeviceBinding
 import com.nghiatd.mixic.service.MusicService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DeviceFragment : Fragment() {
 
@@ -70,13 +72,15 @@ class DeviceFragment : Fragment() {
         lifecycleScope.launch {
             service?.isPlayingFlow?.collectLatest { isPlaying ->
                 songAdapter.isPlaying = isPlaying
-                val imgPlayPause = if (isPlaying) R.drawable.icon_pause else R.drawable.icon_play
+                val imgPlayPause =
+                    if (isPlaying) R.drawable.icon_pause else R.drawable.icon_play
                 val minimizedPlayPauseBtn =
                     (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
                         ?.findViewById<ImageView>(R.id.btn_play_pause)
                 Glide.with(minimizedPlayPauseBtn!!)
                     .load(imgPlayPause)
                     .into(minimizedPlayPauseBtn)
+
             }
         }
 

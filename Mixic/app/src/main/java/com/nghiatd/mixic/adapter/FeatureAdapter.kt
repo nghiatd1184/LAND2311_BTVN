@@ -2,22 +2,32 @@ package com.nghiatd.mixic.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.nghiatd.mixic.data.model.Category
 import com.nghiatd.mixic.data.model.Feature
 import com.nghiatd.mixic.databinding.ItemFeatureBinding
 
-class FeatureAdapter(private val features: List<Feature>, private val onItemClick: (Feature) -> Unit) : RecyclerView.Adapter<FeatureAdapter.ViewHolder>() {
+class FeatureAdapter(private val onItemClick: (Feature) -> Unit) : ListAdapter<Feature, FeatureAdapter.ViewHolder>(object :
+    DiffUtil.ItemCallback<Feature>() {
+    override fun areItemsTheSame(oldItem: Feature, newItem: Feature): Boolean {
+        return oldItem.name == newItem.name
+    }
+
+    override fun areContentsTheSame(oldItem: Feature, newItem: Feature): Boolean {
+        return oldItem.id == newItem.id
+    }
+}) {
 
     inner class ViewHolder(private val binding: ItemFeatureBinding, private val onItemClick: (Feature) -> Unit) : RecyclerView.ViewHolder(binding.root) {
         fun bind(feature: Feature) {
             Glide.with(binding.imgFeature)
                 .load(feature.image)
-                .apply(RequestOptions().transform(RoundedCorners(15)))
+                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(binding.imgFeature)
             binding.root.setOnClickListener {
                 onItemClick(feature)
@@ -31,8 +41,6 @@ class FeatureAdapter(private val features: List<Feature>, private val onItemClic
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(features[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount(): Int = features.size
 }

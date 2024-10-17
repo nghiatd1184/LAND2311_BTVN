@@ -10,10 +10,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationSet
+import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -57,7 +60,6 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
             requireActivity().registerReceiver(broadcastReceiver, intentFilter)
         }
         binding = FragmentPlayingSongBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -68,6 +70,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     }
 
     private fun initView() {
+        binding.root.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up))
         setLyric()
         initShuffleUi()
         initMuteUi()
@@ -122,12 +125,21 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     private fun initClick() {
         binding.apply {
             imgDownCollapse.setOnClickListener {
+                val container = (parentFragment as HomeFragment).view?.findViewById<View>(R.id.container)
+                container?.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up))
                 val minimizedLayout =
                     (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
                 minimizedLayout?.visibility = View.VISIBLE
                 val bottomNav =
                     (parentFragment as HomeFragment).view?.findViewById<View>(R.id.bottom_nav)
                 bottomNav?.visibility = View.VISIBLE
+                val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
+                val animationSet = AnimationSet(true).apply {
+                    addAnimation(slideUpAnimation)
+                }
+                minimizedLayout?.startAnimation(animationSet)
+                bottomNav?.startAnimation(animationSet)
+
                 updateJobs?.cancel()
                 parentFragmentManager.popBackStack()
             }

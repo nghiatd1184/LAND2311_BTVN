@@ -55,13 +55,11 @@ class SectionAdapter(val onItemClick: (Song) -> Unit) : ListAdapter<Song, Sectio
             if(uri != null) {
                 Glide.with(binding.imgArt)
                     .load(uri)
-                    .apply(RequestOptions().transform(RoundedCorners(15)))
                     .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(binding.imgArt)
             } else {
                 Glide.with(binding.imgArt)
                     .load(R.drawable.splash_img)
-                    .apply(RequestOptions().transform(RoundedCorners(15)))
                     .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(binding.imgArt)
             }

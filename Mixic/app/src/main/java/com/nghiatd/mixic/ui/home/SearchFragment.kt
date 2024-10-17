@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -19,10 +20,12 @@ import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.viewmodel.SearchViewModel
 import com.nghiatd.mixic.databinding.FragmentSearchBinding
 import com.nghiatd.mixic.service.MusicService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchFragment : Fragment() {
 
@@ -89,24 +92,15 @@ class SearchFragment : Fragment() {
                 searchFromCloud.typeface = resources.getFont(R.font.main_font)
             }
 
-            searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return false
+            searchBar.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    val query = binding.searchBar.text.toString()
+                    performSearch(query)
+                    true
+                } else {
+                    false
                 }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    lifecycleScope.launch {
-                        searchSource.collectLatest { source ->
-                            Log.d("NGHIA", "onQueryTextChange: searchSource = $source")
-                            val filteredList = source.filter {
-                                it.name.contains(newText ?: "", ignoreCase = true) || it.artist.contains(newText ?: "", ignoreCase = true)
-                            }
-                            adapter.submitList(filteredList)
-                        }
-                    }
-                    return true
-                }
-            })
+            }
         }
     }
 
@@ -128,7 +122,8 @@ class SearchFragment : Fragment() {
         lifecycleScope.launch {
             service?.isPlayingFlow?.collectLatest { isPlaying ->
                 adapter.isPlaying = isPlaying
-                val imgPlayPause = if (isPlaying) R.drawable.icon_pause else R.drawable.icon_play
+                val imgPlayPause =
+                    if (isPlaying) R.drawable.icon_pause else R.drawable.icon_play
                 val minimizedPlayPauseBtn =
                     (parentFragment as HomeFragment).view?.findViewById<View>(R.id.minimized_layout)
                         ?.findViewById<ImageView>(R.id.btn_play_pause)
@@ -144,6 +139,19 @@ class SearchFragment : Fragment() {
                 adapter.playingSong = currentPlaying
             }
         }
+    }
 
+    private fun performSearch(query: String) {
+        lifecycleScope.launch {
+            searchSource.collectLatest { source ->
+                val filteredList = source.filter {
+                    it.name.contains(query, ignoreCase = true) || it.artist.contains(
+                        query,
+                        ignoreCase = true
+                    )
+                }
+                adapter.submitList(filteredList)
+            }
+        }
     }
 }

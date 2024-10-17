@@ -67,9 +67,8 @@ class SongAdapter(val onItemClick: (Song) -> Unit) :
 
             Glide.with(binding.imgArt)
                 .load(uri)
-                .apply(RequestOptions().transform(RoundedCorners(15)))
                 .transition(DrawableTransitionOptions.withCrossFade(500))
-                .error(R.mipmap.ic_launcher)
+                .error(R.drawable.logo)
                 .into(binding.imgArt)
 
             binding.root.setOnClickListener {

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.repository.SongRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class SearchViewModel(private val repository: SongRepository) : ViewModel() {
     val songsFromFirebase = _songsFromFirebase.asStateFlow()
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _songsFromDevice.value = repository.getAllDeviceSongs()
         }
         getAllFirebaseSong()

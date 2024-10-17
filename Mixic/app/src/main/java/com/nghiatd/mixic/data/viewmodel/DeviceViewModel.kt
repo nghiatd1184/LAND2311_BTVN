@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.repository.SongRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -15,7 +16,7 @@ class DeviceViewModel(private val repository: SongRepository) : ViewModel() {
     val allSongs = _allSongs.asStateFlow()
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _allSongs.value = repository.getAllDeviceSongs()
         }
     }

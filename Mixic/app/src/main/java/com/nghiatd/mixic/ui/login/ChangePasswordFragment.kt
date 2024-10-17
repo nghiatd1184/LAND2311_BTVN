@@ -10,8 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.auth.changePassword
 import com.nghiatd.mixic.databinding.FragmentChangePasswordBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ChangePasswordFragment : Fragment() {
     private lateinit var binding: FragmentChangePasswordBinding
@@ -43,21 +45,38 @@ class ChangePasswordFragment : Fragment() {
                 val newPassword = edtNewPassword.text.toString()
                 val confirmPassword = edtConfirmNewPassword.text.toString()
                 if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-                    Toast.makeText(requireContext(), getString(R.string.please_fill_all_fields), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.please_fill_all_fields),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 } else if (newPassword != confirmPassword) {
-                    Toast.makeText(requireContext(), getString(R.string.wrong_confirm_password), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.wrong_confirm_password),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {
                         changePassword(oldPassword, newPassword).collectLatest { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(requireContext(), getString(R.string.change_password_success), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.change_password_success),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 parentFragmentManager.popBackStack()
                                 binding.loading.visibility = View.GONE
                                 binding.btnChangePassword.visibility = View.VISIBLE
                             } else {
-                                Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    task.exception?.message.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
                                 binding.loading.visibility = View.GONE
                                 binding.btnChangePassword.visibility = View.VISIBLE
                             }

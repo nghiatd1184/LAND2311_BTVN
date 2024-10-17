@@ -1,5 +1,6 @@
 package com.nghiatd.mixic.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,77 +8,89 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.adapter.CategoryAdapter
 import com.nghiatd.mixic.adapter.FeatureAdapter
 import com.nghiatd.mixic.adapter.SectionAdapter
-import com.nghiatd.mixic.data.model.Category
-import com.nghiatd.mixic.data.model.Feature
 import com.nghiatd.mixic.data.model.Section
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.viewmodel.HomeFirebaseViewModel
 import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentHomeFirebaseBinding
 import com.nghiatd.mixic.service.MusicService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.math.abs
 
 class HomeFirebaseFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeFirebaseBinding
     private lateinit var firebaseViewModel: HomeFirebaseViewModel
     private lateinit var sharedViewModel: SharedDataViewModel
-    private val featureList = mutableListOf<Feature>()
-    private val categoryList = mutableListOf<Category>()
     private val sectionList = mutableListOf<Section>()
     private lateinit var newSongs: Section
     private lateinit var servicePlayList: MutableList<Song>
     private var service: MusicService? = null
 
-    private val featureAdapter : FeatureAdapter by lazy { FeatureAdapter(featureList) {feature ->
-        sharedViewModel.setFeature(feature)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.container, SongListFragment())
-            .addToBackStack(null)
-            .commit()
-    }}
-
-    private val categoryAdapter : CategoryAdapter by lazy { CategoryAdapter(categoryList) {category ->
-        sharedViewModel.setCategory(category)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.container, SongListFragment())
-            .addToBackStack(null)
-            .commit()
-    }}
-
-    private val section1Adapter: SectionAdapter by lazy { SectionAdapter { song ->
-        if (servicePlayList != sectionList[0].songs) {
-            service?.setPlayList(sectionList[0].songs)
+    private val featureAdapter: FeatureAdapter by lazy {
+        FeatureAdapter { feature ->
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, SongListFragment())
+                .addToBackStack(null)
+                .commit()
+            sharedViewModel.setFeature(feature)
         }
-        service?.playPause(song)
-    } }
+    }
 
-    private val section2Adapter: SectionAdapter by lazy { SectionAdapter { song ->
-        if (servicePlayList != sectionList[1].songs) {
-            service?.setPlayList(sectionList[1].songs)
+    private val categoryAdapter: CategoryAdapter by lazy {
+        CategoryAdapter { category ->
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, SongListFragment())
+                .addToBackStack(null)
+                .commit()
+            sharedViewModel.setCategory(category)
         }
-        service?.playPause(song)
-    } }
+    }
 
-    private val newSongsAdapter: SectionAdapter by lazy { SectionAdapter { song ->
-        if (servicePlayList != newSongs.songs) {
-            service?.setPlayList(newSongs.songs)
+    private val section1Adapter: SectionAdapter by lazy {
+        SectionAdapter { song ->
+            if (servicePlayList != sectionList[0].songs) {
+                service?.setPlayList(sectionList[0].songs)
+            }
+            service?.playPause(song)
         }
-        service?.playPause(song)
-    } }
+    }
+
+    private val section2Adapter: SectionAdapter by lazy {
+        SectionAdapter { song ->
+            if (servicePlayList != sectionList[1].songs) {
+                service?.setPlayList(sectionList[1].songs)
+            }
+            service?.playPause(song)
+        }
+    }
+
+    private val newSongsAdapter: SectionAdapter by lazy {
+        SectionAdapter { song ->
+            if (servicePlayList != newSongs.songs) {
+                service?.setPlayList(newSongs.songs)
+            }
+            service?.playPause(song)
+        }
+    }
 
     private val handler = Handler(Looper.getMainLooper())
     private val autoScrollRunnable = object : Runnable {
@@ -118,7 +131,12 @@ class HomeFirebaseFragment : Fragment() {
     private fun initViewFeature() {
         binding.viewPagerFeature.apply {
             adapter = featureAdapter
-            offscreenPageLimit = 3
+            offscreenPageLimit = 1
+            setPageTransformer { page, position ->
+                page.translationX = -page.translationX * position
+                page.scaleY = 1 - (0.15f * abs(position))
+                binding.viewPagerFeature.setBackgroundColor(Color.TRANSPARENT)
+            }
         }
 
     }
@@ -126,7 +144,8 @@ class HomeFirebaseFragment : Fragment() {
     private fun initViewCategory() {
         binding.rvCategory.apply {
             adapter = categoryAdapter
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
     }
 
@@ -136,8 +155,20 @@ class HomeFirebaseFragment : Fragment() {
                 sectionList.clear()
                 sectionList.addAll(it)
                 if (sectionList.size == 2) {
-                    setupSection(sectionList[0], binding.section1Title, binding.section1Rv, binding.section1ViewAll, section1Adapter)
-                    setupSection(sectionList[1], binding.section2Title, binding.section2Rv, binding.section2ViewAll, section2Adapter)
+                    setupSection(
+                        sectionList[0],
+                        binding.section1Title,
+                        binding.section1Rv,
+                        binding.section1ViewAll,
+                        section1Adapter
+                    )
+                    setupSection(
+                        sectionList[1],
+                        binding.section2Title,
+                        binding.section2Rv,
+                        binding.section2ViewAll,
+                        section2Adapter
+                    )
                 }
             }
         }
@@ -146,24 +177,31 @@ class HomeFirebaseFragment : Fragment() {
             firebaseViewModel.newSongs.collectLatest {
                 if (it.isNotEmpty()) {
                     newSongs = Section("section_new_songs", "New Songs", it)
-                    setupSection(newSongs, binding.newSongsTitle, binding.newSongsRv, binding.newSongsViewAll, newSongsAdapter)
+                    withContext(Dispatchers.Main) {
+                        setupSection(
+                            newSongs,
+                            binding.newSongsTitle,
+                            binding.newSongsRv,
+                            binding.newSongsViewAll,
+                            newSongsAdapter
+                        )
+                    }
                 }
             }
         }
 
         lifecycleScope.launch {
             firebaseViewModel.allCategory.collectLatest {
-                categoryList.clear()
-                categoryList.addAll(it)
-                categoryAdapter.notifyItemRangeInserted(0, it.size)
+                categoryAdapter.submitList(it)
+                categoryAdapter.notifyDataSetChanged()
+
             }
         }
 
         lifecycleScope.launch {
             firebaseViewModel.allFeature.collectLatest {
-                featureList.clear()
-                featureList.addAll(it)
-                featureAdapter.notifyItemRangeInserted(0, it.size)
+                featureAdapter.submitList(it)
+                featureAdapter.notifyDataSetChanged()
             }
         }
 
@@ -197,7 +235,13 @@ class HomeFirebaseFragment : Fragment() {
         }
     }
 
-    private fun setupSection(section: Section, title: TextView, recyclerView: RecyclerView, viewAll: TextView, sectionAdapter: SectionAdapter) {
+    private fun setupSection(
+        section: Section,
+        title: TextView,
+        recyclerView: RecyclerView,
+        viewAll: TextView,
+        sectionAdapter: SectionAdapter
+    ) {
         title.text = section.name
         viewAll.setOnClickListener {
             sharedViewModel.setSection(section)
@@ -209,7 +253,8 @@ class HomeFirebaseFragment : Fragment() {
         viewAll.visibility = View.VISIBLE
         recyclerView.apply {
             adapter = sectionAdapter
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
         sectionAdapter.submitList(section.songs.take(5))
         sectionAdapter.notifyDataSetChanged()

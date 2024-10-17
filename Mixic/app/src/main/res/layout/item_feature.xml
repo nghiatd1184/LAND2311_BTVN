@@ -5,14 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-        <ImageView
-            android:id="@+id/img_feature"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:cardCornerRadius="15dp"
             app:layout_constraintDimensionRatio="16:9"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/img_splash_2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/img_feature"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:src="@drawable/img_splash_2" />
+
+        </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

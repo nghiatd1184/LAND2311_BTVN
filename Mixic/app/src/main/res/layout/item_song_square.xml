@@ -10,14 +10,20 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="100dp"
         android:layout_height="100dp">
-        <ImageView
-            android:id="@+id/img_art"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:src="@drawable/splash_img"
-            android:scaleType="centerCrop"
+            app:cardCornerRadius="15dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageView
+                android:id="@+id/img_art"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@drawable/splash_img"
+                android:scaleType="centerCrop"/>
+        </androidx.cardview.widget.CardView>
+
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_playing"

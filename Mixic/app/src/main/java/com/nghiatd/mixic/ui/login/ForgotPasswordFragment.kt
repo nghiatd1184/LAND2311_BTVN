@@ -13,8 +13,10 @@ import com.nghiatd.mixic.auth.forgotPassword
 import com.nghiatd.mixic.data.model.User
 import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentForgotPasswordBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ForgotPasswordFragment : Fragment() {
     private lateinit var binding: FragmentForgotPasswordBinding
@@ -43,7 +45,11 @@ class ForgotPasswordFragment : Fragment() {
                 binding.btnFindPassword.visibility = View.GONE
                 val email = edtEmail.text.toString()
                 if (email.isEmpty()) {
-                    Toast.makeText(requireContext(), getString(R.string.please_fill_email), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.please_fill_email),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {
@@ -58,7 +64,12 @@ class ForgotPasswordFragment : Fragment() {
                                 binding.loading.visibility = View.GONE
                                 binding.btnFindPassword.visibility = View.VISIBLE
                             } else {
-                                Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
+
+                                Toast.makeText(
+                                    requireContext(),
+                                    task.exception?.message.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 binding.loading.visibility = View.GONE
                                 binding.btnFindPassword.visibility = View.VISIBLE
                             }

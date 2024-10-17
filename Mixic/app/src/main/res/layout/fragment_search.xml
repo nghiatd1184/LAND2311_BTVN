@@ -8,14 +8,15 @@
     android:paddingTop="10dp"
     android:background="@color/background_color">
 
-    <androidx.appcompat.widget.SearchView
+    <EditText
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:defaultQueryHint="Search here"
-        app:searchIcon="@drawable/icon_search"
-        app:iconifiedByDefault="false"
+        android:hint="@string/search_here"
+        android:importantForAutofill="yes"
         android:inputType="text"
+        android:drawableStart="@drawable/icon_search"
+        android:imeOptions="actionSearch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 

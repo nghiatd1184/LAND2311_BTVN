@@ -11,7 +11,6 @@ import android.media.audiofx.BassBoost
 import android.media.audiofx.Equalizer
 import android.media.audiofx.Virtualizer
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -22,10 +21,10 @@ import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.nghiatd.mixic.MainActivity
 import com.nghiatd.mixic.MyApplication
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
-import com.nghiatd.mixic.receiver.BroadcastReceiver
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +63,8 @@ class MusicService : Service() {
             scope.launch {
                 isPlayingFlow.collectLatest {
                     val playbackSpeed = if (it) 1f else 0f
-                    val playbackState = if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+                    val playbackState =
+                        if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
                     showNotification(playbackState, playbackSpeed)
                 }
             }
@@ -88,15 +88,18 @@ class MusicService : Service() {
 
         for (i in 0 until equalizer.numberOfBands) {
             val bandIndex = i.toShort()
-            val savedLevel = sharedPreferences.getInt("BandLevel_$i", equalizer.getBandLevel(bandIndex).toInt())
+            val savedLevel =
+                sharedPreferences.getInt("BandLevel_$i", equalizer.getBandLevel(bandIndex).toInt())
             val adjustedLevel = savedLevel.coerceIn(minEQLevel.toInt(), maxEQLevel.toInt())
             equalizer.setBandLevel(bandIndex, adjustedLevel.toShort())
         }
 
-        val bassBoostStrength = sharedPreferences.getInt("BassBoostStrength", bassBoost.roundedStrength.toInt())
+        val bassBoostStrength =
+            sharedPreferences.getInt("BassBoostStrength", bassBoost.roundedStrength.toInt())
         bassBoost.setStrength(bassBoostStrength.toShort())
 
-        val virtualizerStrength = sharedPreferences.getInt("VirtualizerStrength", virtualizer.roundedStrength.toInt())
+        val virtualizerStrength =
+            sharedPreferences.getInt("VirtualizerStrength", virtualizer.roundedStrength.toInt())
         virtualizer.setStrength(virtualizerStrength.toShort())
 
         val isEqualizerEnabled = sharedPreferences.getBoolean("EqualizerState", false)
@@ -109,6 +112,14 @@ class MusicService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        scope.launch {
+            isPlayingFlow.collectLatest {
+                val playbackSpeed = if (it) 1f else 0f
+                val playbackState =
+                    if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+                showNotification(playbackState, playbackSpeed)
+            }
+        }
         return START_STICKY
     }
 
@@ -186,7 +197,7 @@ class MusicService : Service() {
 
     fun playNext() {
         val listSong = allSongs.value
-        if (listSong.isEmpty()) return
+        if (listSong.size <= 1) return
 
         val isShuffle = isShuffle.value
         val currentPlayingIndex = listSong.indexOf(currentPlaying.value)
@@ -205,6 +216,11 @@ class MusicService : Service() {
     }
 
     fun playPause(song: Song?) {
+        if (allSongs.value.isEmpty()) {
+            Toast.makeText(this@MusicService, "Please pick a song first!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (song == null) {
             playSong(allSongs.value[0])
             return
@@ -231,6 +247,8 @@ class MusicService : Service() {
     }
 
     private fun playSong(song: Song) {
+        Log.d("NGHIA", "song: $song")
+        Log.d("NGHIA", "allSongs: ${allSongs.value}")
         isPlayingFlow.value = true
         val listSong = allSongs.value
         mediaPlayer.reset()
@@ -299,13 +317,17 @@ class MusicService : Service() {
                     .get()
             }
         }
-        mediaSessionCompat.setMetadata(MediaMetadataCompat.Builder()
-            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration().toLong())
-            .build())
-        mediaSessionCompat.setPlaybackState(PlaybackStateCompat.Builder()
-            .setState(playbackState, getCurrentPosition().toLong(), playbackSpeed)
-            .setActions(PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
-            .build())
+        mediaSessionCompat.setMetadata(
+            MediaMetadataCompat.Builder()
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration().toLong())
+                .build()
+        )
+        mediaSessionCompat.setPlaybackState(
+            PlaybackStateCompat.Builder()
+                .setState(playbackState, getCurrentPosition().toLong(), playbackSpeed)
+                .setActions(PlaybackStateCompat.ACTION_SEEK_TO or PlaybackStateCompat.ACTION_PLAY_PAUSE or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+                .build()
+        )
 
         mediaSessionCompat.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPlay() {
@@ -334,16 +356,20 @@ class MusicService : Service() {
             }
         })
 
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
         val notification = NotificationCompat.Builder(this, MyApplication.CHANNEL_ID_1)
             .setSmallIcon(R.drawable.logo_notification)
-            .setContentTitle(song?.name)
-            .setContentText(song?.artist)
+            .setContentTitle(song?.name ?: getString(R.string.app_name))
+            .setContentText(song?.artist ?: "Mixic is running")
             .setLargeIcon(thumb)
-            .setStyle(
-                MediaStyle()
-                    .setMediaSession(mediaSessionCompat.sessionToken))
+            .setStyle(MediaStyle().setMediaSession(mediaSessionCompat.sessionToken))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setOnlyAlertOnce(true)
+            .setContentIntent(pendingIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOngoing(true)
             .build()

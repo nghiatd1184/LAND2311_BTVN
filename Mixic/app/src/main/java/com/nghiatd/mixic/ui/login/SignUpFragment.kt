@@ -16,8 +16,10 @@ import com.nghiatd.mixic.data.model.User
 import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentSignUpBinding
 import com.nghiatd.mixic.ui.home.HomeFragment
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
@@ -48,20 +50,36 @@ class SignUpFragment : Fragment() {
                 val email = edtEmail.text.toString()
                 val password = edtPassword.text.toString()
                 val confirmPassword = edtConfirmPassword.text.toString()
-                if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() ) {
-                    Toast.makeText(requireContext(), getString(R.string.please_fill_all_fields), Toast.LENGTH_SHORT).show()
+                if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.please_fill_all_fields),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 } else if (password != confirmPassword) {
-                    Toast.makeText(requireContext(), getString(R.string.wrong_confirm_password), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.wrong_confirm_password),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 } else if (password.length !in 6..16) {
-                    Toast.makeText(requireContext(), getString(R.string.password_length_error), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.password_length_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {
-                        registerUserByEmail(email, password).collectLatest{ task ->
+                        registerUserByEmail(email, password).collectLatest { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(requireContext(), "${getString(R.string.register_success)} $email", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "${getString(R.string.register_success)} $email",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 parentFragmentManager.beginTransaction()
                                     .replace(R.id.main_container, UpdateProfileFragment())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -70,7 +88,11 @@ class SignUpFragment : Fragment() {
                                 binding.loading.visibility = View.GONE
                                 binding.btnSignUp.visibility = View.VISIBLE
                             } else {
-                                Toast.makeText(requireContext(), task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    task.exception?.message.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 binding.loading.visibility = View.GONE
                                 binding.btnSignUp.visibility = View.VISIBLE
                             }

@@ -15,8 +15,10 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.auth.login
 import com.nghiatd.mixic.databinding.FragmentLoginBinding
 import com.nghiatd.mixic.ui.home.HomeFragment
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -60,7 +62,8 @@ class LoginFragment : Fragment() {
                 } else {
                     lifecycleScope.launch {
                         login(email, password).collectLatest { task ->
-                            val displayName = FirebaseAuth.getInstance().currentUser?.displayName ?: ""
+                            val displayName =
+                                FirebaseAuth.getInstance().currentUser?.displayName ?: ""
                             val message = "Welcome back $displayName!"
                             if (task.isSuccessful) {
                                 Toast.makeText(
@@ -68,6 +71,7 @@ class LoginFragment : Fragment() {
                                     message,
                                     Toast.LENGTH_SHORT
                                 ).show()
+
                                 parentFragmentManager.beginTransaction()
                                     .replace(R.id.main_container, HomeFragment())
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

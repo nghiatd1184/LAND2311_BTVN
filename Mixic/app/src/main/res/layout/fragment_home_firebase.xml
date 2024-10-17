@@ -60,12 +60,13 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/view_pager_feature"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    app:layout_constraintDimensionRatio="16:9"
+                    android:paddingHorizontal="40dp"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:sample="@layout/item_feature" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="5dp">
 
-    <ImageView
-        android:id="@+id/img_art"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_song"
         android:layout_width="50dp"
-        tools:src="@drawable/splash_img"
         android:layout_height="50dp"
-        android:scaleType="centerCrop"
+        app:cardCornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_art"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/splash_img" />
+
+    </androidx.cardview.widget.CardView>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -23,7 +31,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/lottie_playing"
-        app:layout_constraintStart_toEndOf="@+id/img_art"
+        app:layout_constraintStart_toEndOf="@+id/card_song"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -31,12 +39,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:singleLine="true"
             android:focusable="true"
-            android:freezesText="true"
             android:focusableInTouchMode="true"
+            android:freezesText="true"
+            android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
+            android:singleLine="true"
             android:textSize="14sp"
             tools:text="A song of love" />
 
@@ -46,8 +54,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/main_font"
             android:maxLines="1"
-            android:textSize="12sp"
             android:textColor="@color/grey_color"
+            android:textSize="12sp"
             tools:text="A song of love" />
 
     </LinearLayout>
@@ -57,11 +65,11 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="centerCrop"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/img_menu"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
-        android:visibility="gone"
         app:lottie_colorFilter="@color/main_component_color"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/play_animation"
@@ -74,6 +82,6 @@
         android:src="@drawable/icon_menu_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

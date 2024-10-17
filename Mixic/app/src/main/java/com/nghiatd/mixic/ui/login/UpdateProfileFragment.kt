@@ -33,8 +33,10 @@ import com.nghiatd.mixic.auth.updateProfile
 import com.nghiatd.mixic.auth.uploadPhotoToFirebaseStorage
 import com.nghiatd.mixic.databinding.FragmentUpdateProfileBinding
 import com.nghiatd.mixic.ui.home.HomeFragment
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UpdateProfileFragment : Fragment() {
 
@@ -86,10 +88,18 @@ class UpdateProfileFragment : Fragment() {
                 binding.btnLayout.visibility = View.GONE
                 val name = edtDisplayName.text.toString()
                 if (name.isEmpty() || name.isBlank()) {
-                    Toast.makeText(requireContext(), getString(R.string.please_fill_all_fields), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.please_fill_all_fields),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 } else if (name.length !in 5..12) {
-                    Toast.makeText(requireContext(), getString(R.string.display_name_length_error), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.display_name_length_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 }
                 lifecycleScope.launch {
@@ -101,11 +111,19 @@ class UpdateProfileFragment : Fragment() {
                                 if (task.isSuccessful) {
                                     replaceFragment()
                                 } else {
-                                    Toast.makeText(requireContext(), getString(R.string.update_profile_error), Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.update_profile_error),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         } else {
-                            Toast.makeText(requireContext(), getString(R.string.upload_photo_error), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.upload_photo_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } else {
                         updateProfile(name, null).collectLatest { task ->
@@ -134,15 +152,16 @@ class UpdateProfileFragment : Fragment() {
         }
     }
 
-    private val getPhotoFromGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == AppCompatActivity.RESULT_OK) {
-            avatarUri = result.data?.data
-            Glide.with(binding.imgAvatar)
-                .load(avatarUri)
-                .apply(RequestOptions().transform(RoundedCorners(15)))
-                .into(binding.imgAvatar)
+    private val getPhotoFromGalleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                avatarUri = result.data?.data
+                Glide.with(binding.imgAvatar)
+                    .load(avatarUri)
+                    .apply(RequestOptions().transform(RoundedCorners(15)))
+                    .into(binding.imgAvatar)
+            }
         }
-    }
 
     private fun getPhotoFromGallery() {
         val intent = Intent(Intent.ACTION_PICK).apply {
@@ -164,9 +183,9 @@ class UpdateProfileFragment : Fragment() {
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.custom_normal_dialog)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        val tvMessage : TextView = dialog.findViewById(R.id.tv_message)
-        val positiveButton : TextView = dialog.findViewById(R.id.tv_positive)
-        val negativeButton : TextView = dialog.findViewById(R.id.tv_negative)
+        val tvMessage: TextView = dialog.findViewById(R.id.tv_message)
+        val positiveButton: TextView = dialog.findViewById(R.id.tv_positive)
+        val negativeButton: TextView = dialog.findViewById(R.id.tv_negative)
         tvMessage.text = getString(R.string.alert_on_denied_image)
         positiveButton.setOnClickListener {
             (activity as MainActivity).finish()
