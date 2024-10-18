@@ -132,11 +132,11 @@ class EqualizerFragment : Fragment() {
         val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
-        val isChecked = sharedPreferences.getBoolean("EqualizerState", false)
-        binding.switchEqualizer.isChecked = isChecked
-        equalizer.enabled = isChecked
-        bassBoost.enabled = isChecked
-        virtualizer.enabled = isChecked
+        val isEnable = sharedPreferences.getBoolean("EqualizerState", false)
+        binding.switchEqualizer.isChecked = isEnable
+        equalizer.enabled = isEnable
+        bassBoost.enabled = isEnable
+        virtualizer.enabled = isEnable
 
         binding.switchEqualizer.setOnCheckedChangeListener { _, isChecked ->
             equalizer.enabled = isChecked

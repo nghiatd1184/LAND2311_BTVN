@@ -32,7 +32,7 @@
         app:itemIconTint="@drawable/nav_item_color_state"
         app:itemTextColor="@drawable/nav_item_color_state"
         app:itemTextAppearanceActiveBoldEnabled="true"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="selected"
         app:itemIconSize="35dp"
         app:itemActiveIndicatorStyle="@style/ShapeAppearance.Material3.Corner.None"
         app:layout_constraintStart_toStartOf="parent"

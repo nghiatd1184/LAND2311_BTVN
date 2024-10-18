@@ -25,6 +25,7 @@ import com.nghiatd.mixic.MainActivity
 import com.nghiatd.mixic.MyApplication
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Song
+import com.nghiatd.mixic.receiver.BroadcastReceiver
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,9 +64,9 @@ class MusicService : Service() {
             scope.launch {
                 isPlayingFlow.collectLatest {
                     val playbackSpeed = if (it) 1f else 0f
-                    val playbackState =
-                        if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
-                    showNotification(playbackState, playbackSpeed)
+                    val playbackState = if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+                    val btnPlayPause = if (it) R.drawable.icon_pause else R.drawable.icon_play
+                    showNotification(btnPlayPause, playbackState, playbackSpeed)
                 }
             }
         }
@@ -115,11 +116,18 @@ class MusicService : Service() {
         scope.launch {
             isPlayingFlow.collectLatest {
                 val playbackSpeed = if (it) 1f else 0f
-                val playbackState =
-                    if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
-                showNotification(playbackState, playbackSpeed)
+                val playbackState = if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+                val btnPlayPause = if (it) R.drawable.icon_pause else R.drawable.icon_play
+                showNotification(btnPlayPause, playbackState, playbackSpeed)
             }
         }
+
+        when (intent?.action) {
+            MyApplication.ACTION_NEXT -> playNext()
+            MyApplication.ACTION_PREVIOUS -> playPrev()
+            MyApplication.ACTION_PLAY_PAUSE -> playPause(currentPlaying.value)
+        }
+
         return START_STICKY
     }
 
@@ -247,8 +255,6 @@ class MusicService : Service() {
     }
 
     private fun playSong(song: Song) {
-        Log.d("NGHIA", "song: $song")
-        Log.d("NGHIA", "allSongs: ${allSongs.value}")
         isPlayingFlow.value = true
         val listSong = allSongs.value
         mediaPlayer.reset()
@@ -297,8 +303,21 @@ class MusicService : Service() {
         sendBroadcast(intent)
     }
 
-    private suspend fun showNotification(playbackState: Int, playbackSpeed: Float) {
+    private suspend fun showNotification(btnPlayPause: Int, playbackState: Int, playbackSpeed: Float) {
         val song = currentPlaying.value
+
+        val contentIntent = Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
+        val pendingContentIntent = PendingIntent.getActivity(this, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val prevIntent = Intent(this, BroadcastReceiver::class.java)
+            .setAction(MyApplication.ACTION_PREVIOUS)
+        val prevPending = PendingIntent.getBroadcast(this, 0, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val nextIntent = Intent(this, BroadcastReceiver::class.java)
+            .setAction(MyApplication.ACTION_NEXT)
+        val nextPending = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val playPauseIntent = Intent(this, BroadcastReceiver::class.java)
+            .setAction(MyApplication.ACTION_PLAY_PAUSE)
+        val playPausePending = PendingIntent.getBroadcast(this, 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
         val picture = song?.image
         val thumb: Bitmap = withContext(Dispatchers.IO) {
             try {
@@ -317,6 +336,23 @@ class MusicService : Service() {
                     .get()
             }
         }
+
+        val notification = NotificationCompat.Builder(this, MyApplication.CHANNEL_ID_1)
+            .setSmallIcon(R.drawable.logo_notification)
+            .setContentTitle(song?.name ?: getString(R.string.app_name))
+            .setContentText(song?.artist ?: "Mixic is running")
+            .setLargeIcon(thumb)
+            .addAction(R.drawable.icon_previous, "Previous", prevPending)
+            .addAction(btnPlayPause, "Play/Pause", playPausePending)
+            .addAction(R.drawable.icon_next, "Next", nextPending)
+            .setStyle(MediaStyle().setMediaSession(mediaSessionCompat.sessionToken))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setOnlyAlertOnce(true)
+            .setContentIntent(pendingContentIntent)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setOngoing(true)
+            .build()
+
         mediaSessionCompat.setMetadata(
             MediaMetadataCompat.Builder()
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration().toLong())
@@ -356,23 +392,7 @@ class MusicService : Service() {
             }
         })
 
-        val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-        val notification = NotificationCompat.Builder(this, MyApplication.CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.logo_notification)
-            .setContentTitle(song?.name ?: getString(R.string.app_name))
-            .setContentText(song?.artist ?: "Mixic is running")
-            .setLargeIcon(thumb)
-            .setStyle(MediaStyle().setMediaSession(mediaSessionCompat.sessionToken))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setOnlyAlertOnce(true)
-            .setContentIntent(pendingIntent)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setOngoing(true)
-            .build()
 
         startForeground(1, notification)
     }

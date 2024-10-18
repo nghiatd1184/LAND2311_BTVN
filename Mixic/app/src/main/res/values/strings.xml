@@ -91,4 +91,9 @@
     <string name="new_playlist">New Playlist</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="song_already_added">This song already added to playlist!</string>
+    <string name="please_fill_playlist_name">Please fill playlist name!</string>
+    <string name="playlist_name_already_exists">Playlist name already exist. Please enter another name!</string>
+    <string name="queue_list">Queue List</string>
+    <string name="close">Close</string>
 </resources>

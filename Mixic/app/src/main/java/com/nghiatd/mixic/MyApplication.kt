@@ -10,6 +10,11 @@ class MyApplication : Application() {
     companion object {
         const val CHANNEL_ID_1 = "music_service_channel_1"
         const val ACTION_SONG_START = "com.nghiatd.mixic.SONG_START"
+        const val CLOUD_TYPE = "song frome cloud"
+        const val DEVICE_TYPE = "song from device"
+        const val ACTION_PLAY_PAUSE = "action_play_pause"
+        const val ACTION_NEXT = "action_next"
+        const val ACTION_PREVIOUS = "action_previous"
     }
 
     override fun onCreate() {

@@ -36,6 +36,9 @@
         <receiver android:name=".receiver.BroadcastReceiver" android:exported="false" android:enabled="true">
             <intent-filter>
                 <action android:name="com.nghiatd.mixic.SONG_START" />
+                <action android:name="action_play_pause" />
+                <action android:name="action_next" />
+                <action android:name="action_previous" />
             </intent-filter>
         </receiver>
     </application>

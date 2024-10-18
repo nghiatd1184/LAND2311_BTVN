@@ -3,24 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    android:background="@color/background_color">
+    android:background="@color/background_color"
+    android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btn_layout"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btn_update_profile"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/update_profile"
             android:fontFamily="@font/main_font_bold"
+            android:text="@string/update_profile"
             android:textSize="25sp"
             android:textStyle="bold" />
 
@@ -29,27 +29,27 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/default_avatar"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_avatar" />
 
         <TextView
             android:id="@+id/btn_choose_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choose_avatar"
-            android:background="@drawable/shape_button"
             android:layout_marginTop="10dp"
+            android:background="@drawable/shape_button"
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
-            android:textColor="@color/main_component_reverse"/>
+            android:text="@string/choose_avatar"
+            android:textColor="@color/main_component_reverse" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:hintEnabled="false"
+            android:textColorHint="@color/grey_color"
             app:cursorColor="@color/main_component_color"
-            android:textColorHint="@color/grey_color">
+            app:hintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_display_name"
@@ -57,50 +57,27 @@
                 android:layout_height="50dp"
                 android:background="@drawable/shape_input_text"
                 android:hint="@string/display_name"
-                android:textColor="@color/main_component_color"
                 android:inputType="text"
                 android:maxLines="1"
-                android:paddingVertical="8dp" />
+                android:paddingVertical="8dp"
+                android:textColor="@color/main_component_color" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/btn_layout"
+    <TextView
+        android:id="@+id/btn_update_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/shape_button"
+        android:gravity="center"
+        android:paddingVertical="6dp"
+        android:text="@string/update_profile"
+        android:textColor="@color/main_component_reverse"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:weightSum="2">
-
-        <TextView
-            android:id="@+id/btn_skip"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingVertical="6dp"
-            android:background="@drawable/shape_button"
-            android:gravity="center"
-            android:textColor="@color/main_component_reverse"
-            android:text="@string/skip"
-            android:layout_marginEnd="5dp"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/btn_update_profile"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingVertical="6dp"
-            android:background="@drawable/shape_button"
-            android:gravity="center"
-            android:textColor="@color/main_component_reverse"
-            android:text="@string/update_profile"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <com.airbnb.lottie.LottieAnimationView
@@ -108,14 +85,14 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_colorFilter="@color/main_component_color"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/loading"
-        app:lottie_repeatMode="restart"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:lottie_repeatMode="restart" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

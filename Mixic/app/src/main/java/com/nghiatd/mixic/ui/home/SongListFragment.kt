@@ -20,10 +20,8 @@ import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentSongListBinding
 import com.nghiatd.mixic.service.MusicService
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SongListFragment : Fragment() {
 
@@ -72,7 +70,15 @@ class SongListFragment : Fragment() {
                 .into(binding.imgFeature)
         } else if (category != null) {
             binding.tvName.text = category?.name
-            setImgForNonFeature(category?.songs!!)
+            if (category!!.songs.size < 4) {
+                binding.imgFeature.visibility = View.VISIBLE
+                Glide.with(binding.imgFeature)
+                    .load(category!!.songs[0].image)
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                    .into(binding.imgFeature)
+            } else {
+                setImgForNonFeature(category!!.songs)
+            }
         } else if (section != null) {
             binding.tvName.text = section?.name
             setImgForNonFeature(section?.songs!!)
@@ -98,13 +104,13 @@ class SongListFragment : Fragment() {
             .load(songs[3].image)
             .transition(DrawableTransitionOptions.withCrossFade(500))
             .into(binding.img4)
+
     }
 
     private fun initClick() {
         binding.imgBack.setOnClickListener {
             sharedViewModel.setCategory(null)
             sharedViewModel.setFeature(null)
-            sharedViewModel.setSection(null)
             binding.imgForNonFeature.visibility = View.GONE
             binding.imgFeature.visibility = View.GONE
             parentFragmentManager.popBackStack()
@@ -116,8 +122,6 @@ class SongListFragment : Fragment() {
             songAdapter.submitList(feature?.songs)
         } else if (category != null) {
             songAdapter.submitList(category?.songs)
-        } else {
-            songAdapter.submitList(section?.songs)
         }
         binding.recyclerView.apply {
             adapter = songAdapter
@@ -135,12 +139,6 @@ class SongListFragment : Fragment() {
         lifecycleScope.launch {
             sharedViewModel.selectedCategory.collectLatest {
                 this@SongListFragment.category = it
-            }
-        }
-
-        lifecycleScope.launch {
-            sharedViewModel.selectedSection.collectLatest {
-                this@SongListFragment.section = it
             }
         }
 

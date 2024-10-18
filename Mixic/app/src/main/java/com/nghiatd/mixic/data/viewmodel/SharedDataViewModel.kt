@@ -18,16 +18,11 @@ class SharedDataViewModel : ViewModel() {
     private val _selectedCategory = MutableStateFlow<Category?>(null)
     val selectedCategory = _selectedCategory.asStateFlow()
 
-    private val _selectedSection = MutableStateFlow<Section?>(null)
-    val selectedSection = _selectedSection.asStateFlow()
-
     private val _selectedSong = MutableStateFlow<Song?>(null)
     val selectedSong = _selectedSong.asStateFlow()
 
     fun setSong(song: Song?) {
-        Log.d("NGHIA", "setSong $song")
         _selectedSong.value = song
-        Log.d("NGHIA", "_selectedSong ${selectedSong.value}")
     }
 
     fun setFeature(feature: Feature?) {
@@ -36,9 +31,5 @@ class SharedDataViewModel : ViewModel() {
 
     fun setCategory(category: Category?) {
         _selectedCategory.value = category
-    }
-
-    fun setSection(section: Section?) {
-        _selectedSection.value = section
     }
 }

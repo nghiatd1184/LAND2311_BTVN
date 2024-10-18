@@ -2,11 +2,13 @@ package com.nghiatd.mixic.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.nghiatd.mixic.MyApplication
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.data.model.Playlist
 import com.nghiatd.mixic.data.viewmodel.PlayListViewModel
@@ -45,8 +47,26 @@ class PlaylistAdapter(val viewModel: PlayListViewModel, val onItemClick: (Playli
                     .load(image)
                     .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(imgArt)
+                val playlistType: String = if (playlist.songs.isNotEmpty()) {
+                    try {
+                        playlist.songs[0].id.toInt()
+                        MyApplication.DEVICE_TYPE
+                    } catch (e: Exception) {
+                        MyApplication.CLOUD_TYPE
+                    }
+                } else {
+                    MyApplication.CLOUD_TYPE
+                }
                 root.setOnClickListener {
                     onItemClick(playlist)
+                }
+                imgDelete.setOnClickListener {
+                    if (playlistType == MyApplication.DEVICE_TYPE) {
+                        viewModel.deleteDevicePlaylists(playlist)
+                        Toast.makeText(root.context, "Playlist \"${playlist.name}\" deleted! ", Toast.LENGTH_SHORT).show()
+                    } else {
+                        viewModel.deleteFirebasePlaylist(root.context, playlist)
+                    }
                 }
             }
         }

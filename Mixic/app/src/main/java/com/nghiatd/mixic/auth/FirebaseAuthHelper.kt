@@ -5,7 +5,11 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.User
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.channels.awaitClose
@@ -18,10 +22,24 @@ fun registerUserByEmail(email: String, password: String) = callbackFlow<Task<Aut
     }
     val firebaseAuth = FirebaseAuth.getInstance()
     firebaseAuth.createUserWithEmailAndPassword(email, password)
-        .addOnCompleteListener { task -> listener?.let { it(task) } }
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                task.result?.user?.let { addUserToFirestore(it) }
+            }
+            listener?.let { it(task) }
+        }
     awaitClose {
         listener = null
     }
+}
+
+fun addUserToFirestore(user: FirebaseUser) {
+    val userData = mapOf(
+        "uid" to user.uid,
+        "playlists" to emptyList<DocumentReference>()
+    )
+    val fireBaseFireStore = FirebaseFirestore.getInstance()
+    fireBaseFireStore.collection("users").document(user.uid).set(userData)
 }
 
 fun updateProfile(name: String, photoUri: Uri?) = callbackFlow<Task<Void>> {

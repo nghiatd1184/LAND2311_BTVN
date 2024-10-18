@@ -24,6 +24,7 @@ import com.nghiatd.mixic.R
 import com.nghiatd.mixic.adapter.CategoryAdapter
 import com.nghiatd.mixic.adapter.FeatureAdapter
 import com.nghiatd.mixic.adapter.SectionAdapter
+import com.nghiatd.mixic.data.model.Category
 import com.nghiatd.mixic.data.model.Section
 import com.nghiatd.mixic.data.model.Song
 import com.nghiatd.mixic.data.viewmodel.HomeFirebaseViewModel
@@ -31,6 +32,7 @@ import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentHomeFirebaseBinding
 import com.nghiatd.mixic.service.MusicService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,6 +46,7 @@ class HomeFirebaseFragment : Fragment() {
     private val sectionList = mutableListOf<Section>()
     private lateinit var newSongs: Section
     private lateinit var servicePlayList: MutableList<Song>
+    private var loading = true
     private var service: MusicService? = null
 
     private val featureAdapter: FeatureAdapter by lazy {
@@ -197,7 +200,7 @@ class HomeFirebaseFragment : Fragment() {
             firebaseViewModel.allCategory.collectLatest {
                 categoryAdapter.submitList(it)
                 categoryAdapter.notifyDataSetChanged()
-
+                loading = false
             }
         }
 
@@ -247,7 +250,7 @@ class HomeFirebaseFragment : Fragment() {
     ) {
         title.text = section.name
         viewAll.setOnClickListener {
-            sharedViewModel.setSection(section)
+            sharedViewModel.setCategory(Category(section.id, section.name, section.songs))
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container, SongListFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

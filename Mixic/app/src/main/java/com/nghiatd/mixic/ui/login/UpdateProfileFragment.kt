@@ -70,9 +70,7 @@ class UpdateProfileFragment : Fragment() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     if (requireContext().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
                         requestImagePermissionLauncher.launch(permission)
-                        Log.d("NGHIA", "Request permission")
                     } else {
-                        Log.d("NGHIA", "Permission granted")
                         getPhotoFromGallery()
                     }
                 } else {
@@ -82,22 +80,10 @@ class UpdateProfileFragment : Fragment() {
 
             btnUpdateProfile.setOnClickListener {
                 binding.loading.visibility = View.VISIBLE
-                binding.btnLayout.visibility = View.GONE
-                val name = edtDisplayName.text.toString()
+                binding.btnUpdateProfile.visibility = View.GONE
+                var name = edtDisplayName.text.toString()
                 if (name.isEmpty() || name.isBlank()) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.please_fill_all_fields),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
-                } else if (name.length !in 5..12) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.display_name_length_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
+                    name = "User_${System.currentTimeMillis() / 1000}"
                 }
                 lifecycleScope.launch {
                     if (avatarUri != null) {
@@ -127,7 +113,7 @@ class UpdateProfileFragment : Fragment() {
                             if (task.isSuccessful) {
                                 replaceFragment()
                                 binding.loading.visibility = View.GONE
-                                binding.btnLayout.visibility = View.VISIBLE
+                                binding.btnUpdateProfile.visibility = View.VISIBLE
                             } else {
                                 Toast.makeText(
                                     requireContext(),
@@ -135,16 +121,12 @@ class UpdateProfileFragment : Fragment() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 binding.loading.visibility = View.GONE
-                                binding.btnLayout.visibility = View.VISIBLE
+                                binding.btnUpdateProfile.visibility = View.VISIBLE
                             }
                         }
                     }
                 }
 
-            }
-
-            btnSkip.setOnClickListener {
-                replaceFragment()
             }
         }
     }

@@ -66,7 +66,7 @@ class SongAdapter(val onItemClick: (Song) -> Unit) :
             Glide.with(binding.imgArt)
                 .load(song.image)
                 .transition(DrawableTransitionOptions.withCrossFade(500))
-                .error(R.drawable.logo)
+                .error(R.drawable.splash_img)
                 .into(binding.imgArt)
 
             binding.root.setOnClickListener {

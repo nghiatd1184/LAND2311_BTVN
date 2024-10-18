@@ -37,6 +37,7 @@ class HomeFragment : Fragment() {
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            if (!isAdded) return
             val binder = service as MusicService.MusicBinder
             this@HomeFragment.service = binder.getMusicService()
             isBound = true
@@ -171,8 +172,7 @@ class HomeFragment : Fragment() {
                         Glide.with(imgThumb)
                             .load(uri)
                             .transition(DrawableTransitionOptions.withCrossFade(500))
-                            .apply(RequestOptions().transform(RoundedCorners(15)))
-                            .error(R.mipmap.ic_launcher)
+                            .error(R.drawable.splash_img)
                             .into(imgThumb)
                     }
                 }

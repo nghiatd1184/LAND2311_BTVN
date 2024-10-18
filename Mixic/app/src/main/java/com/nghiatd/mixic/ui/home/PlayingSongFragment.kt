@@ -1,7 +1,13 @@
 package com.nghiatd.mixic.ui.home
 
+import android.app.Dialog
 import android.content.Context
 import android.content.IntentFilter
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorStateListDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +24,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.TransitionInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -26,6 +31,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.nghiatd.mixic.MyApplication
 import com.nghiatd.mixic.R
+import com.nghiatd.mixic.adapter.SongAdapter
 import com.nghiatd.mixic.data.api.RetrofitExtension
 import com.nghiatd.mixic.data.model.LyricsResponse
 import com.nghiatd.mixic.data.model.Song
@@ -45,6 +51,25 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     private lateinit var broadcastReceiver: BroadcastReceiver
     private var updateJobs: Job? = null
     private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+    private val queueAdapter: SongAdapter by lazy {
+        SongAdapter { song ->
+            service?.playPause(song)
+            if (service?.isPlayingFlow?.value == true) {
+                Glide.with(binding.btnPlayPause)
+                    .load(R.drawable.icon_pause_reverse)
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                    .into(binding.btnPlayPause)
+                updateSeekBarProgress()
+            } else {
+                updateJobs?.cancel()
+                Glide.with(binding.btnPlayPause)
+                    .load(R.drawable.icon_play_reverse)
+                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                    .into(binding.btnPlayPause)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,7 +101,6 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
 
     private fun initView() {
         binding.root.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up))
-        setLyric()
         initShuffleUi()
         initMuteUi()
         initRepeatUi()
@@ -137,6 +161,11 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit()
+            }
+
+            imgQueue.setOnClickListener {
+                showQueueList()
+                queueAdapter.submitList(service?.allSongs?.value)
             }
 
             imgDownCollapse.setOnClickListener {
@@ -266,6 +295,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
             tvShowLyrics.setOnClickListener {
                 it.visibility = View.GONE
                 scrollLyrics.visibility = View.VISIBLE
+                setLyric()
             }
 
             tvLyrics.setOnClickListener {
@@ -295,12 +325,14 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
                 .load(artUri)
                 .apply(RequestOptions().transform(RoundedCorners(15)))
                 .transition(DrawableTransitionOptions.withCrossFade(500))
+                .error(R.drawable.splash_img)
                 .into(imgArt)
             Glide.with(imgArtBackground).load(artUri).apply(
                 RequestOptions
                     .bitmapTransform(BlurTransformation(15))
             )
                 .transition(DrawableTransitionOptions.withCrossFade(500))
+                .error(R.drawable.splash_img)
                 .into(imgArtBackground)
             Glide.with(btnPlayPause)
                 .load(btnPlayPauseRes)
@@ -336,7 +368,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
                 val song = service?.currentPlaying?.value
                 val response = withContext(Dispatchers.IO) {
                     RetrofitExtension.OVH_LYRICS.getLyrics(song!!.artist, song.name).execute()
-                        .body() ?: LyricsResponse("")
+                        .body() ?: LyricsResponse(getString(R.string.error_loading_lyrics))
                 }
                 binding.loading.visibility = View.GONE
                 binding.tvLyrics.visibility = View.VISIBLE
@@ -357,6 +389,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
 
     override fun onSongStart() {
         updateUiOnChangeSong()
+
     }
 
     private fun downloadSong(song: Song) {
@@ -378,6 +411,25 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
             ).show()
         }
 
+    }
+
+    private fun showQueueList() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.custom_queue_list_dialog)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val rvQueue = dialog.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_queue_list)
+        val btnClose = dialog.findViewById<android.widget.TextView>(R.id.tv_positive)
+
+        rvQueue.apply {
+            adapter = queueAdapter
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+        }
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
 }

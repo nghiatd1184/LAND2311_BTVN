@@ -30,7 +30,7 @@
         android:layout_marginHorizontal="5dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/img_menu"
+        app:layout_constraintEnd_toStartOf="@+id/img_delete"
         app:layout_constraintStart_toEndOf="@+id/card_song"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -61,10 +61,10 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/img_menu"
+        android:id="@+id/img_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_menu_vertical"
+        android:src="@drawable/icon_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowInsetsController
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -31,17 +32,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         val sharedPref = this.getSharedPreferences("data", MODE_PRIVATE)
-//        val playlists = listOf(
-//            Playlist("1", "My Playlist", mutableListOf()),
-//        )
-//        val json = Gson().toJson(playlists)
-//        Log.d("NGHIA", "initView: $json")
-//        sharedPref.edit().putString("playlists", json).apply()
         val theme = sharedPref.getInt("theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         AppCompatDelegate.setDefaultNightMode(theme)
-
+        window.insetsController?.hide(WindowInsets.Type.navigationBars())
+        window.insetsController?.systemBarsBehavior =
+            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         window.statusBarColor = getColor(R.color.background_color)
-        window.navigationBarColor = getColor(R.color.main_component_reverse)
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, SplashFragment())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

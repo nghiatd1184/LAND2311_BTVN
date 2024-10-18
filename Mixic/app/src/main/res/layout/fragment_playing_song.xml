@@ -17,6 +17,7 @@
         tools:src="@drawable/splash_img" />
 
     <View
+        android:id="@+id/view_filter"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/main_component_reverse_50opacity"
@@ -25,6 +26,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
+        android:id="@+id/view_gradient"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="@drawable/shape_gradient"
@@ -38,17 +40,22 @@
         android:rotation="180"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/img_art"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_art"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="80dp"
-        android:scaleType="centerCrop"
+        app:cardCornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/img_art_background"
-        tools:src="@drawable/splash_img" />
+        app:layout_constraintTop_toTopOf="@id/img_art_background">
+        <ImageView
+            android:id="@+id/img_art"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/splash_img" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/tv_name"
@@ -66,7 +73,7 @@
         android:scrollHorizontally="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_art"
+        app:layout_constraintTop_toBottomOf="@id/card_art"
         tools:text="Talk to me" />
 
     <TextView
