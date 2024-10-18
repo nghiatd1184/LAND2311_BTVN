@@ -1,6 +1,7 @@
 package com.nghiatd.mixic.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,6 +66,7 @@ class DeviceFragment : Fragment() {
     private fun listenViewModel() {
         lifecycleScope.launch {
             viewModel.allSongs.collectLatest { allSongs ->
+                Log.d("DeviceFragment", "allSongs: $allSongs")
                 songAdapter.submitList(allSongs)
             }
         }

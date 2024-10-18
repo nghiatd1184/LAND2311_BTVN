@@ -11,6 +11,7 @@ import android.media.audiofx.BassBoost
 import android.media.audiofx.Equalizer
 import android.media.audiofx.Virtualizer
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -64,9 +65,11 @@ class MusicService : Service() {
             scope.launch {
                 isPlayingFlow.collectLatest {
                     val playbackSpeed = if (it) 1f else 0f
-                    val playbackState = if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+                    val playbackState =
+                        if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
                     val btnPlayPause = if (it) R.drawable.icon_pause else R.drawable.icon_play
-                    showNotification(btnPlayPause, playbackState, playbackSpeed)
+                    val duration = duration.toLong()
+                    showNotification(btnPlayPause, playbackState, playbackSpeed, duration)
                 }
             }
         }
@@ -77,7 +80,6 @@ class MusicService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        mediaSessionCompat = MediaSessionCompat(this, "Mixic")
         val audioSessionId = getAudioSessionId()
         equalizer = Equalizer(0, audioSessionId).apply { enabled = true }
         bassBoost = BassBoost(0, audioSessionId).apply { enabled = true }
@@ -116,9 +118,10 @@ class MusicService : Service() {
         scope.launch {
             isPlayingFlow.collectLatest {
                 val playbackSpeed = if (it) 1f else 0f
-                val playbackState = if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+                val playbackState =
+                    if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
                 val btnPlayPause = if (it) R.drawable.icon_pause else R.drawable.icon_play
-                showNotification(btnPlayPause, playbackState, playbackSpeed)
+                showNotification(btnPlayPause, playbackState, playbackSpeed, 0)
             }
         }
 
@@ -225,7 +228,8 @@ class MusicService : Service() {
 
     fun playPause(song: Song?) {
         if (allSongs.value.isEmpty()) {
-            Toast.makeText(this@MusicService, "Please pick a song first!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MusicService, "Please pick a song first!", Toast.LENGTH_SHORT)
+                .show()
             return
         }
 
@@ -289,6 +293,7 @@ class MusicService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder {
+        mediaSessionCompat = MediaSessionCompat(baseContext, "Mixic")
         return MusicBinder()
     }
 
@@ -303,20 +308,46 @@ class MusicService : Service() {
         sendBroadcast(intent)
     }
 
-    private suspend fun showNotification(btnPlayPause: Int, playbackState: Int, playbackSpeed: Float) {
+    private suspend fun showNotification(
+        btnPlayPause: Int,
+        playbackState: Int,
+        playbackSpeed: Float,
+        duration: Long
+    ) {
         val song = currentPlaying.value
-
-        val contentIntent = Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
-        val pendingContentIntent = PendingIntent.getActivity(this, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val prevIntent = Intent(this, BroadcastReceiver::class.java)
+        val contentIntent = Intent(baseContext, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        val pendingContentIntent = PendingIntent.getActivity(
+            baseContext,
+            0,
+            contentIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val prevIntent = Intent(baseContext, BroadcastReceiver::class.java)
             .setAction(MyApplication.ACTION_PREVIOUS)
-        val prevPending = PendingIntent.getBroadcast(this, 0, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val nextIntent = Intent(this, BroadcastReceiver::class.java)
+        val prevPending = PendingIntent.getBroadcast(
+            baseContext,
+            0,
+            prevIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val nextIntent = Intent(baseContext, BroadcastReceiver::class.java)
             .setAction(MyApplication.ACTION_NEXT)
-        val nextPending = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val playPauseIntent = Intent(this, BroadcastReceiver::class.java)
+        val nextPending = PendingIntent.getBroadcast(
+            baseContext,
+            0,
+            nextIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val playPauseIntent = Intent(baseContext, BroadcastReceiver::class.java)
             .setAction(MyApplication.ACTION_PLAY_PAUSE)
-        val playPausePending = PendingIntent.getBroadcast(this, 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val playPausePending = PendingIntent.getBroadcast(
+            baseContext,
+            0,
+            playPauseIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         val picture = song?.image
         val thumb: Bitmap = withContext(Dispatchers.IO) {
@@ -337,7 +368,7 @@ class MusicService : Service() {
             }
         }
 
-        val notification = NotificationCompat.Builder(this, MyApplication.CHANNEL_ID_1)
+        val notification = NotificationCompat.Builder(baseContext, MyApplication.CHANNEL_ID_1)
             .setSmallIcon(R.drawable.logo_notification)
             .setContentTitle(song?.name ?: getString(R.string.app_name))
             .setContentText(song?.artist ?: "Mixic is running")
@@ -355,7 +386,7 @@ class MusicService : Service() {
 
         mediaSessionCompat.setMetadata(
             MediaMetadataCompat.Builder()
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration().toLong())
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration)
                 .build()
         )
         mediaSessionCompat.setPlaybackState(
@@ -391,8 +422,6 @@ class MusicService : Service() {
                 seekTo(pos)
             }
         })
-
-
 
         startForeground(1, notification)
     }

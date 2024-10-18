@@ -3,6 +3,7 @@ package com.nghiatd.mixic
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.util.Log
 
 class MyApplication : Application() {
@@ -25,7 +26,7 @@ class MyApplication : Application() {
     private fun createNotificationChannel() {
         val channel1 = NotificationChannel(CHANNEL_ID_1, "Music Service Channel 1", NotificationManager.IMPORTANCE_HIGH)
         channel1.description = "Music Service Channel 1"
-        val notificationManager = getSystemService(NotificationManager::class.java)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel1)
     }
 }

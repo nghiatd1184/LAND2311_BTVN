@@ -35,12 +35,14 @@ import com.nghiatd.mixic.adapter.SongAdapter
 import com.nghiatd.mixic.data.api.RetrofitExtension
 import com.nghiatd.mixic.data.model.LyricsResponse
 import com.nghiatd.mixic.data.model.Song
+import com.nghiatd.mixic.data.viewmodel.DeviceViewModel
 import com.nghiatd.mixic.data.viewmodel.SharedDataViewModel
 import com.nghiatd.mixic.databinding.FragmentPlayingSongBinding
 import com.nghiatd.mixic.receiver.BroadcastReceiver
 import com.nghiatd.mixic.service.MusicService
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 
 class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
@@ -49,6 +51,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     private lateinit var sharedViewModel: SharedDataViewModel
     private var service: MusicService? = null
     private lateinit var broadcastReceiver: BroadcastReceiver
+    private lateinit var deviceViewModel: DeviceViewModel
     private var updateJobs: Job? = null
     private val isAtLeast13 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
@@ -76,6 +79,8 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val viewModeFactory = DeviceViewModel.SongViewModelFactory(requireContext())
+        deviceViewModel = ViewModelProvider(requireActivity(), viewModeFactory)[DeviceViewModel::class.java]
         service = (parentFragment as HomeFragment).getMusicService()
         sharedViewModel = ViewModelProvider(requireActivity())[SharedDataViewModel::class.java]
         broadcastReceiver = BroadcastReceiver(this)
@@ -97,6 +102,23 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initClick()
+        listenService()
+    }
+
+    private fun listenService() {
+        lifecycleScope.launch {
+            service?.isPlayingFlow?.collectLatest {
+                queueAdapter.isPlaying = it
+            }
+        }
+
+        lifecycleScope.launch {
+            service?.currentPlaying?.collectLatest {
+                service?.currentPlaying?.collectLatest {
+                    queueAdapter.playingSong = it
+                }
+            }
+        }
     }
 
     private fun initView() {
@@ -393,6 +415,10 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     }
 
     private fun downloadSong(song: Song) {
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.download_start), Toast.LENGTH_SHORT
+        ).show()
         val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(song.data)
         val localFile = File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
@@ -404,6 +430,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
                 requireContext(),
                 getString(R.string.download_success), Toast.LENGTH_SHORT
             ).show()
+            deviceViewModel.loadAllSongs()
         }.addOnFailureListener {
             Toast.makeText(
                 requireContext(),
@@ -414,7 +441,7 @@ class PlayingSongFragment : Fragment(), BroadcastReceiver.SongListener {
     }
 
     private fun showQueueList() {
-        val dialog = Dialog(requireContext())
+        val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.custom_queue_list_dialog)

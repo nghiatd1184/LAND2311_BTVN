@@ -82,6 +82,7 @@
     <string name="accept">Accept</string>
     <string name="deny">Deny</string>
     <string name="download_already_exist">This song already in your device!</string>
+    <string name="download_start">Downloading... Please wait!</string>
     <string name="download_success">Download success!</string>
     <string name="download_error">Download error!</string>
     <string name="search_here">Search here!</string>
