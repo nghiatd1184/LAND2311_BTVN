@@ -36,7 +36,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun initView() {
-        val sharedPref = requireContext().getSharedPreferences("data", Context.MODE_PRIVATE)
+        val sharedPref = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
         val email = sharedPref.getString("latest_login_email", "")
         binding.edtEmail.setText(email)
         if (email!!.isNotEmpty()) binding.edtPassword.requestFocus() else binding.edtEmail.requestFocus()

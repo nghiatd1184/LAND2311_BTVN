@@ -139,6 +139,9 @@ class HomeFragment : Fragment() {
                 btnNext.setOnClickListener {
                     service?.playNext()
                 }
+                btnPrevious.setOnClickListener {
+                    service?.playPrev()
+                }
                 btnPlayPause.setOnClickListener {
                     val song = service?.currentPlaying?.value
                     val imgRes =
@@ -148,6 +151,17 @@ class HomeFragment : Fragment() {
                         .transition(DrawableTransitionOptions.withCrossFade(500))
                         .into(btnPlayPause)
                     service?.playPause(song)
+                }
+                root.setOnClickListener {
+                    minimizedLayout.root.visibility = View.GONE
+                    bottomNav.visibility = View.GONE
+                    val slideDownAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_down)
+                    val animationSet = AnimationSet(true).apply {
+                        addAnimation(slideDownAnimation)
+                    }
+                    minimizedLayout.root.startAnimation(animationSet)
+                    bottomNav.startAnimation(animationSet)
+                    replaceFragment(PlayingSongFragment(), "PlayingSong")
                 }
             }
         }

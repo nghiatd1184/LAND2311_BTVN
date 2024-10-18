@@ -78,6 +78,7 @@
     <string name="details">Details</string>
     <string name="notice">Notice!</string>
     <string name="alert_on_denied_storage">This app needs to access device storage to get music files. Please grant permission and restart the app!</string>
+    <string name="alert_exit_app">Do you want to exit app? Music will still play in the background.</string>
     <string name="alert_on_denied_image">You need to grant permission to access device images to update profile. Please grant permission and restart the app!</string>
     <string name="accept">Accept</string>
     <string name="deny">Deny</string>

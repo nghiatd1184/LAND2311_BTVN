@@ -76,7 +76,7 @@ class AddSongToPlayListFragment : Fragment() {
 
     private fun initView() {
         lifecycleScope.launch {
-            val timeout = 5000L
+            val timeout = 3000L
             val startTime = System.currentTimeMillis()
             while (true) {
                 if ((playlistOnDevice.isNotEmpty() && playlistOnCloud.isNotEmpty() && song != null) || System.currentTimeMillis() - startTime > timeout) {

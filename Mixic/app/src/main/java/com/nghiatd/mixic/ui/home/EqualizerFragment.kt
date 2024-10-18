@@ -1,6 +1,7 @@
 package com.nghiatd.mixic.ui.home
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.media.audiofx.BassBoost
 import android.media.audiofx.Equalizer
 import android.media.audiofx.Virtualizer
@@ -10,7 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.nghiatd.mixic.R
 import com.nghiatd.mixic.databinding.FragmentEqualizerBinding
 import com.nghiatd.mixic.service.MusicService
 
@@ -34,8 +37,24 @@ class EqualizerFragment : Fragment() {
         setupBassBoost()
         setupSurroundSound()
         setupToggle()
-        setupTemplates()
+        initClick()
         setupBackButton()
+        val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val lastButtonActive = sharedPreferences.getString("last_button_active", "EDM")
+        when (lastButtonActive) {
+            "Classical" -> {
+                binding.btnClassical.performClick()
+            }
+            "Pop" -> {
+                binding.btnPop.performClick()
+            }
+            "EDM" -> {
+                binding.btnEdm.performClick()
+            }
+            "Jazz" -> {
+                binding.btnJazz.performClick()
+            }
+        }
     }
 
     private fun setupBackButton() {
@@ -131,7 +150,6 @@ class EqualizerFragment : Fragment() {
     private fun setupToggle() {
         val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-
         val isEnable = sharedPreferences.getBoolean("EqualizerState", false)
         binding.switchEqualizer.isChecked = isEnable
         equalizer.enabled = isEnable
@@ -142,17 +160,62 @@ class EqualizerFragment : Fragment() {
             equalizer.enabled = isChecked
             bassBoost.enabled = isChecked
             virtualizer.enabled = isChecked
-
             editor.putBoolean("EqualizerState", isChecked)
             editor.apply()
         }
     }
 
-    private fun setupTemplates() {
-        binding.btnClassical.setOnClickListener { applyTemplate(intArrayOf(1500, 2100, 1800, 1500, 2100)) }
-        binding.btnPop.setOnClickListener { applyTemplate(intArrayOf(2700, 2100, 2100, 1800, 2400)) }
-        binding.btnEdm.setOnClickListener { applyTemplate(intArrayOf(3000, 2400, 1500, 2100, 2400)) }
-        binding.btnJazz.setOnClickListener { applyTemplate(intArrayOf(1800, 2100, 1800, 1500, 2100)) }
+
+
+    private fun initClick() {
+        binding.btnClassical.setOnClickListener {
+            applyTemplate(intArrayOf(1500, 2100, 1800, 1500, 2100))
+            resetButton()
+            binding.apply {
+                btnClassical.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_component_color))
+                btnClassical.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_reverse))
+            }
+            val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("last_button_active", "Classical")
+            editor.apply()
+        }
+        binding.btnPop.setOnClickListener {
+            applyTemplate(intArrayOf(2700, 2100, 2100, 1800, 2400))
+            resetButton()
+            binding.apply {
+                btnPop.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_component_color))
+                btnPop.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_reverse))
+            }
+            val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("last_button_active", "Pop")
+            editor.apply()
+        }
+        binding.btnEdm.setOnClickListener {
+            applyTemplate(intArrayOf(3000, 2400, 1500, 2100, 2400))
+            resetButton()
+            binding.apply {
+                btnEdm.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_component_color))
+                btnEdm.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_reverse))
+            }
+            val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("last_button_active", "EDM")
+            editor.apply()
+        }
+        binding.btnJazz.setOnClickListener {
+            applyTemplate(intArrayOf(1800, 2100, 1800, 1500, 2100))
+            resetButton()
+            binding.apply {
+                btnJazz.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_component_color))
+                btnJazz.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_reverse))
+            }
+            val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("last_button_active", "Jazz")
+            editor.apply()
+        }
     }
 
     private fun applyTemplate(levels: IntArray) {
@@ -167,6 +230,19 @@ class EqualizerFragment : Fragment() {
 
             bands[i].progress = clampedLevel - minEQLevel
             equalizer.setBandLevel(bandIndex, clampedLevel.toShort())
+        }
+    }
+
+    private fun resetButton() {
+        binding.apply {
+            btnClassical.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.grey_color))
+            btnPop.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.grey_color))
+            btnEdm.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.grey_color))
+            btnJazz.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.grey_color))
+            btnClassical.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_color))
+            btnPop.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_color))
+            btnEdm.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_color))
+            btnJazz.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_color))
         }
     }
 

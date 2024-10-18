@@ -30,7 +30,7 @@ class PlayListViewModel(context: Context) : ViewModel() {
     val userPlaylist = _userPlaylist.asStateFlow()
 
 
-    private val sharedPref = context.getSharedPreferences("data", Context.MODE_PRIVATE)
+    private val sharedPref = context.getSharedPreferences("AppData", Context.MODE_PRIVATE)
 
     init {
         _devicePlaylists.value = getAllDevicePlaylists()
