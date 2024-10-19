@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.nghiatd.mixic.MyApplication
 import com.nghiatd.mixic.R
 import com.nghiatd.mixic.adapter.SongAdapter
 import com.nghiatd.mixic.data.model.Song
@@ -31,10 +32,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
     private lateinit var viewModel: SearchViewModel
-    private var songFromCloud: MutableList<Song> = mutableListOf()
-    private var songFromDevice: MutableList<Song> = mutableListOf()
-    private val _searchSource = MutableStateFlow<List<Song>>(emptyList())
-    private val searchSource = _searchSource.asStateFlow()
+    private lateinit var searchType : String
     private var service: MusicService? = null
     private val adapter: SongAdapter by lazy {
         SongAdapter { song ->
@@ -72,6 +70,7 @@ class SearchFragment : Fragment() {
             searchFromCloud.typeface = resources.getFont(R.font.main_font_bold)
             searchFromDevice.setBackgroundResource(0)
             searchFromDevice.typeface = resources.getFont(R.font.main_font)
+            searchType = MyApplication.CLOUD_TYPE
         }
     }
 
@@ -80,19 +79,21 @@ class SearchFragment : Fragment() {
             searchFromCloud.setOnClickListener {
                 searchFromCloud.setBackgroundResource(R.drawable.shape_setting_item_bg)
                 searchFromCloud.typeface = resources.getFont(R.font.main_font_bold)
-                _searchSource.value = songFromCloud
                 searchFromDevice.setBackgroundResource(0)
                 searchFromDevice.typeface = resources.getFont(R.font.main_font)
+                searchType = MyApplication.CLOUD_TYPE
+                adapter.submitList(emptyList())
             }
             searchFromDevice.setOnClickListener {
                 searchFromDevice.setBackgroundResource(R.drawable.shape_setting_item_bg)
                 searchFromDevice.typeface = resources.getFont(R.font.main_font_bold)
-                _searchSource.value = songFromDevice
                 searchFromCloud.setBackgroundResource(0)
                 searchFromCloud.typeface = resources.getFont(R.font.main_font)
+                searchType = MyApplication.DEVICE_TYPE
+                adapter.submitList(emptyList())
             }
 
-            searchBar.setOnEditorActionListener { v, actionId, event ->
+            searchBar.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     val query = binding.searchBar.text.toString()
                     performSearch(query)
@@ -106,16 +107,15 @@ class SearchFragment : Fragment() {
 
     private fun listenViewModel() {
         lifecycleScope.launch {
-            viewModel.songsFromFirebase.collectLatest {
-                songFromCloud = it.toMutableList()
-                _searchSource.value = songFromCloud
+            viewModel.resultFromDevice.collectLatest {
+                adapter.submitList(it)
             }
 
         }
 
         lifecycleScope.launch {
-            viewModel.songsFromDevice.collectLatest {
-                songFromDevice = it.toMutableList()
+            viewModel.resultFromFirebase.collectLatest {
+                adapter.submitList(it)
             }
         }
 
@@ -142,16 +142,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun performSearch(query: String) {
-        lifecycleScope.launch {
-            searchSource.collectLatest { source ->
-                val filteredList = source.filter {
-                    it.name.contains(query, ignoreCase = true) || it.artist.contains(
-                        query,
-                        ignoreCase = true
-                    )
-                }
-                adapter.submitList(filteredList)
-            }
+        if (searchType == MyApplication.CLOUD_TYPE) {
+            viewModel.searchSongFromFirebase(query.lowercase())
+        } else {
+            viewModel.searchSongFromDevice(query.lowercase())
         }
     }
 }

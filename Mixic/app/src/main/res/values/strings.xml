@@ -21,8 +21,8 @@
     <string name="loading_lyrics">Loading Lyrics...</string>
     <string name="error_loading_lyrics">Cannot find lyrics for this song</string>
     <string name="blank"> </string>
-    <string name="search_from_cloud">Search from Cloud</string>
-    <string name="search_from_your_device">Search from Your Device</string>
+    <string name="search_from_cloud">Search on Cloud</string>
+    <string name="search_from_your_device">Search on Device</string>
     <string name="equalizer">Equalizer</string>
     <string name="enable_equalizer">Enable Equalizer </string>
     <string name="_60_hz">60 Hz</string>
