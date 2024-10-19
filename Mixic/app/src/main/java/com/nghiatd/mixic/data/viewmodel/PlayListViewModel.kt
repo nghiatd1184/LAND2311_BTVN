@@ -173,12 +173,12 @@ class PlayListViewModel(context: Context) : ViewModel() {
             playlists.add(Playlist(System.currentTimeMillis().toString(),name, mutableListOf(song)))
         } else {
             val index = playlists.indexOf(playlist)
-            if (playlists[index].songs.find { it.id == song.id } == null) {
-                playlists[index].songs.add(song)
-                Toast.makeText(context, "Song \"${song.name}\" added to playlist \"${playlist.name}\"", Toast.LENGTH_SHORT).show()
-            } else {
+            if (playlists[index].songs.find { it.id == song.id } != null) {
                 Toast.makeText(context, context.getString(R.string.song_already_added), Toast.LENGTH_SHORT).show()
                 return
+            } else {
+                playlists[index].songs.add(song)
+                Toast.makeText(context, "Song \"${song.name}\" added to playlist \"${playlist.name}\"", Toast.LENGTH_SHORT).show()
             }
         }
         _devicePlaylists.value = playlists

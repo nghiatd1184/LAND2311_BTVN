@@ -45,6 +45,8 @@ class ForgotPasswordFragment : Fragment() {
                         getString(R.string.please_fill_email),
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.loading.visibility = View.GONE
+                    binding.btnFindPassword.visibility = View.VISIBLE
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {

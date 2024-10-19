@@ -45,8 +45,21 @@ class AddSongToPlayListFragment : Fragment() {
                 if (songType == MyApplication.DEVICE_TYPE) {
                     playListViewModel.addSongToPlaylist(requireContext(), playlist, "", song!!)
                 } else {
-                    playListViewModel.addSongToFirebasePlaylist(requireContext(), playlist, song!!)
-                    playListViewModel.getUserPlaylists()
+                    if (playlist.songs.find { it.id == song!!.id } != null) {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.song_already_added),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@PlaylistAdapter
+                    } else {
+                        playListViewModel.addSongToFirebasePlaylist(
+                            requireContext(),
+                            playlist,
+                            song!!
+                        )
+                        playListViewModel.getUserPlaylists()
+                    }
                 }
                 sharedDataViewModel.setSong(null)
                 parentFragmentManager.popBackStack()

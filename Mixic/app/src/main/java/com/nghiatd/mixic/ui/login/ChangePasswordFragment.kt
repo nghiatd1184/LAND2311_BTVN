@@ -48,6 +48,8 @@ class ChangePasswordFragment : Fragment() {
                         getString(R.string.please_fill_all_fields),
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.loading.visibility = View.GONE
+                    binding.btnChangePassword.visibility = View.VISIBLE
                     return@setOnClickListener
                 } else if (newPassword != confirmPassword) {
                     Toast.makeText(
@@ -55,6 +57,8 @@ class ChangePasswordFragment : Fragment() {
                         getString(R.string.wrong_confirm_password),
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.loading.visibility = View.GONE
+                    binding.btnChangePassword.visibility = View.VISIBLE
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {

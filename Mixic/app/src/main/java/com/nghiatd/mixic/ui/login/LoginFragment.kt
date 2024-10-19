@@ -55,6 +55,8 @@ class LoginFragment : Fragment() {
                         getString(R.string.email_or_password_empty),
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.loading.visibility = View.GONE
+                    binding.btnLogin.visibility = View.VISIBLE
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {

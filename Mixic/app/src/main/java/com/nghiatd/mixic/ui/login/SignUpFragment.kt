@@ -49,6 +49,8 @@ class SignUpFragment : Fragment() {
                         getString(R.string.please_fill_all_fields),
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.loading.visibility = View.GONE
+                    binding.btnSignUp.visibility = View.VISIBLE
                     return@setOnClickListener
                 } else if (password != confirmPassword) {
                     Toast.makeText(
@@ -56,6 +58,8 @@ class SignUpFragment : Fragment() {
                         getString(R.string.wrong_confirm_password),
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.loading.visibility = View.GONE
+                    binding.btnSignUp.visibility = View.VISIBLE
                     return@setOnClickListener
                 } else if (password.length !in 6..16) {
                     Toast.makeText(
@@ -63,6 +67,8 @@ class SignUpFragment : Fragment() {
                         getString(R.string.password_length_error),
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.loading.visibility = View.GONE
+                    binding.btnSignUp.visibility = View.VISIBLE
                     return@setOnClickListener
                 } else {
                     lifecycleScope.launch {
