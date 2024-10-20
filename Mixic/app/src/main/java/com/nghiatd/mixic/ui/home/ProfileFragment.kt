@@ -64,7 +64,7 @@ class ProfileFragment : Fragment() {
             tvSignOut.setOnClickListener {
                 val firebaseAuth = FirebaseAuth.getInstance()
                 val email = firebaseAuth.currentUser?.email.toString()
-                val sharedPref = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+                val sharedPref = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
                 sharedPref.edit().putString("latest_login_email", email).apply()
                 firebaseAuth.signOut()
                 service?.isPlayingFlow?.value = false
@@ -105,7 +105,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setTheme(mode: Int) {
-        val sharedPref = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val sharedPref = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
         sharedPref.edit().putInt("theme", mode).apply()
         AppCompatDelegate.setDefaultNightMode(mode)
         service?.isPlayingFlow?.value = false

@@ -39,7 +39,7 @@ class EqualizerFragment : Fragment() {
         setupToggle()
         initClick()
         setupBackButton()
-        val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
         val lastButtonActive = sharedPreferences.getString("last_button_active", "EDM")
         when (lastButtonActive) {
             "Classical" -> {
@@ -65,7 +65,7 @@ class EqualizerFragment : Fragment() {
     }
 
     private fun saveEqualizerSettings() {
-        val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val bands = arrayOf(binding.seekBar60Hz, binding.seekBar230Hz, binding.seekBar910Hz, binding.seekBar3kHz, binding.seekBar14kHz)
         for (i in bands.indices) {
@@ -148,7 +148,7 @@ class EqualizerFragment : Fragment() {
     }
 
     private fun setupToggle() {
-        val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val isEnable = sharedPreferences.getBoolean("EqualizerState", false)
         binding.switchEqualizer.isChecked = isEnable
@@ -175,7 +175,7 @@ class EqualizerFragment : Fragment() {
                 btnClassical.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_component_color))
                 btnClassical.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_reverse))
             }
-            val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val sharedPreferences = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putString("last_button_active", "Classical")
             editor.apply()
@@ -187,7 +187,7 @@ class EqualizerFragment : Fragment() {
                 btnPop.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_component_color))
                 btnPop.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_reverse))
             }
-            val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val sharedPreferences = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putString("last_button_active", "Pop")
             editor.apply()
@@ -199,7 +199,7 @@ class EqualizerFragment : Fragment() {
                 btnEdm.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_component_color))
                 btnEdm.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_reverse))
             }
-            val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val sharedPreferences = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putString("last_button_active", "EDM")
             editor.apply()
@@ -211,7 +211,7 @@ class EqualizerFragment : Fragment() {
                 btnJazz.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.main_component_color))
                 btnJazz.setTextColor(ContextCompat.getColor(requireContext(), R.color.main_component_reverse))
             }
-            val sharedPreferences = requireContext().getSharedPreferences("AppData", Context.MODE_PRIVATE)
+            val sharedPreferences = requireContext().getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putString("last_button_active", "Jazz")
             editor.apply()

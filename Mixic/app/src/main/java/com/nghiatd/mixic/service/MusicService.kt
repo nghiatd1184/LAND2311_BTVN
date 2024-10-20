@@ -81,11 +81,12 @@ class MusicService : Service() {
     override fun onCreate() {
         super.onCreate()
         val audioSessionId = getAudioSessionId()
+        mediaSessionCompat = MediaSessionCompat(baseContext, "Mixic")
         equalizer = Equalizer(0, audioSessionId).apply { enabled = true }
         bassBoost = BassBoost(0, audioSessionId).apply { enabled = true }
         virtualizer = Virtualizer(0, audioSessionId).apply { enabled = true }
 
-        val sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
         val minEQLevel = equalizer.bandLevelRange[0]
         val maxEQLevel = equalizer.bandLevelRange[1]
 
@@ -115,28 +116,17 @@ class MusicService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        scope.launch {
-            isPlayingFlow.collectLatest {
-                val playbackSpeed = if (it) 1f else 0f
-                val playbackState =
-                    if (it) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
-                val btnPlayPause = if (it) R.drawable.icon_pause else R.drawable.icon_play
-                showNotification(btnPlayPause, playbackState, playbackSpeed, 0)
-            }
-        }
-
         when (intent?.action) {
             MyApplication.ACTION_NEXT -> playNext()
             MyApplication.ACTION_PREVIOUS -> playPrev()
             MyApplication.ACTION_PLAY_PAUSE -> playPause(currentPlaying.value)
         }
-
         return START_STICKY
     }
 
     fun setShuffleMode(shuffleMode: Boolean) {
         this.isShuffle.value = shuffleMode
-        val sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("ShuffleMode", shuffleMode)
         editor.apply()
@@ -144,7 +134,7 @@ class MusicService : Service() {
 
     fun setRepeatMode(repeatMode: Int) {
         this.repeatMode.value = repeatMode
-        val sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("mixic_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("RepeatMode", repeatMode)
         editor.apply()
@@ -293,7 +283,6 @@ class MusicService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder {
-        mediaSessionCompat = MediaSessionCompat(baseContext, "Mixic")
         return MusicBinder()
     }
 
@@ -355,14 +344,14 @@ class MusicService : Service() {
                 Glide.with(this@MusicService)
                     .asBitmap()
                     .load(picture)
-                    .apply(RequestOptions().transform(BlurTransformation(5, 2)))
+                    .apply(RequestOptions().transform(BlurTransformation(5, 1)))
                     .submit()
                     .get()
             } catch (e: Exception) {
                 Glide.with(this@MusicService)
                     .asBitmap()
                     .load(R.drawable.splash_img)
-                    .apply(RequestOptions().transform(BlurTransformation(5, 2)))
+                    .apply(RequestOptions().transform(BlurTransformation(5, 1)))
                     .submit()
                     .get()
             }
@@ -377,7 +366,7 @@ class MusicService : Service() {
             .addAction(btnPlayPause, "Play/Pause", playPausePending)
             .addAction(R.drawable.icon_next, "Next", nextPending)
             .setStyle(MediaStyle().setMediaSession(mediaSessionCompat.sessionToken))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOnlyAlertOnce(true)
             .setContentIntent(pendingContentIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

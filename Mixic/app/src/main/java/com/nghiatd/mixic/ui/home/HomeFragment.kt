@@ -1,6 +1,8 @@
 package com.nghiatd.mixic.ui.home
 
+import android.app.ActivityManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
 import android.content.ServiceConnection
@@ -41,12 +43,7 @@ class HomeFragment : Fragment() {
             val binder = service as MusicService.MusicBinder
             this@HomeFragment.service = binder.getMusicService()
             isBound = true
-            requireActivity().startForegroundService(
-                Intent(
-                    requireActivity(),
-                    MusicService::class.java
-                )
-            )
+            requireActivity().startService(Intent(requireActivity(), MusicService::class.java))
             replaceFragment(HomeFirebaseFragment(), "Firebase")
             minimizedSetViewOnSongStart()
         }

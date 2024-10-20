@@ -83,6 +83,7 @@ class SearchFragment : Fragment() {
                 searchFromDevice.typeface = resources.getFont(R.font.main_font)
                 searchType = MyApplication.CLOUD_TYPE
                 adapter.submitList(emptyList())
+                searchBar.text.clear()
             }
             searchFromDevice.setOnClickListener {
                 searchFromDevice.setBackgroundResource(R.drawable.shape_setting_item_bg)
@@ -91,6 +92,7 @@ class SearchFragment : Fragment() {
                 searchFromCloud.typeface = resources.getFont(R.font.main_font)
                 searchType = MyApplication.DEVICE_TYPE
                 adapter.submitList(emptyList())
+                searchBar.text.clear()
             }
 
             searchBar.setOnEditorActionListener { _, actionId, _ ->
@@ -148,4 +150,5 @@ class SearchFragment : Fragment() {
             viewModel.searchSongFromDevice(query.lowercase())
         }
     }
+
 }

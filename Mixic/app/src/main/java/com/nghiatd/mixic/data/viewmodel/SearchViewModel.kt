@@ -25,26 +25,21 @@ class SearchViewModel(private val repository: SongRepository) : ViewModel() {
 
     fun searchSongFromDevice(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("NGHIA", "searchSongFromDevice: $query")
             val songs = repository.searchSongFromDevice(query)
-            Log.d("NGHIA", "searchSongFromDevice: finish")
             _resultFromDevice.value = songs
         }
     }
 
     fun searchSongFromFirebase(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("NGHIA", "searchSongFromFirebase: $query")
             val db = FirebaseFirestore.getInstance()
+            val normalizedQuery = query.normalize()
             val songCollection = db.collection("song")
-            val searchQuery = songCollection
-                .get()
-                .await()
+            val searchQuery = songCollection.get().await()
             val filterList = searchQuery.documents.mapNotNull { it.toObject(Song::class.java)!! }
                 .filter {
-                    it.name.normalize().contains(query.normalize(), ignoreCase = true) || it.artist.normalize().contains(query.normalize(), ignoreCase = true)
+                    it.name.normalize().contains(normalizedQuery, ignoreCase = true) || it.artist.normalize().contains(normalizedQuery, ignoreCase = true)
                 }
-            Log.d("NGHIA", "searchSongFromFirebase: finish")
             _resultFromFirebase.value = filterList
 
         }

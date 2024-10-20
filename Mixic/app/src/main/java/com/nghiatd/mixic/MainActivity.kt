@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        val sharedPref = this.getSharedPreferences("AppData", MODE_PRIVATE)
+        val sharedPref = this.getSharedPreferences("mixic_data", MODE_PRIVATE)
         val theme = sharedPref.getInt("theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         AppCompatDelegate.setDefaultNightMode(theme)
         window.insetsController?.hide(WindowInsets.Type.navigationBars())
